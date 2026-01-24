@@ -1,0 +1,10 @@
+{
+  "confirm_password": "Confirm password",
+  "email": "Email",
+  "forgot_password": "Forgot password",
+  "login": "Login",
+  "login_description": "Enter your email and password to login.",
+  "password": "Password",
+  "sign_up": "Sign up",
+  "sign_up_description": "Enter a valid email and a password with 8 or more characters to sign up."
+}
