@@ -4,5 +4,8 @@
   "login": "ログイン",
   "login_description": "ログインするには、メールアドレスとパスワードを入力してください。",
   "password": "パスワード",
-  "sign_up": "サインアップ"
+  "reports": "日報",
+  "sign_up": "サインアップ",
+  "sites": "現場",
+  "settings": "設定"
 }

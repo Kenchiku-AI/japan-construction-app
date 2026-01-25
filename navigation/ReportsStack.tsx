@@ -6,6 +6,7 @@ import {
 } from '@react-navigation/native-stack';
 import ReportsListScreen from '../components/reports/ReportsListScreen';
 import DailyReportDetailScreen from '../components/reports/DailyReportDetailScreen';
+import { buttonColor } from '../constants';
 
 export type ReportsStackNavigationParams = {
   ReportsListScreen: undefined;
@@ -16,14 +17,8 @@ export type ReportsStackNavigationParams = {
 
 const ReportsStack: FC = () => {
   const Stack = createNativeStackNavigator<ReportsStackNavigationParams>();
-  const screenOptions: NativeStackNavigationOptions = {
-    headerTitle: '',
-    headerBackButtonDisplayMode: 'minimal',
-    headerTintColor: 'black',
-  };
-
   return (
-    <Stack.Navigator screenOptions={screenOptions}>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="ReportsListScreen" component={ReportsListScreen} />
       <Stack.Screen
         name="DailyReportDetailScreen"

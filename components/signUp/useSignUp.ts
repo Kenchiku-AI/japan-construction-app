@@ -5,7 +5,7 @@ import { useAuthContext } from '../../context/auth/AuthContext';
 export const useSignup = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>();
-  const { setTokens } = useAuthContext();
+  const { updateAccessToken, updateRefreshToken } = useAuthContext();
   const api = useApi();
 
   const signup = async (email: string, password: string) => {
@@ -14,11 +14,13 @@ export const useSignup = () => {
     try {
       const request = { email, password };
       const response = await api.signup(request);
-      response.console.log();
+      console.log(response);
+
+      updateAccessToken(response.access_token);
 
       // setToken(response);
     } catch (err) {
-      setError(err.message);
+      console.log('sign up error', err);
     }
     setLoading(false);
   };

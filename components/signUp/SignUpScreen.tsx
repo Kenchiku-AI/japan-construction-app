@@ -4,6 +4,7 @@ import { ModalNav } from '../shared/ModalNav';
 import { Heading, Input, Button } from '../shared';
 import { useTranslation } from 'react-i18next';
 import { emailRegex } from '../../constants';
+import { useSignup } from './useSignUp';
 
 const SignUpScreen: FC = () => {
   const [email, setEmail] = useState('');
@@ -12,6 +13,7 @@ const SignUpScreen: FC = () => {
   const [isEmailInvalid, setIsEmailInvalid] = useState(false);
   const [isPasswordInvalid, setIsPasswordInvalid] = useState(false);
   const { t } = useTranslation();
+  const { loading, signup } = useSignup();
 
   return (
     <>
@@ -48,7 +50,7 @@ const SignUpScreen: FC = () => {
         </View>
         <Button
           label={t('sign_up')}
-          onPress={() => {
+          onPress={async () => {
             if (!emailRegex.test(email)) {
               setIsEmailInvalid(true);
               return;
@@ -63,6 +65,8 @@ const SignUpScreen: FC = () => {
               setIsPasswordInvalid(true);
               return;
             }
+
+            await signup(email, password);
           }}
           disabled={!email || !password}
         />

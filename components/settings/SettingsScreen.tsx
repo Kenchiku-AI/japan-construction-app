@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { View } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { ProfileStackNavigationParams } from '../../navigation/ProfileStack';
+import { ProfileStackNavigationParams } from '../../navigation/SettingsStack';
 
 interface ProfileScreenProps {
   navigation: NativeStackNavigationProp<

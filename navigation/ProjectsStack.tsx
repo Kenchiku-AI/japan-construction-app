@@ -5,6 +5,7 @@ import {
   NativeStackNavigationOptions,
 } from '@react-navigation/native-stack';
 import ProjectsListScreen from '../components/projects/ProjectsListScreen';
+import { buttonColor, fontColor1, fontFamily } from '../constants';
 
 export type ProjectsStackNavigationParams = {
   ProjectsListScreen: undefined;
@@ -15,14 +16,9 @@ export type ProjectsStackNavigationParams = {
 
 const ProjectsStack: FC = () => {
   const Stack = createNativeStackNavigator<ProjectsStackNavigationParams>();
-  const screenOptions: NativeStackNavigationOptions = {
-    headerTitle: '',
-    headerBackButtonDisplayMode: 'minimal',
-    headerTintColor: 'black',
-  };
 
   return (
-    <Stack.Navigator screenOptions={screenOptions}>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="ProjectsListScreen" component={ProjectsListScreen} />
     </Stack.Navigator>
   );

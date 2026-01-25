@@ -6,5 +6,6 @@
   "login_description": "Enter your email and password to login.",
   "password": "Password",
   "sign_up": "Sign up",
-  "sign_up_description": "Enter a valid email and a password with 8 or more characters to sign up."
+  "sign_up_description": "Enter a valid email and a password with 8 or more characters to sign up.",
+  "sites": "Sites"
 }
