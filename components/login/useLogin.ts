@@ -4,7 +4,8 @@ import { useAuthContext } from '../../context/auth/AuthContext';
 
 export const useLogin = () => {
   const [loading, setLoading] = useState(false);
-  const { updateAccessToken, updateRefreshToken } = useAuthContext();
+  const { updateAccessToken, updateRefreshToken, setCurrentUser } =
+    useAuthContext();
   const api = useApi();
 
   const login = async (email: string, password: string) => {
@@ -18,7 +19,13 @@ export const useLogin = () => {
 
       updateAccessToken(access_token);
       updateRefreshToken(refresh_token);
+
+      const user = await api.getCurrentUser();
+
+      console.log('user', user);
+      setCurrentUser(user);
     } catch (err) {}
+
     setLoading(false);
   };
 

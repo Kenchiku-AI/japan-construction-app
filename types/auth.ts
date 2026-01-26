@@ -1,3 +1,5 @@
+import { Project } from './projects';
+
 export type LoginRequest = {};
 
 export type LoginResponse = {
@@ -6,6 +8,8 @@ export type LoginResponse = {
 };
 
 export type SignupRequest = {
+  first_name: string;
+  last_name: string;
   email: string;
   password: string;
 };
@@ -21,16 +25,15 @@ export type RefreshRequest = {
 
 export type RefreshResponse = LoginResponse;
 
-export type UserResponse = {
-  id: string;
-  created_at: string;
-  updated_at: string;
-  is_active: boolean;
-  companies: CompanyResponse[];
-};
-
 export type CompanyResponse = {
   company_id: string;
   company_name: string;
   role: string;
+};
+
+export type CurrentUser = {
+  id: string;
+  email: string;
+  is_active: boolean;
+  projects: Project[];
 };

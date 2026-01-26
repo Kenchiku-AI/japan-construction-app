@@ -7,6 +7,8 @@ import { emailRegex } from '../../constants';
 import { useSignup } from './useSignUp';
 
 const SignUpScreen: FC = () => {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -21,6 +23,18 @@ const SignUpScreen: FC = () => {
       <View style={styles.container}>
         <Heading title={t('sign_up')} subtitle={t('sign_up_description')} />
         <View style={styles.fields}>
+          <Input
+            placeholder={t('first_name')}
+            onChange={t => {
+              setFirstName(t);
+            }}
+          />
+          <Input
+            placeholder={t('last_name')}
+            onChange={t => {
+              setLastName(t);
+            }}
+          />
           <Input
             placeholder={t('email')}
             onChange={t => {
@@ -66,9 +80,9 @@ const SignUpScreen: FC = () => {
               return;
             }
 
-            await signup(email, password);
+            await signup(firstName, lastName, email, password);
           }}
-          disabled={!email || !password}
+          disabled={!firstName || !lastName || !email || !password}
         />
       </View>
     </>
@@ -82,8 +96,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   fields: {
-    marginTop: 30,
-    marginBottom: 20,
+    marginVertical: 20,
     gap: 10,
   },
 });

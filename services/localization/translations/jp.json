@@ -1,11 +1,16 @@
 {
+  "confirm_password": "パスワード（確認）",
   "email": "メール",
+  "first_name": "名",
   "forgot_password": "パスワードをお忘れですか",
+  "last_name": "姓",
   "login": "ログイン",
   "login_description": "ログインするには、メールアドレスとパスワードを入力してください。",
+  "logout": "ログアウト",
   "password": "パスワード",
   "reports": "日報",
   "sign_up": "サインアップ",
+  "sign_up_description": "登録するには、有効なメールアドレスと8文字以上のパスワードを入力してください。.",
   "sites": "現場",
   "settings": "設定"
 }

@@ -12,15 +12,9 @@ export type SettingsStackNavigationParams = {
 
 const SettingsStack: FC = () => {
   const Stack = createNativeStackNavigator<SettingsStackNavigationParams>();
-  const screenOptions: NativeStackNavigationOptions = {
-    headerTitle: '',
-    headerBackButtonDisplayMode: 'minimal',
-    headerTintColor: buttonColor,
-    headerShadowVisible: false,
-  };
 
   return (
-    <Stack.Navigator screenOptions={screenOptions}>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
     </Stack.Navigator>
   );

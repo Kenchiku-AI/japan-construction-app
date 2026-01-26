@@ -18,9 +18,9 @@ const App = () => {
 };
 
 const Root = () => {
-  const { refreshToken } = useAuthContext();
+  const { currentUser } = useAuthContext();
 
-  return !refreshToken ? <AuthStack /> : <RootNavigation />;
+  return !currentUser ? <AuthStack /> : <RootNavigation />;
 };
 
 export default App;

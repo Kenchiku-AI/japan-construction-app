@@ -7,7 +7,7 @@ import {
   RefreshResponse,
   SignupRequest,
   SignupResponse,
-  UserResponse,
+  CurrentUser,
 } from '../../types';
 import { baseUrl } from '../../constants';
 import { useAuthContext } from '../../context/auth/AuthContext';
@@ -88,9 +88,9 @@ export const useApi = () => {
       const url = `${baseUrl}/auth/signup`;
       return handleResponse(axios.post<SignupResponse>(url, request));
     },
-    async getMe() {
+    async getCurrentUser() {
       const url = `${baseUrl}/users/me`;
-      return call(() => axios.get<UserResponse>(url));
+      return call(() => axios.get<CurrentUser>(url));
     },
   };
 };

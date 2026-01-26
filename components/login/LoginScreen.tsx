@@ -64,14 +64,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   fields: {
-    marginTop: 30,
-    marginBottom: 20,
+    marginVertical: 20,
     gap: 10,
   },
   buttons: {
-    marginTop: 30,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    marginTop: 20,
+    gap: 20,
   },
 });
 

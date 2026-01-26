@@ -1,17 +1,50 @@
 import { FC } from 'react';
-import { View } from 'react-native';
+import { StyleSheet, ScrollView, View } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { ProfileStackNavigationParams } from '../../navigation/SettingsStack';
+import { SettingsStackNavigationParams } from '../../navigation/SettingsStack';
+import { useTranslation } from 'react-i18next';
+import { Button, Heading } from '../shared';
+import { useAuthContext } from '../../context/auth/AuthContext';
 
-interface ProfileScreenProps {
+interface SettingsScreenProps {
   navigation: NativeStackNavigationProp<
-    ProfileStackNavigationParams,
-    'ProfileScreen'
+    SettingsStackNavigationParams,
+    'SettingsScreen'
   >;
 }
 
-const ProfileScreen: FC<ProfileScreenProps> = () => {
-  return <View></View>;
+const SettingsScreen: FC<SettingsScreenProps> = () => {
+  const { t } = useTranslation();
+  const { logout } = useAuthContext();
+
+  return (
+    <View>
+      <Heading style={styles.heading} title={t('settings')} />
+      <ScrollView contentContainerStyle={styles.container}>
+        <Button
+          label={t('logout')}
+          onPress={async () => {
+            await logout();
+          }}
+        />
+      </ScrollView>
+    </View>
+  );
 };
 
-export default ProfileScreen;
+const styles = StyleSheet.create({
+  createButton: {
+    alignSelf: 'flex-end',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  heading: {
+    marginTop: 60,
+    paddingHorizontal: 20,
+  },
+  container: {
+    padding: 20,
+  },
+});
+
+export default SettingsScreen;

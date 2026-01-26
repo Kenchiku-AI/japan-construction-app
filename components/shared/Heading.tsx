@@ -22,11 +22,12 @@ const styles = StyleSheet.create({
     fontFamily,
     fontSize: 32,
     color: fontColor1,
-    marginBottom: 8,
+    marginBottom: 10,
   },
   subtitle: {
     fontFamily,
-    fontSize: 16,
+    fontSize: 14,
     color: fontColor2,
+    lineHeight: 20,
   },
 });

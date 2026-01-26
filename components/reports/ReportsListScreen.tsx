@@ -15,6 +15,7 @@ interface ReportsListScreenProps {
 
 const ReportsListScreen: FC<ReportsListScreenProps> = () => {
   const { t } = useTranslation();
+
   return (
     <View>
       <View style={styles.nav}>

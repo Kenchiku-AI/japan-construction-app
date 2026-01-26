@@ -2,10 +2,12 @@ import { useCallback, useEffect, useState } from 'react';
 import * as Keychain from 'react-native-keychain';
 import { accessTokenStorageKey, refreshTokenStorageKey } from '../../constants';
 import axios from 'axios';
+import { CurrentUser } from '../../types';
 
 export const useAuth = () => {
   const [accessToken, setAccessToken] = useState<string>();
   const [refreshToken, setRefreshToken] = useState<string>();
+  const [currentUser, setCurrentUser] = useState<CurrentUser>();
 
   useEffect(() => {
     (async () => {
@@ -56,5 +58,7 @@ export const useAuth = () => {
     updateAccessToken,
     updateRefreshToken,
     logout,
+    currentUser,
+    setCurrentUser,
   };
 };
