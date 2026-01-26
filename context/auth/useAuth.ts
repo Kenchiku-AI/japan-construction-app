@@ -50,7 +50,8 @@ export const useAuth = () => {
     await Keychain.resetGenericPassword({ service: refreshTokenStorageKey });
     setAccessToken(undefined);
     setRefreshToken(undefined);
-  }, [Keychain, setAccessToken, setRefreshToken]);
+    setCurrentUser(undefined);
+  }, [Keychain, setAccessToken, setRefreshToken, setCurrentUser]);
 
   return {
     accessToken,
