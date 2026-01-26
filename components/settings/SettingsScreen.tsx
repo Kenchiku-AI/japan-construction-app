@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Heading } from '../shared';
 import { useAuthContext } from '../../context/auth/AuthContext';
 import { User } from '../shared/Icons';
-import { fontColor2, fontFamily } from '../../constants';
+import { fontColor1, fontColor2, fontFamily } from '../../constants';
 
 interface SettingsScreenProps {
   navigation: NativeStackNavigationProp<
@@ -27,16 +27,19 @@ const SettingsScreen: FC<SettingsScreenProps> = () => {
           <View style={styles.icon}>
             <User color={fontColor2} />
           </View>
-          <View>
+          <View style={styles.profileText}>
             {currentUser?.first_name && currentUser.last_name && (
               <Text
                 style={styles.name}
-              >{`${currentUser?.first_name} ${currentUser?.last_name}`}</Text>
+              >{`${currentUser.first_name} ${currentUser.last_name}`}</Text>
             )}
-            <Text></Text>
+            {currentUser?.email && (
+              <Text style={styles.email}>{currentUser.email}</Text>
+            )}
           </View>
         </View>
         <Button
+          variant="secondary"
           label={t('logout')}
           onPress={async () => {
             await logout();
@@ -57,15 +60,24 @@ const styles = StyleSheet.create({
   },
   profile: {
     flexDirection: 'row',
-    backgroundColor: 'blue',
+    gap: 12,
+    height: 64,
+    marginBottom: 30,
   },
   icon: {
     height: 80,
     width: 64,
   },
+  profileText: { gap: 4, alignSelf: 'center' },
   name: {
     fontFamily,
-    fontSize: 18,
+    fontSize: 24,
+    color: fontColor1,
+  },
+  email: {
+    fontFamily,
+    fontSize: 16,
+    color: fontColor2,
   },
 });
 
