@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   profileText: { gap: 4, alignSelf: 'center' },
   name: {
     fontFamily,
-    fontSize: 24,
+    fontSize: 18,
     color: fontColor1,
   },
   email: {

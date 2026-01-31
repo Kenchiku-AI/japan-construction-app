@@ -21,8 +21,6 @@ export const useLogin = () => {
       updateRefreshToken(refresh_token);
 
       const user = await api.getCurrentUser();
-
-      console.log('user', user);
       setCurrentUser(user);
     } catch (err) {}
 
