@@ -21,7 +21,7 @@ export const useApi = () => {
       return await handleResponse(callback);
     } catch (err) {
       if ((err as AxiosError).status === 401) {
-        refresh(callback);
+        return await refresh(callback);
       } else {
         throw err;
       }
@@ -36,14 +36,14 @@ export const useApi = () => {
   };
 
   const refresh = useCallback(
-    async <T>(callback: () => Promise<T>) => {
+    async <T>(callback: () => Promise<AxiosResponse<T>>) => {
       try {
         const url = `${baseUrl}/auth/refresh`;
         const request = { refresh_token: refreshToken };
         const { data } = await axios.post<RefreshResponse>(url, request);
-
         await updateAccessToken(data.access_token);
-        await callback();
+
+        return await handleResponse(callback);
       } catch (err) {
         await logout();
       }
