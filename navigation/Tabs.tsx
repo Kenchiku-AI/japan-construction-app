@@ -13,9 +13,8 @@ import {
   ReportsFilled,
   Settings,
   SettingsFilled,
-  User,
-  UserFilled,
 } from '../components/shared/Icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export type TabsNavigationParams = {
   ProjectsStack: undefined;
@@ -26,12 +25,13 @@ export type TabsNavigationParams = {
 const Tabs: FC = () => {
   const Tabs = createBottomTabNavigator<TabsNavigationParams>();
   const { t } = useTranslation();
+  const { bottom } = useSafeAreaInsets();
 
   return (
     <Tabs.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarStyle: styles.tabBar,
+        tabBarStyle: { ...styles.tabBar, height: bottom + 80 },
         tabBarActiveTintColor: buttonColor,
         tabBarInactiveTintColor: fontColor2,
         tabBarLabelStyle: styles.label,
@@ -89,23 +89,17 @@ const Tabs: FC = () => {
 
 const styles = StyleSheet.create({
   tabBar: {
-    position: 'absolute',
-    bottom: 16,
-    borderRadius: 30,
-    height: 80,
-    marginHorizontal: 16,
     borderTopWidth: 0,
-    backgroundColor: 'white',
-    borderColor: 'transparent',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    elevation: 0,
+    shadowOpacity: 0,
+    borderTopColor: 'transparent',
+    backgroundColor: '#F8F9F9',
+    marginBottom: 6,
   },
   icon: {
     height: 45,
     width: 45,
+    marginBottom: 5,
   },
   label: {
     fontSize: 16,

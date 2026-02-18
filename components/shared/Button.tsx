@@ -1,5 +1,11 @@
 import { FC, useMemo } from 'react';
-import { StyleSheet, TouchableOpacity, Text, ViewStyle } from 'react-native';
+import {
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  ViewStyle,
+  View,
+} from 'react-native';
 import { buttonColor, fontFamily } from '../../constants';
 
 interface ButtonProps {
@@ -7,6 +13,8 @@ interface ButtonProps {
   onPress: () => void;
   variant?: 'primary' | 'secondary' | 'tertiary';
   disabled?: boolean;
+  iconLeft?: FC;
+  iconRight?: FC;
   style?: ViewStyle;
 }
 
@@ -15,8 +23,13 @@ export const Button: FC<ButtonProps> = ({
   variant,
   onPress,
   disabled,
+  iconLeft,
+  iconRight,
   style,
 }) => {
+  const IconLeft = iconLeft;
+  const IconRight = iconRight;
+
   const [containerStyle, labelStyle] = useMemo(() => {
     switch (variant) {
       case 'secondary':
@@ -38,7 +51,9 @@ export const Button: FC<ButtonProps> = ({
       }}
       disabled={disabled}
     >
+      {IconLeft && <IconLeft />}
       <Text style={labelStyle}>{label}</Text>
+      {IconRight && <IconRight />}
     </TouchableOpacity>
   );
 };
@@ -47,9 +62,11 @@ const styles = StyleSheet.create({
   primaryContainer: {
     backgroundColor: buttonColor,
     borderRadius: 10,
-    height: 50,
+    height: 60,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal: 16,
+    flexDirection: 'row',
   },
   primaryLabel: {
     color: 'white',
@@ -59,17 +76,25 @@ const styles = StyleSheet.create({
   secondaryContainer: {
     borderWidth: 1,
     borderRadius: 10,
-    height: 50,
+    height: 60,
     borderColor: buttonColor,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal: 16,
+    gap: 4,
+    flexDirection: 'row',
   },
   secondaryLabel: {
     color: buttonColor,
     fontFamily,
     fontSize: 18,
   },
-  tertiaryContainer: {},
+  tertiaryContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 4,
+    flexDirection: 'row',
+  },
   tertiaryLabel: {
     color: buttonColor,
     fontFamily,

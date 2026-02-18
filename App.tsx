@@ -6,13 +6,18 @@ import AuthStack from './navigation/AuthStack';
 import { theme } from './navigation/theme';
 import { ref } from './navigation/navigate';
 import './services/localization/i18n';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { StatusBar } from 'react-native';
 
 const App = () => {
   return (
     <RootProvider>
-      <NavigationContainer theme={theme} ref={ref}>
-        <Root />
-      </NavigationContainer>
+      <SafeAreaProvider>
+        <StatusBar barStyle="dark-content" />
+        <NavigationContainer theme={theme} ref={ref}>
+          <Root />
+        </NavigationContainer>
+      </SafeAreaProvider>
     </RootProvider>
   );
 };

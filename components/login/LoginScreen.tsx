@@ -1,10 +1,11 @@
 import { FC, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Keyboard, StyleSheet, View } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthStackNavigationParams } from '../../navigation/AuthStack';
 import { useTranslation } from 'react-i18next';
 import { useLogin } from './useLogin';
 import { Heading, Input, Button } from '../shared';
+import { Loader } from '../shared/Loader';
 
 interface LoginScreenProps {
   navigation: NativeStackNavigationProp<
@@ -20,40 +21,44 @@ const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
   const { t } = useTranslation();
 
   return (
-    <View style={styles.container}>
-      <Heading title={t('login')} subtitle={t('login_description')} />
-      <View style={styles.fields}>
-        <Input placeholder={t('email')} onChange={t => setEmail(t)} />
-        <Input
-          placeholder={t('password')}
-          onChange={t => setPassword(t)}
-          secureTextEntry
-        />
-      </View>
-      <Button
-        label={t('login')}
-        onPress={() => {
-          login(email, password);
-        }}
-        disabled={!email || !password}
-      />
-      <View style={styles.buttons}>
+    <>
+      <View style={styles.container}>
+        <Heading title={t('login')} subtitle={t('login_description')} />
+        <View style={styles.fields}>
+          <Input placeholder={t('email')} onChange={t => setEmail(t)} />
+          <Input
+            placeholder={t('password')}
+            onChange={t => setPassword(t)}
+            secureTextEntry
+          />
+        </View>
         <Button
-          variant="tertiary"
-          label={t('forgot_password')}
+          label={t('login')}
           onPress={() => {
-            navigation.navigate('ForgotPasswordScreen');
+            Keyboard.dismiss();
+            login(email, password);
           }}
+          disabled={!email || !password}
         />
-        <Button
-          variant="tertiary"
-          label={t('sign_up')}
-          onPress={() => {
-            navigation.navigate('SignUpScreen');
-          }}
-        />
+        <View style={styles.buttons}>
+          <Button
+            variant="tertiary"
+            label={t('forgot_password')}
+            onPress={() => {
+              navigation.navigate('ForgotPasswordScreen');
+            }}
+          />
+          <Button
+            variant="tertiary"
+            label={t('sign_up')}
+            onPress={() => {
+              navigation.navigate('SignUpScreen');
+            }}
+          />
+        </View>
       </View>
-    </View>
+      {loading && <Loader />}
+    </>
   );
 };
 
@@ -68,8 +73,9 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   buttons: {
-    marginTop: 20,
-    gap: 20,
+    marginTop: 32,
+    gap: 30,
+    alignItems: 'flex-start',
   },
 });
 

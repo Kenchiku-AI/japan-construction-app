@@ -3,15 +3,15 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ReportsStackNavigationParams } from '../../navigation/ReportsStack';
 import { View } from 'react-native';
 
-interface DailyReportDetailScreenProps {
+interface ReportDetailScreenProps {
   navigation: NativeStackNavigationProp<
     ReportsStackNavigationParams,
-    'DailyReportDetailScreen'
+    'ReportDetailScreen'
   >;
 }
 
-const DailyReportDetailScreen: FC<DailyReportDetailScreenProps> = () => {
+const ReportDetailScreen: FC<ReportDetailScreenProps> = () => {
   return <View></View>;
 };
 
-export default DailyReportDetailScreen;
+export default ReportDetailScreen;

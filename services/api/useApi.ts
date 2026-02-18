@@ -32,6 +32,9 @@ export const useApi = () => {
     query: () => Promise<AxiosResponse<T>>,
   ): Promise<T> => {
     const { data } = await query();
+
+    console.log('DATA', data);
+
     return data;
   };
 

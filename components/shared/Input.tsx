@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { StyleSheet, TextInput } from 'react-native';
-import { buttonColor, fontFamily } from '../../constants';
+import { buttonColor, fontColor1, fontFamily } from '../../constants';
 
 interface InputProps {
   placeholder?: string;
@@ -26,6 +26,7 @@ export const Input: FC<InputProps> = ({
       ...styles.input,
       backgroundColor: error ? '#FF636326' : '#A4A9AE26',
     }}
+    autoCapitalize="none"
     secureTextEntry={secureTextEntry}
   />
 );
@@ -34,8 +35,10 @@ const styles = StyleSheet.create({
   input: {
     fontFamily,
     borderWidth: 0,
-    paddingHorizontal: 20,
-    height: 50,
+    paddingHorizontal: 16,
+    height: 60,
     borderRadius: 10,
+    color: fontColor1,
+    fontSize: 18,
   },
 });

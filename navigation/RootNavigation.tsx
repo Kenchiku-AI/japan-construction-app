@@ -1,11 +1,11 @@
 import { FC } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Tabs from './Tabs';
-import RecordScreen from '../components/record/RecordScreen';
+import CreateReportScreen from '../components/reports/CreateReportScreen';
 
 export type RootStackNavigationParams = {
   Tabs: undefined;
-  RecordScreen: undefined;
+  CreateReportScreen: undefined;
 };
 
 export const RootStack: FC = () => {
@@ -16,7 +16,14 @@ export const RootStack: FC = () => {
       screenOptions={{ headerShown: false, presentation: 'fullScreenModal' }}
     >
       <Stack.Screen name="Tabs" component={Tabs} />
-      <Stack.Screen name="RecordScreen" component={RecordScreen} />
+      <Stack.Screen
+        name="CreateReportScreen"
+        component={CreateReportScreen}
+        options={{
+          presentation: 'modal',
+          animation: 'slide_from_bottom',
+        }}
+      />
     </Stack.Navigator>
   );
 };

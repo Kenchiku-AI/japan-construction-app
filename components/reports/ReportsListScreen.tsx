@@ -2,9 +2,13 @@ import { FC } from 'react';
 import { StyleSheet, TouchableOpacity, View, FlatList } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ReportsStackNavigationParams } from '../../navigation/ReportsStack';
-import { Plus } from '../shared/Icons';
-import { Heading } from '../shared';
+import { ChevronRight, Plus, Reports } from '../shared/Icons';
+import { Label } from '../shared';
 import { useTranslation } from 'react-i18next';
+import { Button, Divider } from '../shared';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { fontColor2 } from '../../constants';
+import { Report } from '../../types';
 
 interface ReportsListScreenProps {
   navigation: NativeStackNavigationProp<
@@ -13,39 +17,101 @@ interface ReportsListScreenProps {
   >;
 }
 
-const ReportsListScreen: FC<ReportsListScreenProps> = () => {
+const ReportsListScreen: FC<ReportsListScreenProps> = ({ navigation }) => {
   const { t } = useTranslation();
+  const { top } = useSafeAreaInsets();
 
   return (
-    <View>
+    <View style={{ paddingTop: top, ...styles.container }}>
       <View style={styles.nav}>
-        <TouchableOpacity style={styles.createButton}>
-          <Plus />
-        </TouchableOpacity>
+        <Label text={t('reports')} size={24} />
+        <Button
+          variant="tertiary"
+          label={t('create_report')}
+          onPress={() => {
+            navigation.navigate('CreateReportScreen');
+          }}
+          iconLeft={() => <Plus />}
+        />
       </View>
-      <Heading style={styles.heading} title={t('reports')} />
+      <Divider />
       <FlatList
-        style={{ backgroundColor: 'blue', flex: 1 }}
+        style={{ flex: 1 }}
         data={[]}
-        renderItem={() => null}
+        renderItem={({ item, index }) => (
+          <ReportsListItem
+            report={item}
+            onPress={() => {}}
+            showDivider={index !== 0}
+          />
+        )}
       />
     </View>
   );
 };
 
+interface ReportsListItemProps {
+  report: Report;
+  onPress: () => void;
+  showDivider?: boolean;
+}
+
+const ReportsListItem: FC<ReportsListItemProps> = ({
+  report,
+  onPress,
+  showDivider,
+}) => {
+  return (
+    <>
+      {showDivider && <Divider style={styles.reportDivider} />}
+      <TouchableOpacity style={styles.report} onPress={onPress}>
+        <View style={styles.reportInfo}>
+          <Reports size={30} />
+          <Label text={report.name} />
+        </View>
+        <ChevronRight />
+      </TouchableOpacity>
+    </>
+  );
+};
+
 const styles = StyleSheet.create({
-  nav: {
-    height: 60,
-    justifyContent: 'center',
-    paddingHorizontal: 10,
-  },
-  createButton: {
-    alignSelf: 'flex-end',
+  container: {
+    paddingHorizontal: 20,
     flex: 1,
-    justifyContent: 'center',
+  },
+  nav: {
+    height: 70,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
   },
   heading: {
     paddingHorizontal: 20,
+  },
+  createButton: {
+    flex: 1,
+  },
+  headingDivider: {
+    marginTop: 16,
+  },
+  content: {
+    flex: 1,
+  },
+  report: {
+    height: 70,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+  },
+  reportInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  reportDivider: {
+    backgroundColor: fontColor2,
   },
 });
 
