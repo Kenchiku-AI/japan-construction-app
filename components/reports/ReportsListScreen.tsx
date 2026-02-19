@@ -39,11 +39,7 @@ const ReportsListScreen: FC<ReportsListScreenProps> = ({ navigation }) => {
         style={{ flex: 1 }}
         data={[]}
         renderItem={({ item, index }) => (
-          <ReportsListItem
-            report={item}
-            onPress={() => {}}
-            showDivider={index !== 0}
-          />
+          <ReportsListItem report={item} onPress={() => {}} />
         )}
       />
     </View>
@@ -53,17 +49,11 @@ const ReportsListScreen: FC<ReportsListScreenProps> = ({ navigation }) => {
 interface ReportsListItemProps {
   report: Report;
   onPress: () => void;
-  showDivider?: boolean;
 }
 
-const ReportsListItem: FC<ReportsListItemProps> = ({
-  report,
-  onPress,
-  showDivider,
-}) => {
+const ReportsListItem: FC<ReportsListItemProps> = ({ report, onPress }) => {
   return (
     <>
-      {showDivider && <Divider style={styles.reportDivider} />}
       <TouchableOpacity style={styles.report} onPress={onPress}>
         <View style={styles.reportInfo}>
           <Reports size={30} />
@@ -71,6 +61,7 @@ const ReportsListItem: FC<ReportsListItemProps> = ({
         </View>
         <ChevronRight />
       </TouchableOpacity>
+      <Divider light />
     </>
   );
 };

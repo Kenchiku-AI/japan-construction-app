@@ -25,8 +25,13 @@ const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
       <View style={styles.container}>
         <Heading title={t('login')} subtitle={t('login_description')} />
         <View style={styles.fields}>
-          <Input placeholder={t('email')} onChange={t => setEmail(t)} />
           <Input
+            value={email}
+            placeholder={t('email')}
+            onChange={t => setEmail(t)}
+          />
+          <Input
+            value={password}
             placeholder={t('password')}
             onChange={t => setPassword(t)}
             secureTextEntry

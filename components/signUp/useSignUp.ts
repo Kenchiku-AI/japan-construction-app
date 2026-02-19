@@ -24,7 +24,6 @@ export const useSignup = () => {
       updateRefreshToken(response.refresh_token);
 
       const user = await api.getCurrentUser();
-      console.log('USER!', user);
       setCurrentUser(user);
     } catch (err) {
       console.log('sign up error', err);

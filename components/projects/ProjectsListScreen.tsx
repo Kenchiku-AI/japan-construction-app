@@ -40,11 +40,7 @@ const ProjectsListScreen: FC<ProjectsListScreenProps> = () => {
         contentContainerStyle={styles.content}
         data={currentUser?.projects}
         renderItem={({ item, index }) => (
-          <ProjectsListItem
-            project={item}
-            onPress={() => {}}
-            showDivider={index !== 0}
-          />
+          <ProjectsListItem project={item} onPress={() => {}} />
         )}
       />
     </View>
@@ -54,17 +50,11 @@ const ProjectsListScreen: FC<ProjectsListScreenProps> = () => {
 interface ProjectsListItemProps {
   project: Project;
   onPress: () => void;
-  showDivider?: boolean;
 }
 
-const ProjectsListItem: FC<ProjectsListItemProps> = ({
-  project,
-  onPress,
-  showDivider,
-}) => {
+const ProjectsListItem: FC<ProjectsListItemProps> = ({ project, onPress }) => {
   return (
     <>
-      {showDivider && <Divider style={styles.projectDivider} />}
       <TouchableOpacity style={styles.project} onPress={onPress}>
         <View style={styles.projectInfo}>
           <Hardhat size={30} />
@@ -72,6 +62,7 @@ const ProjectsListItem: FC<ProjectsListItemProps> = ({
         </View>
         <ChevronRight />
       </TouchableOpacity>
+      <Divider light />
     </>
   );
 };
