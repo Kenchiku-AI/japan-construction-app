@@ -10,6 +10,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { fontColor2 } from '../../constants';
 import { Report } from '../../types';
 import { CreateReportModal } from './CreateReportModal';
+import { useReports } from './useReports';
 
 interface ReportsListScreenProps {
   navigation: NativeStackNavigationProp<
@@ -21,13 +22,14 @@ interface ReportsListScreenProps {
 const ReportsListScreen: FC<ReportsListScreenProps> = ({ navigation }) => {
   const { t } = useTranslation();
   const { top } = useSafeAreaInsets();
+  const { reports, createReport, loading } = useReports();
   const [showCreateReport, setShowCreateReport] = useState(false);
 
   return (
     <>
       <View style={{ paddingTop: top, ...styles.container }}>
         <View style={styles.nav}>
-          <Label text={t('reports')} size={24} />
+          <Label text={t('reports')} size={24} numberOfLines={1} />
           <Button
             variant="tertiary"
             label={t('create_report')}
@@ -39,17 +41,37 @@ const ReportsListScreen: FC<ReportsListScreenProps> = ({ navigation }) => {
         </View>
         <Divider />
         <FlatList
-          style={{ flex: 1 }}
-          data={[]}
-          renderItem={({ item, index }) => (
-            <ReportsListItem report={item} onPress={() => {}} />
+          style={styles.reports}
+          data={reports}
+          renderItem={({ item }) => (
+            <ReportsListItem
+              key={item.id}
+              report={item}
+              onPress={() => {
+                navigation.navigate('ReportDetailScreen', {
+                  reportId: item.id,
+                  reportName: item.name,
+                });
+              }}
+            />
           )}
         />
       </View>
       <CreateReportModal
         isOpen={showCreateReport}
         onClose={() => setShowCreateReport(false)}
-        onSubmit={() => {}}
+        onSubmit={async request => {
+          setShowCreateReport(false);
+
+          const report = await createReport(request);
+
+          if (report) {
+            navigation.navigate('ReportDetailScreen', {
+              reportId: report.id,
+              reportName: report.name,
+            });
+          }
+        }}
       />
     </>
   );
@@ -65,10 +87,18 @@ const ReportsListItem: FC<ReportsListItemProps> = ({ report, onPress }) => {
     <>
       <TouchableOpacity style={styles.report} onPress={onPress}>
         <View style={styles.reportInfo}>
-          <Reports size={30} />
-          <Label text={report.name} />
+          <View style={styles.icon}>
+            <Reports size={26} />
+          </View>
+          <Label
+            text={report.name}
+            style={styles.reportName}
+            numberOfLines={1}
+          />
         </View>
-        <ChevronRight />
+        <View style={styles.chevron}>
+          <ChevronRight />
+        </View>
       </TouchableOpacity>
       <Divider light />
     </>
@@ -98,20 +128,35 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
+  icon: {
+    marginLeft: -2,
+  },
+  reports: {
+    flex: 1,
+    marginHorizontal: -16,
+    paddingHorizontal: 16,
+  },
   report: {
     height: 70,
     justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
-    paddingHorizontal: 20,
+    paddingLeft: 8,
   },
   reportInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 4,
+    flexShrink: 1,
+  },
+  reportName: {
+    flexShrink: 1,
   },
   reportDivider: {
     backgroundColor: fontColor2,
+  },
+  chevron: {
+    marginHorizontal: 12,
   },
 });
 

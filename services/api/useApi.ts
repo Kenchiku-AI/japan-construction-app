@@ -9,6 +9,9 @@ import {
   SignupResponse,
   CurrentUser,
   ReportTemplate,
+  Report,
+  CreateReportRequest,
+  ReportRequest,
 } from '../../types';
 import { baseUrl } from '../../constants';
 import { useAuthContext } from '../../context/auth/AuthContext';
@@ -68,6 +71,22 @@ export const useApi = () => {
     async getCurrentUser() {
       const url = '/users/me';
       return call(() => axios.get<CurrentUser>(url));
+    },
+    async getReports() {
+      const url = `/reports`;
+      return call(() => axios.get<Report[]>(url));
+    },
+    async getReport(reportId: string) {
+      const url = `/reports/${reportId}`;
+      return call(() => axios.get<Report>(url));
+    },
+    async createReport(request: CreateReportRequest) {
+      const url = '/reports';
+      return call(() => axios.post<Report>(url, request));
+    },
+    async updateReport(reportId: string, request: ReportRequest) {
+      const url = `/reports/${reportId}`;
+      return call(() => axios.patch<Report>(url, request));
     },
     async getReportTemplates() {
       const url = '/reports/templates';

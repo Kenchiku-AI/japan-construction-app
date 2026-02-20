@@ -7,9 +7,16 @@ interface LabelProps {
   size?: number;
   light?: boolean;
   style?: ViewStyle;
+  numberOfLines?: number;
 }
 
-export const Label: FC<LabelProps> = ({ text, size, light, style }) => {
+export const Label: FC<LabelProps> = ({
+  text,
+  size,
+  light,
+  style,
+  numberOfLines,
+}) => {
   return (
     <Text
       style={{
@@ -18,6 +25,7 @@ export const Label: FC<LabelProps> = ({ text, size, light, style }) => {
         color: light ? fontColor2 : fontColor1,
         ...style,
       }}
+      numberOfLines={numberOfLines}
     >
       {text}
     </Text>

@@ -66,6 +66,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 16,
+    gap: 4,
     flexDirection: 'row',
   },
   primaryLabel: {

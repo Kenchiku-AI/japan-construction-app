@@ -36,6 +36,7 @@ const ProjectsListScreen: FC<ProjectsListScreenProps> = () => {
       </View>
       <Divider />
       <FlatList
+        style={styles.projects}
         contentContainerStyle={styles.content}
         data={currentUser?.projects}
         renderItem={({ item, index }) => (
@@ -56,7 +57,9 @@ const ProjectsListItem: FC<ProjectsListItemProps> = ({ project, onPress }) => {
     <>
       <TouchableOpacity style={styles.project} onPress={onPress}>
         <View style={styles.projectInfo}>
-          <Hardhat size={30} />
+          <View style={styles.icon}>
+            <Hardhat size={30} />
+          </View>
           <Label text={project.name} />
         </View>
         <ChevronRight />
@@ -86,17 +89,25 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
+  icon: {
+    marginBottom: 4,
+  },
+  projects: {
+    flex: 1,
+    marginHorizontal: -16,
+    paddingHorizontal: 16,
+  },
   project: {
     height: 70,
     justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
-    paddingHorizontal: 20,
+    paddingHorizontal: 12,
   },
   projectInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 8,
   },
   projectDivider: {
     backgroundColor: fontColor2,

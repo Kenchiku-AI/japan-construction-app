@@ -1,28 +1,40 @@
-import { FC, useEffect } from 'react';
-import { StyleSheet, TextInput, View } from 'react-native';
+import { FC, useEffect, useState } from 'react';
+import { StyleSheet, TextInput, View, ViewStyle } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
 } from 'react-native-reanimated';
-import { buttonColor, fontColor1, fontFamily } from '../../constants';
+import {
+  buttonColor,
+  fontColor1,
+  fontColor2,
+  fontFamily,
+} from '../../constants';
 import { Label } from './Label';
 
 interface InputProps {
   value?: string;
+  defaultValue?: string;
   placeholder?: string;
   onChange?: (text: string) => void;
   error?: boolean;
   secureTextEntry?: boolean;
+  style?: ViewStyle;
+  disabled?: boolean;
 }
 
 export const Input: FC<InputProps> = ({
   value,
+  defaultValue,
   placeholder,
   onChange,
   error,
   secureTextEntry,
+  style,
+  disabled,
 }) => {
+  const [isEmpty, setIsEmpty] = useState(!value && !defaultValue);
   const paddingTop = useSharedValue(0);
   const opacity = useSharedValue(0);
 
@@ -35,11 +47,11 @@ export const Input: FC<InputProps> = ({
   }));
 
   useEffect(() => {
-    const showLabel = value && placeholder;
+    const showLabel = !isEmpty && placeholder;
 
     paddingTop.value = withTiming(showLabel ? 18 : 0, { duration: 75 });
     opacity.value = withTiming(showLabel ? 1 : 0, { duration: 75 });
-  }, [value, placeholder]);
+  }, [isEmpty, placeholder]);
 
   return (
     <View style={styles.container}>
@@ -53,14 +65,17 @@ export const Input: FC<InputProps> = ({
           styles.inputContainer,
           inputStyle,
           { backgroundColor: error ? '#FF636326' : '#F2F2F3' },
+          style,
         ]}
       >
         <TextInput
           value={value}
+          defaultValue={defaultValue}
           placeholder={placeholder}
-          placeholderTextColor="#8E949A"
+          placeholderTextColor={fontColor2}
           selectionColor={buttonColor}
           onChangeText={t => {
+            setIsEmpty(!t);
             onChange?.(t);
           }}
           style={{
@@ -68,7 +83,9 @@ export const Input: FC<InputProps> = ({
             backgroundColor: error ? '#FF636326' : '#F2F2F3',
           }}
           autoCapitalize="none"
+          autoFocus={false}
           secureTextEntry={secureTextEntry}
+          editable={!disabled}
         />
       </Animated.View>
     </View>

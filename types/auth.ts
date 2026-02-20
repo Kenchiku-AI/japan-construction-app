@@ -39,5 +39,19 @@ export type CurrentUser = {
   first_name: string;
   last_name: string;
   email: string;
+  role: UserRole;
+  company?: UserCompany;
   projects: Project[];
+};
+
+export enum UserRole {
+  Admin = 'admin',
+  Manager = 'manager',
+  User = 'user',
+}
+
+export type UserCompany = {
+  id: string;
+  name: string;
+  corporate_number?: string;
 };

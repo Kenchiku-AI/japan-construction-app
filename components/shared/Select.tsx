@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, ViewStyle } from 'react-native';
 import DropdownPicker from 'react-native-dropdown-picker';
 import { bgColor2, fontColor1, fontColor2, fontFamily } from '../../constants';
 import Animated, {
@@ -17,27 +17,33 @@ import { Label } from './Label';
 import { SelectArrow } from './Icons';
 
 interface SelectOption {
-  value: string | number;
+  value: string;
   label: string;
 }
 
 interface SelectProps {
   options: SelectOption[];
-  value: string | number;
+  value: string;
   setValue: Dispatch<SetStateAction<any>>;
+  onChange?: (value: string | null) => void;
   placeholder?: string;
   hideLabel?: boolean;
   error?: boolean;
   disabled?: boolean;
+  style?: ViewStyle;
+  zIndex?: number;
 }
 
 export const Select: FC<SelectProps> = ({
   options,
   value,
   setValue,
+  onChange,
   placeholder,
   error,
   disabled,
+  style,
+  zIndex,
 }) => {
   const [open, setOpen] = useState(false);
   const paddingTop = useSharedValue(0);
@@ -59,7 +65,7 @@ export const Select: FC<SelectProps> = ({
   }, [value, placeholder]);
 
   return (
-    <View style={styles.container}>
+    <View style={{ ...styles.container, zIndex: zIndex ?? 1000 }}>
       {placeholder && (
         <Animated.View style={[styles.label, labelStyle]}>
           <Label text={placeholder} size={12} light />
@@ -74,11 +80,13 @@ export const Select: FC<SelectProps> = ({
             borderBottomLeftRadius: open ? 0 : 10,
             borderBottomRightRadius: open ? 0 : 10,
           },
+          style,
         ]}
       >
         <DropdownPicker
           value={value}
           setValue={setValue}
+          onChangeValue={onChange}
           placeholder={placeholder}
           items={options}
           disabled={disabled}
@@ -128,7 +136,6 @@ export const Select: FC<SelectProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    zIndex: 1000,
     position: 'relative',
   },
   inputContainer: {

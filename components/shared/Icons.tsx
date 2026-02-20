@@ -28,6 +28,18 @@ export const Plus = () => (
   </Svg>
 );
 
+export const Check = ({ size }: IconProps) => (
+  <Svg viewBox="0 0 24 24" fill="none" width={size ?? 24} height={size ?? 24}>
+    <Path
+      d="M20 6L9 17L4 12"
+      stroke={buttonColor}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </Svg>
+);
+
 export const ChevronRight = ({ color }: IconProps) => (
   <Svg width="8" height="14" viewBox="0 0 8 14" fill="none">
     <Path
@@ -39,9 +51,33 @@ export const ChevronRight = ({ color }: IconProps) => (
   </Svg>
 );
 
+export const ChevronLeft = ({ color, size }: IconProps) => (
+  <Svg width={size ?? 8} height={size ?? 14} viewBox="0 0 8 14" fill="none">
+    <Path
+      d="M7 13L1 7L7 1"
+      stroke={color ?? fontColor2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </Svg>
+);
+
 export const SelectArrow = () => (
   <Svg width="8" height="6" viewBox="0 0 12 8">
     <Path d="M0 0h12L6 8z" fill={fontColor1} />
+  </Svg>
+);
+
+export const Microphone = ({ color, size }: IconProps) => (
+  <Svg width={size ?? 24} height={size ?? 24} viewBox="0 0 24 24">
+    <Path
+      d="M19 10V12C19 15.866 15.866 19 12 19M5 10V12C5 15.866 8.13401 19 12 19M12 19V22M8 22H16M12 15C10.3431 15 9 13.6569 9 12V5C9 3.34315 10.3431 2 12 2C13.6569 2 15 3.34315 15 5V12C15 13.6569 13.6569 15 12 15Z"
+      stroke={color ?? 'white'}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      fill="none"
+    />
   </Svg>
 );
 

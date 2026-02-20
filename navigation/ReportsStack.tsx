@@ -7,7 +7,8 @@ import ReportDetailScreen from '../components/reports/ReportDetailScreen';
 export type ReportsStackNavigationParams = {
   ReportsListScreen: undefined;
   ReportDetailScreen: {
-    report: Report;
+    reportId: string;
+    reportName: string;
   };
 };
 
