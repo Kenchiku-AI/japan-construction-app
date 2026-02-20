@@ -28,6 +28,7 @@ export const useSignup = () => {
     } catch (err) {
       console.log('sign up error', err);
     }
+
     setLoading(false);
   };
 

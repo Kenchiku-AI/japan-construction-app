@@ -11,7 +11,6 @@ export const Close = () => (
     <Path
       d="M18 6L6 18M6 6L18 18"
       stroke={buttonColor}
-      strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
@@ -23,9 +22,8 @@ export const Plus = () => (
     <Path
       d="M12 5V19M5 12H19"
       stroke={buttonColor}
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </Svg>
 );
@@ -35,10 +33,15 @@ export const ChevronRight = ({ color }: IconProps) => (
     <Path
       d="M1 13L7 7L1 1"
       stroke={color ?? fontColor2}
-      strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
+  </Svg>
+);
+
+export const SelectArrow = () => (
+  <Svg width="8" height="6" viewBox="0 0 12 8">
+    <Path d="M0 0h12L6 8z" fill={fontColor1} />
   </Svg>
 );
 

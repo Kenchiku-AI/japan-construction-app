@@ -13,7 +13,7 @@ export const Divider: FC<DividerProps> = ({ light, style }) => {
       style={{
         height: 0.75,
         width: '100%',
-        backgroundColor: light ? fontColor1 : fontColor2,
+        backgroundColor: light ? fontColor2 : fontColor1,
         ...style,
       }}
     />

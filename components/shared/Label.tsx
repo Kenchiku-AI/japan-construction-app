@@ -15,7 +15,7 @@ export const Label: FC<LabelProps> = ({ text, size, light, style }) => {
       style={{
         fontFamily,
         fontSize: size ?? 18,
-        color: light ? fontColor1 : fontColor2,
+        color: light ? fontColor2 : fontColor1,
         ...style,
       }}
     >

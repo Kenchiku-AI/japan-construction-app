@@ -5,12 +5,7 @@ import Animated, {
   useAnimatedStyle,
   withTiming,
 } from 'react-native-reanimated';
-import {
-  buttonColor,
-  fontColor1,
-  fontColor2,
-  fontFamily,
-} from '../../constants';
+import { buttonColor, fontColor1, fontFamily } from '../../constants';
 import { Label } from './Label';
 
 interface InputProps {
@@ -50,7 +45,7 @@ export const Input: FC<InputProps> = ({
     <View style={styles.container}>
       {placeholder && (
         <Animated.View style={[styles.label, labelStyle]}>
-          <Label text={placeholder} size={12} />
+          <Label text={placeholder} size={12} light />
         </Animated.View>
       )}
       <Animated.View

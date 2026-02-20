@@ -1,9 +1,9 @@
 import { ActivityIndicator, View, StyleSheet } from 'react-native';
-import { bgColor } from '../../constants';
+import { bgColor1, fontColor1 } from '../../constants';
 
 export const Loader = () => (
   <View style={styles.container}>
-    <ActivityIndicator size="large" color="black" />
+    <ActivityIndicator size="large" color={fontColor1} />
   </View>
 );
 
@@ -14,8 +14,8 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: bgColor,
     justifyContent: 'center',
+    backgroundColor: bgColor1,
     opacity: 0.75,
     zIndex: 100,
   },

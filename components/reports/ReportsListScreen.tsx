@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View, FlatList } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ReportsStackNavigationParams } from '../../navigation/ReportsStack';
@@ -9,6 +9,7 @@ import { Button, Divider } from '../shared';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { fontColor2 } from '../../constants';
 import { Report } from '../../types';
+import { CreateReportModal } from './CreateReportModal';
 
 interface ReportsListScreenProps {
   navigation: NativeStackNavigationProp<
@@ -20,29 +21,37 @@ interface ReportsListScreenProps {
 const ReportsListScreen: FC<ReportsListScreenProps> = ({ navigation }) => {
   const { t } = useTranslation();
   const { top } = useSafeAreaInsets();
+  const [showCreateReport, setShowCreateReport] = useState(false);
 
   return (
-    <View style={{ paddingTop: top, ...styles.container }}>
-      <View style={styles.nav}>
-        <Label text={t('reports')} size={24} />
-        <Button
-          variant="tertiary"
-          label={t('create_report')}
-          onPress={() => {
-            navigation.navigate('CreateReportScreen');
-          }}
-          iconLeft={() => <Plus />}
+    <>
+      <View style={{ paddingTop: top, ...styles.container }}>
+        <View style={styles.nav}>
+          <Label text={t('reports')} size={24} />
+          <Button
+            variant="tertiary"
+            label={t('create_report')}
+            onPress={() => {
+              setShowCreateReport(true);
+            }}
+            iconLeft={() => <Plus />}
+          />
+        </View>
+        <Divider />
+        <FlatList
+          style={{ flex: 1 }}
+          data={[]}
+          renderItem={({ item, index }) => (
+            <ReportsListItem report={item} onPress={() => {}} />
+          )}
         />
       </View>
-      <Divider />
-      <FlatList
-        style={{ flex: 1 }}
-        data={[]}
-        renderItem={({ item, index }) => (
-          <ReportsListItem report={item} onPress={() => {}} />
-        )}
+      <CreateReportModal
+        isOpen={showCreateReport}
+        onClose={() => setShowCreateReport(false)}
+        onSubmit={() => {}}
       />
-    </View>
+    </>
   );
 };
 

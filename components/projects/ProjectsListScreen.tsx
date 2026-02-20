@@ -15,7 +15,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Divider } from '../shared';
 import { Project } from '../../types';
 import { useAuthContext } from '../../context/auth/AuthContext';
-import { project } from '../../native.config';
 import { fontColor2 } from '../../constants';
 
 interface ProjectsListScreenProps {
