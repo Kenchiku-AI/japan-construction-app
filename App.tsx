@@ -7,7 +7,7 @@ import { theme } from './navigation/theme';
 import { ref } from './navigation/navigate';
 import './services/localization/i18n';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { StatusBar } from 'react-native';
+import { StatusBar, View } from 'react-native';
 
 const App = () => {
   return (

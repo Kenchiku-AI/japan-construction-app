@@ -1,5 +1,9 @@
-import { FC } from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { FC, useEffect } from 'react';
+import {
+  createBottomTabNavigator,
+  BottomTabBar,
+  BottomTabBarProps,
+} from '@react-navigation/bottom-tabs';
 import ProjectsStack from './ProjectsStack';
 import ReportsStack from './ReportsStack';
 import SettingsStack from './SettingsStack';
@@ -15,6 +19,12 @@ import {
   SettingsFilled,
 } from '../components/shared/Icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+} from 'react-native-reanimated';
+import { useFade } from '../context/fade/FadeContext';
 
 export type TabsNavigationParams = {
   ProjectsStack: undefined;
@@ -36,6 +46,7 @@ const Tabs: FC = () => {
         tabBarInactiveTintColor: fontColor2,
         tabBarLabelStyle: styles.label,
       }}
+      tabBar={props => <TabBar {...props} />}
     >
       <Tabs.Screen
         name="ProjectsStack"
@@ -87,6 +98,29 @@ const Tabs: FC = () => {
   );
 };
 
+const TabBar = (props: BottomTabBarProps) => {
+  const { isFadeShown } = useFade();
+  const fadeOpacity = useSharedValue(0);
+
+  const fadeStyle = useAnimatedStyle(() => ({
+    opacity: fadeOpacity.value,
+  }));
+
+  useEffect(() => {
+    fadeOpacity.value = withTiming(isFadeShown ? 0.5 : 0, { duration: 200 });
+  }, [isFadeShown]);
+
+  return (
+    <View>
+      <Animated.View
+        style={[styles.fade, fadeStyle]}
+        pointerEvents={isFadeShown ? undefined : 'none'}
+      />
+      <BottomTabBar {...props} />
+    </View>
+  );
+};
+
 const styles = StyleSheet.create({
   tabBar: {
     borderTopWidth: 0,
@@ -108,6 +142,16 @@ const styles = StyleSheet.create({
   unfocused: {
     width: 40,
     marginTop: 3.2,
+  },
+  fade: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    backgroundColor: 'black',
+    opacity: 0.5,
+    zIndex: 200,
   },
 });
 
