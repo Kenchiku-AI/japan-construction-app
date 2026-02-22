@@ -40,10 +40,9 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
   route,
 }) => {
   const { reportId, reportName } = route.params;
-  const { isSpeaking, setIsSpeaking } = useSpeech();
+  const { isSpeaking, isProcessing, startSpeech, completeSpeech } = useSpeech();
   const { top } = useSafeAreaInsets();
-  const { report, updateReport, loading, isProcessingAudio } =
-    useReport(reportId);
+  const { report, updateReport, loading } = useReport(reportId);
   const { t } = useTranslation();
   const [fieldValues, setFieldValues] = useState<ReportFieldValues>();
   const [isEditingName, setIsEditingName] = useState(false);
@@ -81,10 +80,10 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
   }, [isSpeaking]);
 
   const isUpdateDisabled = useMemo(() => {
-    if (!fieldValues || !report || isSpeaking || isProcessingAudio) return true;
+    if (!fieldValues || !report || isSpeaking) return true;
 
     return !report.fields.some(f => f.value !== fieldValues[f.id]);
-  }, [report, fieldValues, isSpeaking, isProcessingAudio]);
+  }, [report, fieldValues, isSpeaking]);
 
   useEffect(() => {
     updateButtonHeight.value = withTiming(isUpdateDisabled ? 0 : 70, {
@@ -97,9 +96,9 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
 
   const speakButtonLabel = useMemo(() => {
     if (isSpeaking) return t('done');
-    if (isProcessingAudio) return t('processing');
+    if (isProcessing) return t('processing');
     return t('speak_to_edit');
-  }, [isSpeaking, isProcessingAudio, t]);
+  }, [isSpeaking, isProcessing, t]);
 
   const checkMicPermission = async () => {
     if (Platform.OS === 'android') {
@@ -186,18 +185,23 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
               style={styles.speakButton}
               label={speakButtonLabel}
               iconLeft={() =>
-                isProcessingAudio || isSpeaking ? undefined : <Microphone />
+                isProcessing || isSpeaking ? undefined : <Microphone />
               }
               onPress={async () => {
                 Keyboard.dismiss();
 
                 const hasPermission = await checkMicPermission();
+                if (!hasPermission) {
+                  return;
+                }
 
-                if (hasPermission) {
-                  setIsSpeaking(!isSpeaking);
+                if (isSpeaking) {
+                  completeSpeech();
+                } else {
+                  startSpeech(report!.id, fieldValues => {});
                 }
               }}
-              disabled={isProcessingAudio}
+              disabled={isProcessing}
             />
           </View>
         </View>

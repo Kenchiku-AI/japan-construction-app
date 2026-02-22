@@ -3,12 +3,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useApi } from '../../services/api/useApi';
 import { CreateReportRequest, Report } from '../../types';
-import { useAuthContext } from '../../context/auth/AuthContext';
+import { useAuth } from '../../context/auth/AuthContext';
 
 export const useReports = () => {
   const [loading, setLoading] = useState(false);
   const [reports, setReports] = useState<Report[]>();
-  const { currentUser } = useAuthContext();
+  const { currentUser } = useAuth();
   const api = useApi();
 
   useEffect(() => {

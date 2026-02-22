@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { useApi } from '../../services/api/useApi';
-import { useAuthContext } from '../../context/auth/AuthContext';
+import { useAuth } from '../../context/auth/AuthContext';
 
 export const useSignup = () => {
   const [loading, setLoading] = useState(false);
-  const { updateAccessToken, updateRefreshToken, setCurrentUser } =
-    useAuthContext();
+  const { updateAccessToken, updateRefreshToken, setCurrentUser } = useAuth();
   const api = useApi();
 
   const signup = async (

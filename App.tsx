@@ -1,6 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native';
 import RootProvider from './context/RootProvider';
-import { useAuthContext } from './context/auth/AuthContext';
+import { useAuth } from './context/auth/AuthContext';
 import RootNavigation from './navigation/RootNavigation';
 import AuthStack from './navigation/AuthStack';
 import { theme } from './navigation/theme';
@@ -23,7 +23,7 @@ const App = () => {
 };
 
 const Root = () => {
-  const { currentUser } = useAuthContext();
+  const { currentUser } = useAuth();
 
   return !currentUser ? <AuthStack /> : <RootNavigation />;
 };

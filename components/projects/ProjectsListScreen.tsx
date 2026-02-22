@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Divider } from '../shared';
 import { Project } from '../../types';
-import { useAuthContext } from '../../context/auth/AuthContext';
+import { useAuth } from '../../context/auth/AuthContext';
 import { fontColor2 } from '../../constants';
 
 interface ProjectsListScreenProps {
@@ -27,7 +27,7 @@ interface ProjectsListScreenProps {
 const ProjectsListScreen: FC<ProjectsListScreenProps> = () => {
   const { t } = useTranslation();
   const { top } = useSafeAreaInsets();
-  const { currentUser } = useAuthContext();
+  const { currentUser } = useAuth();
 
   return (
     <View style={{ paddingTop: top, ...styles.container }}>

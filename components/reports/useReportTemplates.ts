@@ -1,8 +1,7 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useApi } from '../../services/api/useApi';
-import { ReportTemplate, ReportTemplateRequest } from '../../types';
-import { useAuthContext } from '../../context/auth/AuthContext';
+import { ReportTemplate } from '../../types';
 
 export const useReportTemplates = () => {
   const [loading, setLoading] = useState(false);

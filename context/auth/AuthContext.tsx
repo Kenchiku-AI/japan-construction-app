@@ -1,7 +1,7 @@
 import { createContext, FC, ReactNode, useContext } from 'react';
-import { useAuth } from './useAuth';
+import { useAuthData } from './useAuthData';
 
-type UseAuthData = ReturnType<typeof useAuth>;
+type UseAuthData = ReturnType<typeof useAuthData>;
 
 // @ts-expect-error
 const AuthContext = createContext<UseAuthData>({});
@@ -9,11 +9,11 @@ const AuthContext = createContext<UseAuthData>({});
 export const AuthProvider: FC<{ children: ReactNode | ReactNode[] }> = ({
   children,
 }) => {
-  const authData = useAuth();
+  const authData = useAuthData();
 
   return (
     <AuthContext.Provider value={authData}>{children}</AuthContext.Provider>
   );
 };
 
-export const useAuthContext = () => useContext(AuthContext);
+export const useAuth = () => useContext(AuthContext);

@@ -4,7 +4,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { SettingsStackNavigationParams } from '../../navigation/SettingsStack';
 import { useTranslation } from 'react-i18next';
 import { Button, Heading } from '../shared';
-import { useAuthContext } from '../../context/auth/AuthContext';
+import { useAuth } from '../../context/auth/AuthContext';
 import { User } from '../shared/Icons';
 import { fontColor1, fontColor2, fontFamily } from '../../constants';
 
@@ -17,7 +17,7 @@ interface SettingsScreenProps {
 
 const SettingsScreen: FC<SettingsScreenProps> = () => {
   const { t } = useTranslation();
-  const { currentUser, logout } = useAuthContext();
+  const { currentUser, logout } = useAuth();
 
   return (
     <View>

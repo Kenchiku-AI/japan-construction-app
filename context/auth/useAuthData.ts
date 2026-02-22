@@ -4,7 +4,7 @@ import { accessTokenStorageKey, refreshTokenStorageKey } from '../../constants';
 import axios from 'axios';
 import { CurrentUser } from '../../types';
 
-export const useAuth = () => {
+export const useAuthData = () => {
   const [accessToken, setAccessToken] = useState<string>();
   const [refreshToken, setRefreshToken] = useState<string>();
   const [currentUser, setCurrentUser] = useState<CurrentUser>();

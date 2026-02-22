@@ -5,7 +5,7 @@ import { StyleSheet, View } from 'react-native';
 import { useReportTemplates } from './useReportTemplates';
 import { Select } from '../shared/Select';
 import { CreateReportRequest, ReportParentType } from '../../types';
-import { useAuthContext } from '../../context/auth/AuthContext';
+import { useAuth } from '../../context/auth/AuthContext';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -27,7 +27,7 @@ export const CreateReportModal: FC<CreateReportModalProps> = ({
 }) => {
   const { t } = useTranslation();
   const { loading, reportTemplates } = useReportTemplates();
-  const { currentUser } = useAuthContext();
+  const { currentUser } = useAuth();
   const [templateId, setTemplateId] = useState('');
   const [projectId, setProjectId] = useState('');
   const [name, setName] = useState('');

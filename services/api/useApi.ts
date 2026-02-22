@@ -14,11 +14,11 @@ import {
   ReportRequest,
 } from '../../types';
 import { baseUrl } from '../../constants';
-import { useAuthContext } from '../../context/auth/AuthContext';
+import { useAuth } from '../../context/auth/AuthContext';
 
 export const useApi = () => {
   const { refreshToken, updateAccessToken, updateRefreshToken, logout } =
-    useAuthContext();
+    useAuth();
 
   useEffect(() => {
     axios.defaults.baseURL = baseUrl;

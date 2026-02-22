@@ -1,32 +1,32 @@
 import { useCallback, useRef, useState } from 'react';
 import { wsUrl } from '../../constants';
 import LiveAudioStream from 'react-native-live-audio-stream';
-import { useAuthContext } from '../auth/AuthContext';
+import { useAuth } from '../auth/AuthContext';
 import { Buffer } from 'buffer';
+import { ReportFieldValues } from '../../types';
+import { useSettings } from '../settings/SettingsContext';
 
 export const useSpeechData = () => {
   const wsRef = useRef<WebSocket | null>(null);
-  const [partial, setPartial] = useState('');
-  const [finalText, setFinalText] = useState('');
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const { accessToken } = useAuthContext();
+  const [isProcessing, setIsProcessing] = useState(false);
+  const { accessToken } = useAuth();
+  const { reportOutputLanguage } = useSettings();
 
-  const start = useCallback(
-    (reportId: string) => {
+  const startSpeech = useCallback(
+    (
+      reportId: string,
+      onComplete: (fieldValues: ReportFieldValues) => void,
+    ) => {
       setIsSpeaking(true);
 
       const ws = new WebSocket(`ws://${wsUrl}/${reportId}/audio`, null, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
-
       wsRef.current = ws;
 
       ws.onopen = () => {
-        ws.send(
-          JSON.stringify({
-            language: 'English', // or "Japanese"
-          }),
-        );
+        ws.send(JSON.stringify({ language: reportOutputLanguage }));
 
         LiveAudioStream.init({
           sampleRate: 16000,
@@ -37,7 +37,7 @@ export const useSpeechData = () => {
         });
 
         LiveAudioStream.on('data', (b64: string) => {
-          if (ws.readyState === 1) {
+          if (ws.readyState === WebSocket.OPEN) {
             const chunk = Buffer.from(b64, 'base64');
             ws.send(chunk);
           }
@@ -49,36 +49,58 @@ export const useSpeechData = () => {
       ws.onmessage = e => {
         const msg = JSON.parse(e.data);
 
-        if (msg.type === 'partial_transcript') setPartial(msg.text);
+        if (msg.type === 'partial_transcript') {
+          console.log('Partial:', msg.text);
+        }
 
         if (msg.type === 'final_transcript') {
-          setFinalText(prev => prev + ' ' + msg.text);
-          setPartial('');
+          console.log('Final:', msg.text);
+        }
+
+        if (msg.type === 'processing') {
+          setIsProcessing(true);
+          console.log('Processing speech to JSON...');
+        }
+
+        if (msg.type === 'report_updated') {
+          onComplete(msg.payload);
+          ws.close();
         }
       };
 
-      ws.onerror = console.error;
+      ws.onerror = err => {
+        console.error('WebSocket error', err);
+      };
 
       ws.onclose = () => {
         LiveAudioStream.stop();
         setIsSpeaking(false);
+        setIsProcessing(false);
       };
     },
-    [accessToken],
+    [accessToken, reportOutputLanguage],
   );
 
-  const stop = () => {
-    setIsSpeaking(false);
-
+  const cancelSpeech = useCallback(() => {
     const ws = wsRef.current;
-    if (!ws) return;
+    if (!ws || ws.readyState !== WebSocket.OPEN) return;
 
-    ws.send('STOP');
+    ws.send('CANCEL');
     ws.close();
-  };
+  }, []);
+
+  const completeSpeech = useCallback(() => {
+    const ws = wsRef.current;
+    if (!ws || ws.readyState !== WebSocket.OPEN) return;
+
+    ws.send('COMPLETE');
+  }, []);
 
   return {
     isSpeaking,
-    start,
+    isProcessing,
+    startSpeech,
+    cancelSpeech,
+    completeSpeech,
   };
 };

@@ -7,7 +7,6 @@ import { useApi } from '../../services/api/useApi';
 
 export const useReport = (reportId: string) => {
   const [loading, setLoading] = useState(false);
-  const [isProcessingAudio, setIsProcessingAudio] = useState(false);
   const [report, setReport] = useState<Report>();
   const { t } = useTranslation();
   const api = useApi();
@@ -58,6 +57,5 @@ export const useReport = (reportId: string) => {
     loading,
     report,
     updateReport,
-    isProcessingAudio,
   };
 };
