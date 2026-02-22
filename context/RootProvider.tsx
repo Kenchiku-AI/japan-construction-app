@@ -1,8 +1,8 @@
 import { FC, ReactNode } from 'react';
 import { AuthProvider } from './auth/AuthContext';
-import { FadeProvider } from './fade/FadeContext';
+import { SpeechProvider } from './speech/SpeechContext';
 
-const providers = [FadeProvider, AuthProvider];
+const providers = [AuthProvider, SpeechProvider];
 
 interface ComposeProps {
   components: FC<{ children: ReactNode | ReactNode[] }>[];

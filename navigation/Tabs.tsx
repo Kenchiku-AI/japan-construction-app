@@ -8,7 +8,7 @@ import ProjectsStack from './ProjectsStack';
 import ReportsStack from './ReportsStack';
 import SettingsStack from './SettingsStack';
 import { buttonColor, fontColor2, fontFamily } from '../constants';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import {
   Hardhat,
@@ -24,7 +24,8 @@ import Animated, {
   useAnimatedStyle,
   withTiming,
 } from 'react-native-reanimated';
-import { useFade } from '../context/fade/FadeContext';
+import { useSpeech } from '../context/speech/SpeechContext';
+import { Label } from '../components/shared';
 
 export type TabsNavigationParams = {
   ProjectsStack: undefined;
@@ -99,23 +100,33 @@ const Tabs: FC = () => {
 };
 
 const TabBar = (props: BottomTabBarProps) => {
-  const { isFadeShown } = useFade();
+  const { isSpeaking, setIsSpeaking } = useSpeech();
   const fadeOpacity = useSharedValue(0);
+  const { t } = useTranslation();
 
   const fadeStyle = useAnimatedStyle(() => ({
     opacity: fadeOpacity.value,
   }));
 
   useEffect(() => {
-    fadeOpacity.value = withTiming(isFadeShown ? 0.5 : 0, { duration: 200 });
-  }, [isFadeShown]);
+    fadeOpacity.value = withTiming(isSpeaking ? 1 : 0, { duration: 200 });
+  }, [isSpeaking]);
 
   return (
     <View>
       <Animated.View
         style={[styles.fade, fadeStyle]}
-        pointerEvents={isFadeShown ? undefined : 'none'}
-      />
+        pointerEvents={isSpeaking ? undefined : 'none'}
+      >
+        <TouchableOpacity
+          style={styles.cancelButton}
+          onPress={() => {
+            setIsSpeaking(false);
+          }}
+        >
+          <Label text={t('cancel')} />
+        </TouchableOpacity>
+      </Animated.View>
       <BottomTabBar {...props} />
     </View>
   );
@@ -149,9 +160,16 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     left: 0,
-    backgroundColor: 'black',
-    opacity: 0.5,
+    backgroundColor: '#00000080',
     zIndex: 200,
+  },
+  cancelButton: {
+    marginHorizontal: 16,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

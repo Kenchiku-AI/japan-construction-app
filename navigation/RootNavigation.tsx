@@ -4,7 +4,6 @@ import Tabs from './Tabs';
 
 export type RootStackNavigationParams = {
   Tabs: undefined;
-  CreateReportScreen: undefined;
 };
 
 export const RootStack: FC = () => {

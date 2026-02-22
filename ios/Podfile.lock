@@ -2536,9 +2536,7 @@ PODS:
     - React-perflogger (= 0.83.1)
     - React-utils (= 0.83.1)
     - SocketRocket
-  - RNAudioRecord (0.2.2):
-    - React
-  - RNCPicker (2.11.4):
+  - RNKeychain (10.0.0):
     - boost
     - DoubleConversion
     - fast_float
@@ -2566,7 +2564,9 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - RNKeychain (10.0.0):
+  - RNLiveAudioStream (1.1.1):
+    - React
+  - RNPermissions (5.4.4):
     - boost
     - DoubleConversion
     - fast_float
@@ -2973,9 +2973,9 @@ DEPENDENCIES:
   - ReactAppDependencyProvider (from `build/generated/ios/ReactAppDependencyProvider`)
   - ReactCodegen (from `build/generated/ios/ReactCodegen`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
-  - RNAudioRecord (from `../node_modules/react-native-audio-record`)
-  - "RNCPicker (from `../node_modules/@react-native-picker/picker`)"
   - RNKeychain (from `../node_modules/react-native-keychain`)
+  - RNLiveAudioStream (from `../node_modules/react-native-live-audio-stream`)
+  - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSVG (from `../node_modules/react-native-svg`)
@@ -3143,12 +3143,12 @@ EXTERNAL SOURCES:
     :path: build/generated/ios/ReactCodegen
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
-  RNAudioRecord:
-    :path: "../node_modules/react-native-audio-record"
-  RNCPicker:
-    :path: "../node_modules/@react-native-picker/picker"
   RNKeychain:
     :path: "../node_modules/react-native-keychain"
+  RNLiveAudioStream:
+    :path: "../node_modules/react-native-live-audio-stream"
+  RNPermissions:
+    :path: "../node_modules/react-native-permissions"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
@@ -3238,9 +3238,9 @@ SPEC CHECKSUMS:
   ReactAppDependencyProvider: bfb12ead469222b022a2024f32aba47ce50de512
   ReactCodegen: 894c9c13d45d134966e464ad5453a6d81f197910
   ReactCommon: 05ad684db7d88e194272ae26baddf6300e30b8b7
-  RNAudioRecord: 162fee3b8fb628773ec704bf0333823125be2ed7
-  RNCPicker: 3fc4d505041318ee8f59662d8d66892ce3c3295c
   RNKeychain: 182d986f809280edd9444a557adc21845f7d1e6f
+  RNLiveAudioStream: 02584d52711b6b9f268cb371a4b1bdd76ab3e079
+  RNPermissions: 7bbd23bc25023853211f2aad7a12a080a80f9b9f
   RNReanimated: dd34198e313b0156edce87a545f5ceeea7f2686f
   RNScreens: b2a5c76af24a02a2fd71bfce42780fdd9c79cc6d
   RNSVG: 55fc5dc0eaa36a875ffb7d05c0f2cd5b2cbfc342

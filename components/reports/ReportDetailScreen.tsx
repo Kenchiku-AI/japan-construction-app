@@ -12,9 +12,11 @@ import {
   FlatList,
   TouchableOpacity,
   Keyboard,
+  Platform,
+  PermissionsAndroid,
 } from 'react-native';
+import { check, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import { RouteProp } from '@react-navigation/native';
-import { useAuthContext } from '../../context/auth/AuthContext';
 import { useTranslation } from 'react-i18next';
 import { ReportFieldValues } from '../../types';
 import { useReport } from './useReport';
@@ -22,7 +24,8 @@ import { Button, Divider, Input, Label } from '../shared';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { bgColor1, buttonColor, errorColor1 } from '../../constants';
 import { ChevronLeft, Microphone } from '../shared/Icons';
-import { useFade } from '../../context/fade/FadeContext';
+import { useSpeech } from '../../context/speech/SpeechContext';
+import PermissionModal from './PermissionModal';
 
 interface ReportDetailScreenProps {
   navigation: NativeStackNavigationProp<
@@ -37,7 +40,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
   route,
 }) => {
   const { reportId, reportName } = route.params;
-  const { setIsFadeShown } = useFade();
+  const { isSpeaking, setIsSpeaking } = useSpeech();
   const { top } = useSafeAreaInsets();
   const { report, updateReport, loading, isProcessingAudio } =
     useReport(reportId);
@@ -46,7 +49,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
   const [isEditingName, setIsEditingName] = useState(false);
   const [editedName, setEditedName] = useState(reportName);
   const [displayName, setDisplayName] = useState(reportName);
-  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [permissionStatus, setPermissionStatus] = useState('');
   const speakingFadeOpacity = useSharedValue(0);
   const updateButtonHeight = useSharedValue(0);
   const updateButtonOpacity = useSharedValue(0);
@@ -71,6 +74,12 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
     setFieldValues(newValues);
   }, [report]);
 
+  useEffect(() => {
+    speakingFadeOpacity.value = withTiming(isSpeaking ? 0.5 : 0, {
+      duration: 200,
+    });
+  }, [isSpeaking]);
+
   const isUpdateDisabled = useMemo(() => {
     if (!fieldValues || !report || isSpeaking || isProcessingAudio) return true;
 
@@ -92,9 +101,41 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
     return t('speak_to_edit');
   }, [isSpeaking, isProcessingAudio, t]);
 
+  const checkMicPermission = async () => {
+    if (Platform.OS === 'android') {
+      const isGranted = await PermissionsAndroid.check(
+        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+      );
+
+      if (!isGranted) {
+        setPermissionStatus('denied');
+      }
+
+      return isGranted;
+    }
+
+    if (Platform.OS === 'ios') {
+      const status = await check(PERMISSIONS.IOS.MICROPHONE);
+      const isGranted = status === RESULTS.GRANTED;
+
+      if (!isGranted) {
+        setPermissionStatus(status);
+      }
+
+      return isGranted;
+    }
+
+    return false;
+  };
+
   return (
     <>
-      <View style={{ ...styles.container, paddingTop: top }}>
+      <View
+        style={{
+          ...styles.container,
+          paddingTop: top,
+        }}
+      >
         <View style={styles.navContainer}>
           <View style={styles.nav}>
             <TouchableOpacity
@@ -113,23 +154,20 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
         </View>
         <FlatList
           data={report?.fields ?? []}
-          renderItem={({ item, index }) => {
-            return (
-              <Input
-                // key={item.id}
-                key={`${index}`}
-                placeholder={item.name}
-                defaultValue={item.value}
-                onChange={value => {
-                  setFieldValues(prev => {
-                    const newValues = { ...prev };
-                    newValues[item.id] = value;
-                    return newValues;
-                  });
-                }}
-              />
-            );
-          }}
+          renderItem={({ item }) => (
+            <Input
+              key={item.id}
+              placeholder={item.name}
+              defaultValue={item.value}
+              onChange={value => {
+                setFieldValues(prev => {
+                  const newValues = { ...prev };
+                  newValues[item.id] = value;
+                  return newValues;
+                });
+              }}
+            />
+          )}
           contentContainerStyle={styles.fields}
         />
         <View style={styles.buttons}>
@@ -150,13 +188,14 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
               iconLeft={() =>
                 isProcessingAudio || isSpeaking ? undefined : <Microphone />
               }
-              onPress={() => {
+              onPress={async () => {
                 Keyboard.dismiss();
-                setIsFadeShown(!isSpeaking);
-                speakingFadeOpacity.value = withTiming(isSpeaking ? 0 : 0.5, {
-                  duration: 200,
-                });
-                setIsSpeaking(!isSpeaking);
+
+                const hasPermission = await checkMicPermission();
+
+                if (hasPermission) {
+                  setIsSpeaking(!isSpeaking);
+                }
               }}
               disabled={isProcessingAudio}
             />
@@ -166,6 +205,11 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
       <Animated.View
         style={[styles.speakingFade, speakingFadeStyle]}
         pointerEvents={isSpeaking ? undefined : 'none'}
+      />
+      <PermissionModal
+        isOpen={!!permissionStatus}
+        onClose={() => setPermissionStatus('')}
+        status={permissionStatus}
       />
     </>
   );
@@ -188,26 +232,28 @@ const styles = StyleSheet.create({
   },
   fields: {
     gap: 10,
-    padding: 16,
+    paddingTop: 20,
+    paddingBottom: 10,
+    paddingHorizontal: 16,
   },
   buttons: {
-    paddingTop: 6,
-    paddingBottom: 16,
+    paddingBottom: 10,
     paddingHorizontal: 16,
+    backgroundColor: bgColor1,
   },
   speakButtonConatiner: {
     paddingTop: 10,
   },
   speakButton: {
-    borderRadius: 30,
     backgroundColor: errorColor1,
-    zIndex: 3000,
+    zIndex: 300,
   },
   updateButtonContainer: {
     paddingTop: 10,
   },
   updateButton: {
     opacity: 1,
+    height: '100%',
   },
   speakingFade: {
     position: 'absolute',

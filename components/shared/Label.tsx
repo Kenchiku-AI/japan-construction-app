@@ -1,12 +1,12 @@
 import { FC } from 'react';
-import { Text, ViewStyle } from 'react-native';
+import { Text, StyleProp, TextStyle } from 'react-native';
 import { fontColor1, fontColor2, fontFamily } from '../../constants';
 
 interface LabelProps {
   text: string;
   size?: number;
   light?: boolean;
-  style?: ViewStyle;
+  style?: StyleProp<TextStyle>;
   numberOfLines?: number;
 }
 

@@ -84,9 +84,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     gap: 4,
     flexDirection: 'row',
+    backgroundColor: 'white',
   },
   secondaryLabel: {
-    color: buttonColor,
+    // color: 'white',
     fontFamily,
     fontSize: 18,
   },

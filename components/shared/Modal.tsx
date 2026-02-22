@@ -75,5 +75,6 @@ const styles = StyleSheet.create({
     marginRight: -4,
     marginTop: -4,
     justifyContent: 'center',
+    paddingBottom: 10,
   },
 });
