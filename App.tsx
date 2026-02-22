@@ -7,7 +7,12 @@ import { theme } from './navigation/theme';
 import { ref } from './navigation/navigate';
 import './services/localization/i18n';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { StatusBar, View } from 'react-native';
+import { StatusBar } from 'react-native';
+import { useEffect, useState } from 'react';
+import * as Keychain from 'react-native-keychain';
+import { Loader } from './components/shared/Loader';
+import { accessTokenStorageKey, refreshTokenStorageKey } from './constants';
+import { useApi } from './services/api/useApi';
 
 const App = () => {
   return (
@@ -23,7 +28,40 @@ const App = () => {
 };
 
 const Root = () => {
-  const { currentUser } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const { currentUser, setCurrentUser, updateAccessToken, updateRefreshToken } =
+    useAuth();
+  const api = useApi();
+
+  useEffect(() => {
+    (async () => {
+      const refreshCreds = await Keychain.getGenericPassword({
+        service: refreshTokenStorageKey,
+      });
+      const accessCreds = await Keychain.getGenericPassword({
+        service: accessTokenStorageKey,
+      });
+
+      if (refreshCreds) updateRefreshToken(refreshCreds.password);
+
+      if (accessCreds) {
+        updateAccessToken(accessCreds.password);
+
+        try {
+          const user = await api.getCurrentUser();
+          setCurrentUser(user);
+        } catch (err) {
+          console.log('error getting user', err);
+        }
+      }
+
+      setIsLoading(false);
+    })();
+  }, []);
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return !currentUser ? <AuthStack /> : <RootNavigation />;
 };

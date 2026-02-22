@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import * as Keychain from 'react-native-keychain';
 import { accessTokenStorageKey, refreshTokenStorageKey } from '../../constants';
 import axios from 'axios';
@@ -8,20 +8,6 @@ export const useAuthData = () => {
   const [accessToken, setAccessToken] = useState<string>();
   const [refreshToken, setRefreshToken] = useState<string>();
   const [currentUser, setCurrentUser] = useState<CurrentUser>();
-
-  useEffect(() => {
-    (async () => {
-      const accessCreds = await Keychain.getGenericPassword({
-        service: accessTokenStorageKey,
-      });
-      if (accessCreds) setAccessToken(accessCreds.password);
-
-      const refreshCreds = await Keychain.getGenericPassword({
-        service: refreshTokenStorageKey,
-      });
-      if (refreshCreds) setRefreshToken(refreshCreds.password);
-    })();
-  }, []);
 
   const updateAccessToken = useCallback(
     async (token: string) => {
