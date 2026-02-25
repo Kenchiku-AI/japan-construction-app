@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   secondaryLabel: {
-    // color: 'white',
+    color: buttonColor,
     fontFamily,
     fontSize: 18,
   },

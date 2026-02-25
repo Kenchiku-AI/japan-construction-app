@@ -40,7 +40,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
   route,
 }) => {
   const { reportId, reportName } = route.params;
-  const { isSpeaking, isProcessing, startSpeech, completeSpeech } = useSpeech();
+  const { isSpeaking, startSpeech, stopSpeech } = useSpeech();
   const { top } = useSafeAreaInsets();
   const { report, updateReport, loading } = useReport(reportId);
   const { t } = useTranslation();
@@ -93,12 +93,6 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
       duration: 200,
     });
   }, [isUpdateDisabled]);
-
-  const speakButtonLabel = useMemo(() => {
-    if (isSpeaking) return t('done');
-    if (isProcessing) return t('processing');
-    return t('speak_to_edit');
-  }, [isSpeaking, isProcessing, t]);
 
   const checkMicPermission = async () => {
     if (Platform.OS === 'android') {
@@ -183,10 +177,8 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
           <View style={styles.speakButtonConatiner}>
             <Button
               style={styles.speakButton}
-              label={speakButtonLabel}
-              iconLeft={() =>
-                isProcessing || isSpeaking ? undefined : <Microphone />
-              }
+              label={t(isSpeaking ? 'done' : 'speak_to_edit')}
+              iconLeft={() => (isSpeaking ? undefined : <Microphone />)}
               onPress={async () => {
                 Keyboard.dismiss();
 
@@ -196,12 +188,11 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
                 }
 
                 if (isSpeaking) {
-                  completeSpeech();
+                  stopSpeech();
                 } else {
                   startSpeech(report!.id, fieldValues => {});
                 }
               }}
-              disabled={isProcessing}
             />
           </View>
         </View>

@@ -25,7 +25,6 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { useSpeech } from '../context/speech/SpeechContext';
-import { Label } from '../components/shared';
 
 export type TabsNavigationParams = {
   ProjectsStack: undefined;
@@ -100,9 +99,8 @@ const Tabs: FC = () => {
 };
 
 const TabBar = (props: BottomTabBarProps) => {
-  const { isSpeaking, setIsSpeaking } = useSpeech();
+  const { isSpeaking } = useSpeech();
   const fadeOpacity = useSharedValue(0);
-  const { t } = useTranslation();
 
   const fadeStyle = useAnimatedStyle(() => ({
     opacity: fadeOpacity.value,
@@ -117,16 +115,7 @@ const TabBar = (props: BottomTabBarProps) => {
       <Animated.View
         style={[styles.fade, fadeStyle]}
         pointerEvents={isSpeaking ? undefined : 'none'}
-      >
-        <TouchableOpacity
-          style={styles.cancelButton}
-          onPress={() => {
-            setIsSpeaking(false);
-          }}
-        >
-          <Label text={t('cancel')} />
-        </TouchableOpacity>
-      </Animated.View>
+      />
       <BottomTabBar {...props} />
     </View>
   );
