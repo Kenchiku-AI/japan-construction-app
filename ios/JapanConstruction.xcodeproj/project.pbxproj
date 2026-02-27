@@ -12,6 +12,8 @@
 		1D527D716383EB90C96684C9 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		B59ED2D12F5111E400E5BB98 /* ggml-silero-v6.2.0.bin in Resources */ = {isa = PBXBuildFile; fileRef = B59ED2D02F5111E400E5BB98 /* ggml-silero-v6.2.0.bin */; };
+		B5DE98C82F502060009A1CEE /* ggml-base.bin in Resources */ = {isa = PBXBuildFile; fileRef = B5DE98C72F502060009A1CEE /* ggml-base.bin */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +26,8 @@
 		5DCACB8F33CDC322A6C60F78 /* libPods-JapanConstruction.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-JapanConstruction.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = JapanConstruction/AppDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = JapanConstruction/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		B59ED2D02F5111E400E5BB98 /* ggml-silero-v6.2.0.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; name = "ggml-silero-v6.2.0.bin"; path = "../assets/models/ggml-silero-v6.2.0.bin"; sourceTree = "<group>"; };
+		B5DE98C72F502060009A1CEE /* ggml-base.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; name = "ggml-base.bin"; path = "../assets/models/ggml-base.bin"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -47,6 +51,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */,
+				B5DE98C72F502060009A1CEE /* ggml-base.bin */,
+				B59ED2D02F5111E400E5BB98 /* ggml-silero-v6.2.0.bin */,
 			);
 			name = JapanConstruction;
 			sourceTree = "<group>";
@@ -159,8 +165,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				B59ED2D12F5111E400E5BB98 /* ggml-silero-v6.2.0.bin in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				1D527D716383EB90C96684C9 /* PrivacyInfo.xcprivacy in Resources */,
+				B5DE98C82F502060009A1CEE /* ggml-base.bin in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
