@@ -53,5 +53,7 @@
 	<false/>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>このアプリは、音声を書き起こすために音声を録音します。</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>このアプリは音声認識を使用します。</string>
 </dict>
 </plist>

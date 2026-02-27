@@ -1,19 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useAuth } from '../auth/AuthContext';
-import { Buffer } from 'buffer';
 import { ReportFieldValues } from '../../types';
 import { useSettings } from '../settings/SettingsContext';
-import { RealtimeTranscriber } from 'whisper.rn/realtime-transcription';
+import Voice from '@react-native-voice/voice';
 
 const SILENCE_THRESHOLD = -45;
 const SILENCE_DURATION = 700;
 const MAX_CHUNK_MS = 4000;
 
 export const useSpeechData = () => {
-  const whisper = useRef<any>(null);
-  const vad = useRef<any>(null);
-  const audioBuffer = useRef<Float32Array[]>([]);
-  const [ready, setReady] = useState(false);
   const SENTENCE_END = /[。！？!?]/;
 
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -21,17 +16,43 @@ export const useSpeechData = () => {
   const { accessToken } = useAuth();
   const { reportOutputLanguage } = useSettings();
 
+  useEffect(() => {
+    Voice.onSpeechResults = e => {
+      console.log('Results', e);
+    };
+
+    return () => {
+      Voice.destroy().then(Voice.removeAllListeners);
+    };
+  }, []);
+
   const startSpeech = useCallback(
     (
       reportId: string,
       onFieldsReceived: (fieldValues: ReportFieldValues) => void,
     ) => {
+      (async () => {
+        try {
+          await Voice.start('en-US');
+        } catch (e) {
+          console.error(e);
+        }
+      })();
+
       setIsSpeaking(true);
     },
     [accessToken, reportOutputLanguage],
   );
 
   const stopSpeech = useCallback(() => {
+    (async () => {
+      try {
+        await Voice.stop();
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+
     setIsProcessing(true);
   }, []);
 
