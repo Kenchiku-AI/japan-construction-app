@@ -2,8 +2,14 @@ import { FC, ReactNode } from 'react';
 import { AuthProvider } from './auth/AuthContext';
 import { SpeechProvider } from './speech/SpeechContext';
 import { SettingsProvider } from './settings/SettingsContext';
+import { ModalProvider } from './modal/ModalContext';
 
-const providers = [AuthProvider, SettingsProvider, SpeechProvider];
+const providers = [
+  AuthProvider,
+  ModalProvider,
+  SettingsProvider,
+  SpeechProvider,
+];
 
 interface ComposeProps {
   components: FC<{ children: ReactNode | ReactNode[] }>[];

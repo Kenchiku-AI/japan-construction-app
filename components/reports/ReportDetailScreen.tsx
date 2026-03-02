@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Animated, {
   useSharedValue,
@@ -23,9 +23,11 @@ import { useReport } from './useReport';
 import { Button, Divider, Input, Label } from '../shared';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { bgColor1, buttonColor, errorColor1 } from '../../constants';
-import { ChevronLeft, Microphone } from '../shared/Icons';
+import { ChevronLeft, Menu, Microphone } from '../shared/Icons';
 import { useSpeech } from '../../context/speech/SpeechContext';
 import PermissionModal from './PermissionModal';
+import { Loader } from '../shared/Loader';
+import { UnsavedChangesModal } from './UnsavedChangesModal';
 
 interface ReportDetailScreenProps {
   navigation: NativeStackNavigationProp<
@@ -40,15 +42,14 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
   route,
 }) => {
   const { reportId, reportName } = route.params;
-  const { isSpeaking, startSpeech, stopSpeech } = useSpeech();
+  const { isSpeaking, isProcessing, startSpeech, stopSpeech, resetSpeech } =
+    useSpeech();
   const { top } = useSafeAreaInsets();
   const { report, updateReport, loading } = useReport(reportId);
   const { t } = useTranslation();
   const [fieldValues, setFieldValues] = useState<ReportFieldValues>();
-  const [isEditingName, setIsEditingName] = useState(false);
-  const [editedName, setEditedName] = useState(reportName);
-  const [displayName, setDisplayName] = useState(reportName);
   const [permissionStatus, setPermissionStatus] = useState('');
+  const [isUnsavedChangesShown, setIsUnsavedChangesShown] = useState(false);
   const speakingFadeOpacity = useSharedValue(0);
   const updateButtonHeight = useSharedValue(0);
   const updateButtonOpacity = useSharedValue(0);
@@ -80,10 +81,10 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
   }, [isSpeaking]);
 
   const isUpdateDisabled = useMemo(() => {
-    if (!fieldValues || !report || isSpeaking) return true;
+    if (!fieldValues || !report || isSpeaking || loading) return true;
 
     return !report.fields.some(f => f.value !== fieldValues[f.id]);
-  }, [report, fieldValues, isSpeaking]);
+  }, [report, fieldValues, isSpeaking, loading]);
 
   useEffect(() => {
     updateButtonHeight.value = withTiming(isUpdateDisabled ? 0 : 70, {
@@ -93,6 +94,44 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
       duration: 200,
     });
   }, [isUpdateDisabled]);
+
+  const onPressUpdate = useCallback(async () => {
+    await updateReport({ field_values: fieldValues });
+  }, [fieldValues, updateReport]);
+
+  const onPressSpeech = useCallback(async () => {
+    Keyboard.dismiss();
+
+    if (!report) return;
+
+    const hasPermission = await checkMicPermission();
+    if (!hasPermission) {
+      return;
+    }
+
+    if (isSpeaking) {
+      stopSpeech();
+    } else {
+      startSpeech(report.id, fieldValues => {
+        setFieldValues(prev => {
+          const newValues = { ...prev };
+
+          Object.entries(fieldValues).forEach(([key, value]) => {
+            if (report.fields?.some(f => f.id === key)) {
+              newValues[key] = value;
+            }
+          });
+
+          return newValues;
+        });
+      });
+    }
+  }, [isSpeaking, stopSpeech, startSpeech, report]);
+
+  const goBack = () => {
+    resetSpeech();
+    navigation.goBack();
+  };
 
   const checkMicPermission = async () => {
     if (Platform.OS === 'android') {
@@ -131,17 +170,24 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
       >
         <View style={styles.navContainer}>
           <View style={styles.nav}>
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={() => navigation.goBack()}
-            >
-              <ChevronLeft color={buttonColor} size={18} />
+            <View style={styles.navLeft}>
+              <TouchableOpacity
+                style={styles.backButton}
+                onPress={() => {
+                  if (!isUpdateDisabled) {
+                    setIsUnsavedChangesShown(true);
+                  } else {
+                    goBack();
+                  }
+                }}
+              >
+                <ChevronLeft color={buttonColor} size={20} />
+              </TouchableOpacity>
+              <Label text={reportName} style={styles.reportName} />
+            </View>
+            <TouchableOpacity style={styles.menuButton} onPress={() => {}}>
+              <Menu size={30} />
             </TouchableOpacity>
-            {isEditingName ? (
-              <Input placeholder={t('report_name')} value={editedName} />
-            ) : (
-              <Label text={displayName} size={24} />
-            )}
           </View>
           <Divider />
         </View>
@@ -151,7 +197,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
             <Input
               key={item.id}
               placeholder={item.name}
-              defaultValue={item.value}
+              value={fieldValues?.[item.id]}
               onChange={value => {
                 setFieldValues(prev => {
                   const newValues = { ...prev };
@@ -168,7 +214,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
             <View style={styles.updateButtonContainer}>
               <Button
                 label={t('update_report')}
-                onPress={() => {}}
+                onPress={onPressUpdate}
                 disabled={isUpdateDisabled}
                 style={styles.updateButton}
               />
@@ -177,22 +223,16 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
           <View style={styles.speakButtonConatiner}>
             <Button
               style={styles.speakButton}
-              label={t(isSpeaking ? 'done' : 'speak_to_edit')}
+              label={t(
+                isSpeaking
+                  ? 'done'
+                  : isProcessing
+                  ? 'processing'
+                  : 'start_speaking',
+              )}
               iconLeft={() => (isSpeaking ? undefined : <Microphone />)}
-              onPress={async () => {
-                Keyboard.dismiss();
-
-                const hasPermission = await checkMicPermission();
-                if (!hasPermission) {
-                  return;
-                }
-
-                if (isSpeaking) {
-                  stopSpeech();
-                } else {
-                  startSpeech(report!.id, fieldValues => {});
-                }
-              }}
+              disabled={isProcessing}
+              onPress={onPressSpeech}
             />
           </View>
         </View>
@@ -206,6 +246,16 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
         onClose={() => setPermissionStatus('')}
         status={permissionStatus}
       />
+      <UnsavedChangesModal
+        isOpen={isUnsavedChangesShown}
+        onClose={() => setIsUnsavedChangesShown(false)}
+        onLeave={goBack}
+        onSave={async () => {
+          await onPressUpdate();
+          goBack();
+        }}
+      />
+      {loading && <Loader />}
     </>
   );
 };
@@ -221,9 +271,22 @@ const styles = StyleSheet.create({
     height: 70,
     alignItems: 'center',
     flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  navLeft: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    flexShrink: 1,
   },
   backButton: {
-    width: 32,
+    paddingRight: 12,
+  },
+  reportName: {
+    fontSize: 24,
+    lineHeight: 30,
+  },
+  menuButton: {
+    paddingLeft: 12,
   },
   fields: {
     gap: 10,

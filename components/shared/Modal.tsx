@@ -1,15 +1,15 @@
-import { FC, ReactNode } from 'react';
-import {
-  StyleSheet,
-  View,
-  Modal as RNModal,
-  TouchableOpacity,
-} from 'react-native';
-import { bgColor1 } from '../../constants';
+import { FC, ReactNode, useEffect } from 'react';
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Heading } from './Heading';
 import { Button } from './Button';
 import { Close } from './Icons';
+import { useModal } from '../../context/modal/ModalContext';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 
 interface ModalProps {
   title?: string;
@@ -26,12 +26,26 @@ export const Modal: FC<ModalProps> = ({
   onClose,
   children,
 }) => {
+  const opacity = useSharedValue(0);
+  const { setIsModalShown } = useModal();
   const { t } = useTranslation();
 
+  const style = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+  }));
+
+  useEffect(() => {
+    setIsModalShown(isOpen);
+
+    opacity.value = withTiming(isOpen ? 1 : 0, {
+      duration: 200,
+    });
+  }, [isOpen]);
+
   return (
-    <RNModal animationType="fade" transparent visible={isOpen}>
-      <View style={styles.background}>
-        <View style={styles.container}>
+    <Animated.View style={style}>
+      <View style={styles.container}>
+        <View style={styles.content}>
           <View style={styles.nav}>
             <TouchableOpacity style={styles.closeButton} onPress={onClose}>
               <Close />
@@ -47,12 +61,12 @@ export const Modal: FC<ModalProps> = ({
           )}
         </View>
       </View>
-    </RNModal>
+    </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
-  background: {
+  container: {
     position: 'absolute',
     top: 0,
     bottom: 0,
@@ -64,10 +78,11 @@ const styles = StyleSheet.create({
     zIndex: 100,
     padding: 16,
   },
-  container: {
+  content: {
     backgroundColor: bgColor1,
     padding: 16,
     borderRadius: 10,
+    width: '100%',
   },
   nav: { justifyContent: 'flex-end' },
   closeButton: {

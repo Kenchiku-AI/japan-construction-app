@@ -69,6 +69,15 @@ export type ShareReportTemplateRequest = {
   template_id: string;
 };
 
+export type ReportSpeechRequest = {
+  text: string;
+  output_language: string;
+};
+
+export type ReportSpeechResponse = {
+  field_values: ReportFieldValues;
+};
+
 export enum ReportParentType {
   Company = 'company',
   Project = 'project',

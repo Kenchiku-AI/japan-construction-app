@@ -30,22 +30,14 @@ export const useReport = (reportId: string) => {
   );
 
   const updateReport = useCallback(
-    async (request: ReportRequest, silent: boolean = false) => {
-      if (!silent) {
-        setLoading(true);
-      }
+    async (request: ReportRequest) => {
+      setLoading(true);
 
       try {
         const response = await api.updateReport(reportId, request);
         setReport(response);
-
-        if (!silent) {
-          // TODO: show success
-        }
       } catch (err) {
-        if (!silent) {
-          // TODO: show error
-        }
+        // TODO: show error
       }
 
       setLoading(false);

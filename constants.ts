@@ -13,5 +13,4 @@ export const fontFamily = 'KosugiMaru-Regular';
 export const errorColor1 = '#FF6363';
 export const errorColor2 = '#FF636326';
 export const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-export const speechModelFileName = 'ggml-base.bin';
-// export const vadModelFileName = 'ggml-silero-v6.2.0.bin';
+export const whisperModelFileName = 'ggml-base.bin';

@@ -1,83 +1,47 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useAuth } from '../auth/AuthContext';
 import { ReportFieldValues } from '../../types';
-import { useSettings } from '../settings/SettingsContext';
 import RNFS from 'react-native-fs';
 import {
   initWhisper,
   releaseAllWhisper,
-  // initWhisperVad,
-  // releaseAllWhisperVad,
+  WhisperContext,
+  WhisperTranscriber,
 } from 'whisper.rn';
-import {
-  RealtimeTranscriber,
-  // RingBufferVad,
-} from 'whisper.rn/src/realtime-transcription';
-// import { AudioPcmStreamAdapter } from 'whisper.rn/src/realtime-transcription/adapters/AudioPcmStreamAdapter';
-import {
-  speechModelFileName,
-  // vadModelFileName
-} from '../../constants';
+import { whisperModelFileName } from '../../constants';
 import { Platform } from 'react-native';
-
-const realtimeOptions = {
-  realtimeAudioSec: 300,
-  realtimeAudioSliceSec: 20,
-  realtimeAudioMinSec: 2,
-};
+import { useTranscription } from './useTranscription';
+import { useApi } from '../../services/api/useApi';
+import { useSettings } from '../settings/SettingsContext';
 
 export const useSpeechData = () => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const { accessToken } = useAuth();
+  const whisper = useRef<WhisperContext>(null);
+  const transcriber = useRef<WhisperTranscriber>(null);
+  const api = useApi();
   const { reportOutputLanguage } = useSettings();
-  // const transcriber = useRef<typeof RealtimeTranscriber>(null);
-  const whisper = useRef<any>(null);
+  const { getRequestText } = useTranscription();
+  const stopRequested = useRef(false);
 
   useEffect(() => {
-    const loadModel = async (fileName: string) => {
-      const path = `${RNFS.DocumentDirectoryPath}/${fileName}`;
-      const exists = await RNFS.exists(path);
-
-      if (!exists) {
-        try {
-          if (Platform.OS === 'android') {
-            await RNFS.copyFileAssets(`models/${fileName}`, path);
-          } else {
-            const src = `${RNFS.MainBundlePath}/models/${fileName}`;
-            await RNFS.copyFile(src, path);
-            console.log('file copied!');
-          }
-        } catch (err) {
-          console.log('Error copying model file:', err);
-        }
-      }
-
-      return path;
-    };
-
     (async () => {
       try {
-        const whisperPath = await loadModel(speechModelFileName);
-        whisper.current = await initWhisper({ filePath: whisperPath });
+        const filePath = `${RNFS.DocumentDirectoryPath}/${whisperModelFileName}`;
+        const exists = await RNFS.exists(filePath);
 
-        // const vadPath = await loadModel(vadModelFileName);
-        // const vad = await initWhisperVad({ filePath: vadPath });
+        if (!exists) {
+          if (Platform.OS === 'android') {
+            await RNFS.copyFileAssets(
+              `models/${whisperModelFileName}`,
+              filePath,
+            );
+          } else {
+            const src = `${RNFS.MainBundlePath}/models/${whisperModelFileName}`;
+            await RNFS.copyFile(src, filePath);
+          }
+        }
 
-        // const vadContext = new RingBufferVad(vad);
-        // const audioStream = new AudioPcmStreamAdapter();
-
-        // transcriber.current = new RealtimeTranscriber(
-        //   {
-        //     whisperContext: whisper.current,
-        //     vadContext,
-        //     audioStream,
-        //     fs: RNFS,
-        //   },
-        //   realtimeOptions,
-        // );
-
-        console.log('successfully loaded transcriber');
+        whisper.current = await initWhisper({ filePath });
       } catch (err) {
         console.log('Error initializing transcriber:', err);
       }
@@ -85,61 +49,77 @@ export const useSpeechData = () => {
 
     return () => {
       releaseAllWhisper();
-      // releaseAllWhisperVad();
     };
   }, []);
 
+  const handleCompletion = () => {
+    if (!stopRequested.current) return;
+
+    setIsProcessing(false);
+    stopRequested.current = false;
+    transcriber.current?.stop();
+  };
+
   const startSpeech = useCallback(
-    (
+    async (
       reportId: string,
       onFieldsReceived: (fieldValues: ReportFieldValues) => void,
     ) => {
       setIsSpeaking(true);
-      (async () => {
-        const { stop, subscribe } = await whisper.current?.transcribeRealtime(
-          realtimeOptions,
-        );
 
-        subscribe((event: any) => {
-          console.log('result', event.data?.result);
-        });
-      })();
+      transcriber.current = await whisper.current?.transcribeRealtime({
+        realtimeAudioSec: 300,
+        realtimeAudioSliceSec: 20,
+        realtimeAudioMinSec: 2,
+      });
 
-      // transcriber.current?.updateCallbacks({
-      //   onVad: (e: any) => {
-      //     // console.log('VAD:', e.type, e.confidence);
-      //   },
-      //   onTranscribe: (e: any) => {
-      //     console.log('Transcription:', e.data?.result);
-      //   },
-      //   onError: (e: any) => {
-      //     // console.error('Error:', e);
-      //   },
-      //   onSliceTranscriptionStabilized: (text: any) => {
-      //     console.log('Stabilized:', text);
-      //   },
-      // });
+      transcriber.current?.subscribe(async (event: any) => {
+        const transcription = event.data?.result;
+        if (!transcription) {
+          handleCompletion();
+          return;
+        }
 
-      // transcriber.current?.start();
+        const text = getRequestText(transcription);
+        if (!text) {
+          handleCompletion();
+          return;
+        }
+
+        const request = { text, output_language: reportOutputLanguage };
+
+        try {
+          const response = await api.reportSpeech(reportId, request);
+          if (response) {
+            onFieldsReceived(response.field_values);
+          }
+          handleCompletion();
+        } catch (err) {
+          console.log('Error sending speech:', err);
+        }
+      });
     },
-    [accessToken, reportOutputLanguage],
+    [reportOutputLanguage],
   );
 
-  const stopSpeech = useCallback(
-    () => {
-      // setIsProcessing(true);
-      setIsSpeaking(false);
-      // transcriber.current?.stop();
-    },
-    [
-      // transcriber
-    ],
-  );
+  const stopSpeech = () => {
+    setIsSpeaking(false);
+    setIsProcessing(true);
+    stopRequested.current = true;
+  };
+
+  const resetSpeech = () => {
+    setIsSpeaking(false);
+    setIsProcessing(false);
+    stopRequested.current = false;
+    transcriber.current?.stop();
+  };
 
   return {
     isSpeaking,
     isProcessing,
     startSpeech,
     stopSpeech,
+    resetSpeech,
   };
 };
