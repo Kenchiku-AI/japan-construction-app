@@ -1,5 +1,5 @@
 import { FC, ReactNode, useEffect } from 'react';
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Keyboard } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Heading } from './Heading';
 import { Button } from './Button';
@@ -10,6 +10,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
+import { bgColor1 } from '../../constants';
 
 interface ModalProps {
   title?: string;
@@ -35,6 +36,14 @@ export const Modal: FC<ModalProps> = ({
   }));
 
   useEffect(() => {
+    return () => {
+      setIsModalShown(false);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isOpen) Keyboard.dismiss();
+
     setIsModalShown(isOpen);
 
     opacity.value = withTiming(isOpen ? 1 : 0, {
@@ -42,24 +51,30 @@ export const Modal: FC<ModalProps> = ({
     });
   }, [isOpen]);
 
+  const onPressClose = () => {
+    setIsModalShown(false);
+    onClose();
+  };
+
   return (
-    <Animated.View style={style}>
-      <View style={styles.container}>
-        <View style={styles.content}>
-          <View style={styles.nav}>
-            <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-              <Close />
-            </TouchableOpacity>
-          </View>
-          {title && <Heading title={title} subtitle={subtitle} />}
-          {children ? (
-            children
-          ) : (
-            <div className="mt-10">
-              <Button label={t('ok')} onPress={onClose} />
-            </div>
-          )}
+    <Animated.View
+      style={[style, styles.container]}
+      pointerEvents={isOpen ? undefined : 'none'}
+    >
+      <View style={styles.content}>
+        <View style={styles.nav}>
+          <TouchableOpacity style={styles.closeButton} onPress={onPressClose}>
+            <Close />
+          </TouchableOpacity>
         </View>
+        {title && <Heading title={title} subtitle={subtitle} />}
+        {children ? (
+          children
+        ) : (
+          <div className="mt-10">
+            <Button label={t('ok')} onPress={onPressClose} />
+          </div>
+        )}
       </View>
     </Animated.View>
   );
@@ -72,11 +87,11 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: '#00000080',
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 100,
     padding: 16,
+    backgroundColor: '#00000080',
+    zIndex: 100000,
   },
   content: {
     backgroundColor: bgColor1,

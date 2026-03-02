@@ -102,43 +102,27 @@ const Tabs: FC = () => {
 const TabBar = (props: BottomTabBarProps) => {
   const { isSpeaking } = useSpeech();
   const { isModalShown } = useModal();
-  const modalFadeOpacity = useSharedValue(0);
-  const speechFadeOpacity = useSharedValue(0);
+  const isFadeShown = isSpeaking || isModalShown;
+  const fadeOpacity = useSharedValue(0);
 
-  const speechFadeStyle = useAnimatedStyle(() => ({
-    opacity: speechFadeOpacity.value,
-  }));
-
-  const modalFadeStyle = useAnimatedStyle(() => ({
-    opacity: modalFadeOpacity.value,
+  const fadeStyle = useAnimatedStyle(() => ({
+    opacity: fadeOpacity.value,
   }));
 
   useEffect(() => {
-    modalFadeOpacity.value = withTiming(isModalShown ? 1 : 0, {
+    fadeOpacity.value = withTiming(isFadeShown ? 1 : 0, {
       duration: 200,
     });
-  }, [isModalShown]);
-
-  useEffect(() => {
-    speechFadeOpacity.value = withTiming(isSpeaking ? 1 : 0, {
-      duration: 200,
-    });
-  }, [isSpeaking]);
+  }, [isFadeShown]);
 
   return (
-    <>
+    <View>
       <Animated.View
-        style={[styles.fade, modalFadeStyle]}
-        pointerEvents={isModalShown ? undefined : 'none'}
+        style={[styles.fade, fadeStyle]}
+        pointerEvents={isFadeShown ? undefined : 'none'}
       />
-      <View>
-        <Animated.View
-          style={[styles.fade, speechFadeStyle]}
-          pointerEvents={isSpeaking ? undefined : 'none'}
-        />
-        <BottomTabBar {...props} />
-      </View>
-    </>
+      <BottomTabBar {...props} />
+    </View>
   );
 };
 
