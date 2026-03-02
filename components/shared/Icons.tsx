@@ -58,6 +58,19 @@ export const ChevronLeft = ({ color, size }: IconProps) => (
       stroke={color ?? fontColor2}
       strokeLinecap="round"
       strokeLinejoin="round"
+      strokeWidth={1.5}
+    />
+  </Svg>
+);
+
+export const Menu = ({ color, size }: IconProps) => (
+  <Svg width={size ?? 24} height={size ?? 24} viewBox="0 0 24 24" fill="none">
+    <Path
+      d="M3 12H21M3 6H21M3 18H21"
+      stroke={color ?? buttonColor}
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </Svg>
 );

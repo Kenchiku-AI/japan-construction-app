@@ -1,10 +1,10 @@
 import { createContext, FC, ReactNode, useContext } from 'react';
 import { useSpeechData } from './useSpeechData';
 
-type SpeechState = ReturnType<typeof useSpeechData>;
+type SpeechData = ReturnType<typeof useSpeechData>;
 
 // @ts-expect-error
-const SpeechContext = createContext<SpeechState>({});
+const SpeechContext = createContext<SpeechData>({});
 
 export const SpeechProvider: FC<{ children: ReactNode | ReactNode[] }> = ({
   children,

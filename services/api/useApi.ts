@@ -12,6 +12,8 @@ import {
   Report,
   CreateReportRequest,
   ReportRequest,
+  ReportSpeechRequest,
+  ReportSpeechResponse,
 } from '../../types';
 import { baseUrl } from '../../constants';
 import { useAuth } from '../../context/auth/AuthContext';
@@ -87,6 +89,10 @@ export const useApi = () => {
     async updateReport(reportId: string, request: ReportRequest) {
       const url = `/reports/${reportId}`;
       return call(() => axios.patch<Report>(url, request));
+    },
+    async reportSpeech(reportId: string, request: ReportSpeechRequest) {
+      const url = `/reports/${reportId}/speech`;
+      return call(() => axios.post<ReportSpeechResponse>(url, request));
     },
     async getReportTemplates() {
       const url = '/reports/templates';

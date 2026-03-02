@@ -17,6 +17,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: bgColor1,
     opacity: 0.75,
-    zIndex: 100,
+    zIndex: 10000,
   },
 });

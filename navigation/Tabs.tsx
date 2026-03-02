@@ -25,6 +25,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { useSpeech } from '../context/speech/SpeechContext';
+import { useModal } from '../context/modal/ModalContext';
 
 export type TabsNavigationParams = {
   ProjectsStack: undefined;
@@ -100,6 +101,8 @@ const Tabs: FC = () => {
 
 const TabBar = (props: BottomTabBarProps) => {
   const { isSpeaking } = useSpeech();
+  const { isModalShown } = useModal();
+  const isFadeShown = isSpeaking || isModalShown;
   const fadeOpacity = useSharedValue(0);
 
   const fadeStyle = useAnimatedStyle(() => ({
@@ -107,14 +110,16 @@ const TabBar = (props: BottomTabBarProps) => {
   }));
 
   useEffect(() => {
-    fadeOpacity.value = withTiming(isSpeaking ? 1 : 0, { duration: 200 });
-  }, [isSpeaking]);
+    fadeOpacity.value = withTiming(isFadeShown ? 1 : 0, {
+      duration: 200,
+    });
+  }, [isFadeShown]);
 
   return (
     <View>
       <Animated.View
         style={[styles.fade, fadeStyle]}
-        pointerEvents={isSpeaking ? undefined : 'none'}
+        pointerEvents={isFadeShown ? undefined : 'none'}
       />
       <BottomTabBar {...props} />
     </View>

@@ -15,7 +15,6 @@ import { Label } from './Label';
 
 interface InputProps {
   value?: string;
-  defaultValue?: string;
   placeholder?: string;
   onChange?: (text: string) => void;
   error?: boolean;
@@ -26,7 +25,6 @@ interface InputProps {
 
 export const Input: FC<InputProps> = ({
   value,
-  defaultValue,
   placeholder,
   onChange,
   error,
@@ -34,7 +32,7 @@ export const Input: FC<InputProps> = ({
   style,
   disabled,
 }) => {
-  const [isEmpty, setIsEmpty] = useState(!value && !defaultValue);
+  const [isEmpty, setIsEmpty] = useState(!value);
   const paddingTop = useSharedValue(0);
   const opacity = useSharedValue(0);
 
@@ -49,9 +47,18 @@ export const Input: FC<InputProps> = ({
   useEffect(() => {
     const showLabel = !isEmpty && placeholder;
 
-    paddingTop.value = withTiming(showLabel ? 18 : 0, { duration: 75 });
-    opacity.value = withTiming(showLabel ? 1 : 0, { duration: 75 });
+    if (showLabel) {
+      paddingTop.value = withTiming(18, { duration: 75 });
+      opacity.value = withTiming(1, { duration: 75 });
+    } else {
+      paddingTop.value = withTiming(0, { duration: 75 });
+      opacity.value = 0;
+    }
   }, [isEmpty, placeholder]);
+
+  useEffect(() => {
+    setIsEmpty(!value);
+  }, [value]);
 
   return (
     <View style={styles.container}>
@@ -70,7 +77,6 @@ export const Input: FC<InputProps> = ({
       >
         <TextInput
           value={value}
-          defaultValue={defaultValue}
           placeholder={placeholder}
           placeholderTextColor={fontColor2}
           selectionColor={buttonColor}
