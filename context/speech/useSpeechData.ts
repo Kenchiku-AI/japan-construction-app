@@ -1,12 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ReportFieldValues } from '../../types';
 import RNFS from 'react-native-fs';
-import {
-  initWhisper,
-  releaseAllWhisper,
-  WhisperContext,
-  WhisperTranscriber,
-} from 'whisper.rn';
+import { initWhisper, releaseAllWhisper, WhisperTranscriber } from 'whisper.rn';
 import { whisperModelFileName } from '../../constants';
 import { Platform } from 'react-native';
 import { useTranscription } from './useTranscription';
@@ -16,7 +11,6 @@ import { useSettings } from '../settings/SettingsContext';
 export const useSpeechData = () => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const whisper = useRef<WhisperContext>(null);
   const transcriber = useRef<WhisperTranscriber>(null);
   const api = useApi();
   const { reportOutputLanguage } = useSettings();
@@ -41,7 +35,13 @@ export const useSpeechData = () => {
           }
         }
 
-        whisper.current = await initWhisper({ filePath });
+        const whisper = await initWhisper({ filePath });
+
+        transcriber.current = await whisper.transcribeRealtime({
+          realtimeAudioSec: 300,
+          realtimeAudioSliceSec: 20,
+          realtimeAudioMinSec: 2,
+        });
       } catch (err) {
         console.log('Error initializing transcriber:', err);
       }
@@ -66,12 +66,6 @@ export const useSpeechData = () => {
       onFieldsReceived: (fieldValues: ReportFieldValues) => void,
     ) => {
       setIsSpeaking(true);
-
-      transcriber.current = await whisper.current?.transcribeRealtime({
-        realtimeAudioSec: 300,
-        realtimeAudioSliceSec: 20,
-        realtimeAudioMinSec: 2,
-      });
 
       transcriber.current?.subscribe(async (event: any) => {
         const transcription = event.data?.result;
