@@ -26,6 +26,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSpeech } from '../context/speech/SpeechContext';
 import { useModal } from '../context/modal/ModalContext';
+import AudioVisualizer from '../components/shared/AudioVisualizer';
 
 export type TabsNavigationParams = {
   ProjectsStack: undefined;
@@ -120,7 +121,9 @@ const TabBar = (props: BottomTabBarProps) => {
       <Animated.View
         style={[styles.fade, fadeStyle]}
         pointerEvents={isFadeShown ? undefined : 'none'}
-      />
+      >
+        <AudioVisualizer />
+      </Animated.View>
       <BottomTabBar {...props} />
     </View>
   );

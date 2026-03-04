@@ -183,7 +183,15 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
               >
                 <ChevronLeft color={buttonColor} size={20} />
               </TouchableOpacity>
-              <Label text={reportName} style={styles.reportName} />
+              <View style={{ flexShrink: 1 }}>
+                <Label
+                  text={reportName}
+                  style={styles.reportName}
+                  numberOfLines={1}
+                  // adjustsFontSizeToFit
+                  // minimumFontScale={0.5}
+                />
+              </View>
             </View>
             <TouchableOpacity style={styles.menuButton} onPress={() => {}}>
               <Menu size={30} />
@@ -230,7 +238,9 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
                   ? 'processing'
                   : 'start_speaking',
               )}
-              iconLeft={() => (isSpeaking ? undefined : <Microphone />)}
+              iconLeft={() =>
+                isSpeaking || isProcessing ? undefined : <Microphone />
+              }
               disabled={isProcessing}
               onPress={onPressSpeech}
             />
@@ -268,7 +278,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   nav: {
-    height: 70,
+    height: 60,
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -279,14 +289,14 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
   backButton: {
-    paddingRight: 12,
+    paddingRight: 18,
   },
   reportName: {
-    fontSize: 24,
+    fontSize: 20,
     lineHeight: 30,
   },
   menuButton: {
-    paddingLeft: 12,
+    paddingLeft: 18,
   },
   fields: {
     gap: 10,

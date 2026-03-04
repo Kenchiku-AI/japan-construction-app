@@ -36,7 +36,7 @@ const ReportsListScreen: FC<ReportsListScreenProps> = ({ navigation }) => {
             onPress={() => {
               setShowCreateReport(true);
             }}
-            iconLeft={() => <Plus />}
+            iconRight={() => <Plus size={30} />}
           />
         </View>
         <Divider />
@@ -115,6 +115,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     flexDirection: 'row',
+    marginRight: -4,
   },
   heading: {
     paddingHorizontal: 20,

@@ -8,6 +8,8 @@ interface LabelProps {
   light?: boolean;
   style?: StyleProp<TextStyle>;
   numberOfLines?: number;
+  adjustsFontSizeToFit?: boolean;
+  minimumFontScale?: number;
 }
 
 export const Label: FC<LabelProps> = ({
@@ -16,6 +18,8 @@ export const Label: FC<LabelProps> = ({
   light,
   style,
   numberOfLines,
+  adjustsFontSizeToFit,
+  minimumFontScale,
 }) => {
   return (
     <Text
@@ -25,7 +29,9 @@ export const Label: FC<LabelProps> = ({
         color: light ? fontColor2 : fontColor1,
         ...style,
       }}
+      adjustsFontSizeToFit={adjustsFontSizeToFit}
       numberOfLines={numberOfLines}
+      minimumFontScale={minimumFontScale}
     >
       {text}
     </Text>

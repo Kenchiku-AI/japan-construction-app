@@ -17,13 +17,14 @@ export const Close = () => (
   </Svg>
 );
 
-export const Plus = () => (
-  <Svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+export const Plus = ({ size, color }: IconProps) => (
+  <Svg width={size ?? 36} height={size ?? 36} viewBox="0 0 24 24" fill="none">
     <Path
       d="M12 5V19M5 12H19"
-      stroke={buttonColor}
+      stroke={color ?? buttonColor}
       strokeLinecap="round"
       strokeLinejoin="round"
+      strokeWidth={1.5}
     />
   </Svg>
 );
