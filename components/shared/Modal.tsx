@@ -17,7 +17,7 @@ interface ModalProps {
   subtitle?: string;
   isOpen: boolean;
   onClose: () => void;
-  children: ReactNode;
+  children?: ReactNode;
 }
 
 export const Modal: FC<ModalProps> = ({
@@ -71,9 +71,11 @@ export const Modal: FC<ModalProps> = ({
         {children ? (
           children
         ) : (
-          <div className="mt-10">
-            <Button label={t('ok')} onPress={onPressClose} />
-          </div>
+          <Button
+            label={t('ok')}
+            onPress={onPressClose}
+            style={styles.okButton}
+          />
         )}
       </View>
     </Animated.View>
@@ -106,5 +108,8 @@ const styles = StyleSheet.create({
     marginTop: -4,
     justifyContent: 'center',
     paddingBottom: 10,
+  },
+  okButton: {
+    marginTop: 36,
   },
 });

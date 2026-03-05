@@ -55,7 +55,6 @@ const ReportsListScreen: FC<ReportsListScreenProps> = ({ navigation }) => {
               }}
             />
           )}
-          ItemSeparatorComponent={<Divider light />}
         />
       </View>
       <CreateReportModal
@@ -85,17 +84,24 @@ interface ReportsListItemProps {
 
 const ReportsListItem: FC<ReportsListItemProps> = ({ report, onPress }) => {
   return (
-    <TouchableOpacity style={styles.report} onPress={onPress}>
-      <View style={styles.reportInfo}>
-        <View style={styles.icon}>
-          <Reports size={26} />
+    <>
+      <TouchableOpacity style={styles.report} onPress={onPress}>
+        <View style={styles.reportInfo}>
+          <View style={styles.icon}>
+            <Reports size={26} />
+          </View>
+          <Label
+            text={report.name}
+            style={styles.reportName}
+            numberOfLines={1}
+          />
         </View>
-        <Label text={report.name} style={styles.reportName} numberOfLines={1} />
-      </View>
-      <View style={styles.chevron}>
-        <ChevronRight />
-      </View>
-    </TouchableOpacity>
+        <View style={styles.chevron}>
+          <ChevronRight />
+        </View>
+      </TouchableOpacity>
+      <Divider light />
+    </>
   );
 };
 

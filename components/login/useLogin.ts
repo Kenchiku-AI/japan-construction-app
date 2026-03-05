@@ -4,6 +4,7 @@ import { useAuth } from '../../context/auth/AuthContext';
 
 export const useLogin = () => {
   const [loading, setLoading] = useState(false);
+  const [showError, setShowError] = useState(false);
   const { updateAccessToken, updateRefreshToken, setCurrentUser } = useAuth();
   const api = useApi();
 
@@ -21,7 +22,9 @@ export const useLogin = () => {
 
       const user = await api.getCurrentUser();
       setCurrentUser(user);
-    } catch (err) {}
+    } catch (err) {
+      setShowError(true);
+    }
 
     setLoading(false);
   };
@@ -29,5 +32,7 @@ export const useLogin = () => {
   return {
     loading,
     login,
+    showError,
+    setShowError,
   };
 };

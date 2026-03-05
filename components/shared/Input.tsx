@@ -13,6 +13,9 @@ import {
 } from '../../constants';
 import { Label } from './Label';
 
+const TOP_PADDING = 18;
+const ANIMATION_CONFIG = { duration: 75 };
+
 interface InputProps {
   value?: string;
   placeholder?: string;
@@ -33,8 +36,8 @@ export const Input: FC<InputProps> = ({
   disabled,
 }) => {
   const [isEmpty, setIsEmpty] = useState(!value);
-  const paddingTop = useSharedValue(0);
-  const opacity = useSharedValue(0);
+  const paddingTop = useSharedValue(!value ? 0 : TOP_PADDING);
+  const opacity = useSharedValue(!value ? 0 : 1);
 
   const labelStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,
@@ -48,10 +51,10 @@ export const Input: FC<InputProps> = ({
     const showLabel = !isEmpty && placeholder;
 
     if (showLabel) {
-      paddingTop.value = withTiming(18, { duration: 75 });
-      opacity.value = withTiming(1, { duration: 75 });
+      paddingTop.value = withTiming(TOP_PADDING, ANIMATION_CONFIG);
+      opacity.value = withTiming(1, ANIMATION_CONFIG);
     } else {
-      paddingTop.value = withTiming(0, { duration: 75 });
+      paddingTop.value = withTiming(0, ANIMATION_CONFIG);
       opacity.value = 0;
     }
   }, [isEmpty, placeholder]);

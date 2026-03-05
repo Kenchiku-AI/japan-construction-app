@@ -6,7 +6,7 @@ import { Report, ReportRequest } from '../../types';
 import { useApi } from '../../services/api/useApi';
 
 export const useReport = (reportId: string) => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [report, setReport] = useState<Report>();
   const { t } = useTranslation();
   const api = useApi();

@@ -1,5 +1,5 @@
 declare module 'whisper.rn' {
-  export * from 'whisper.rn/src/index';
+  export * from 'whisper.rn/index.js';
 
   export type WhisperTranscriber =
     | {

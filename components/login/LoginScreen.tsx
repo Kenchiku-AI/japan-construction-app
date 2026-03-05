@@ -4,7 +4,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthStackNavigationParams } from '../../navigation/AuthStack';
 import { useTranslation } from 'react-i18next';
 import { useLogin } from './useLogin';
-import { Heading, Input, Button } from '../shared';
+import { Heading, Input, Button, Modal } from '../shared';
 import { Loader } from '../shared/Loader';
 
 interface LoginScreenProps {
@@ -17,7 +17,7 @@ interface LoginScreenProps {
 const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { loading, login } = useLogin();
+  const { loading, login, showError, setShowError } = useLogin();
   const { t } = useTranslation();
 
   return (
@@ -63,6 +63,14 @@ const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
         </View>
       </View>
       {loading && <Loader />}
+      <Modal
+        title={t('error')}
+        subtitle={t('login_error')}
+        isOpen={showError}
+        onClose={() => {
+          setShowError(false);
+        }}
+      />
     </>
   );
 };
