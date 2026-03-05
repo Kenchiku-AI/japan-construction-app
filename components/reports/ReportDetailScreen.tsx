@@ -53,6 +53,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
   const speakingFadeOpacity = useSharedValue(0);
   const updateButtonHeight = useSharedValue(0);
   const updateButtonOpacity = useSharedValue(0);
+  const isLoaded = fieldValues !== undefined;
 
   const speakingFadeStyle = useAnimatedStyle(() => ({
     opacity: speakingFadeOpacity.value,
@@ -65,6 +66,8 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
   }));
 
   useEffect(() => {
+    if (!report) return;
+
     const newValues: ReportFieldValues = {};
 
     report?.fields.forEach(f => {
@@ -199,53 +202,60 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
           </View>
           <Divider />
         </View>
-        <FlatList
-          data={report?.fields ?? []}
-          renderItem={({ item }) => (
-            <Input
-              key={item.id}
-              placeholder={item.name}
-              value={fieldValues?.[item.id]}
-              onChange={value => {
-                setFieldValues(prev => {
-                  const newValues = { ...prev };
-                  newValues[item.id] = value;
-                  return newValues;
-                });
-              }}
-            />
-          )}
-          contentContainerStyle={styles.fields}
-        />
-        <View style={styles.buttons}>
-          <Animated.View style={updateButtonStyle}>
-            <View style={styles.updateButtonContainer}>
-              <Button
-                label={t('update_report')}
-                onPress={onPressUpdate}
-                disabled={isUpdateDisabled}
-                style={styles.updateButton}
-              />
-            </View>
-          </Animated.View>
-          <View style={styles.speakButtonConatiner}>
-            <Button
-              style={styles.speakButton}
-              label={t(
-                isSpeaking
-                  ? 'done'
-                  : isProcessing
-                  ? 'processing'
-                  : 'start_speaking',
+        {isLoaded ? (
+          <>
+            <FlatList
+              data={report?.fields ?? []}
+              renderItem={({ item }) => (
+                <Input
+                  key={item.id}
+                  placeholder={item.name}
+                  value={fieldValues?.[item.id]}
+                  onChange={value => {
+                    setFieldValues(prev => {
+                      const newValues = { ...prev };
+                      newValues[item.id] = value;
+                      return newValues;
+                    });
+                  }}
+                />
               )}
-              iconLeft={() =>
-                isSpeaking || isProcessing ? undefined : <Microphone />
-              }
-              disabled={isProcessing}
-              onPress={onPressSpeech}
+              contentContainerStyle={styles.fields}
             />
-          </View>
-        </View>
+            <View style={styles.buttons}>
+              <Animated.View style={updateButtonStyle}>
+                <View style={styles.updateButtonContainer}>
+                  <Button
+                    label={t('update_report')}
+                    onPress={onPressUpdate}
+                    disabled={isUpdateDisabled}
+                    style={styles.updateButton}
+                  />
+                </View>
+              </Animated.View>
+              <View style={styles.speakButtonConatiner}>
+                <Button
+                  style={styles.speakButton}
+                  label={t(
+                    isSpeaking
+                      ? 'done'
+                      : isProcessing
+                      ? 'processing'
+                      : 'start_speaking',
+                  )}
+                  iconLeft={() =>
+                    isSpeaking || isProcessing ? undefined : <Microphone />
+                  }
+                  disabled={isProcessing}
+                  onPress={onPressSpeech}
+                />
+              </View>
+            </View>
+          </>
+        ) : (
+          <Loader fullScreen={false} />
+        )}
+        {isLoaded && loading && <Loader />}
       </View>
       <Animated.View
         style={[styles.speakingFade, speakingFadeStyle]}
@@ -265,7 +275,6 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
           goBack();
         }}
       />
-      {loading && <Loader />}
     </>
   );
 };
@@ -297,6 +306,9 @@ const styles = StyleSheet.create({
   },
   menuButton: {
     paddingLeft: 18,
+  },
+  fieldsContainer: {
+    flex: 1,
   },
   fields: {
     gap: 10,

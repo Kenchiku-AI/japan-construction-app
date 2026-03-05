@@ -28,7 +28,7 @@ const App = () => {
 };
 
 const Root = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { currentUser, setCurrentUser, updateAccessToken, updateRefreshToken } =
     useAuth();
   const api = useApi();

@@ -24,6 +24,7 @@ interface InputProps {
   secureTextEntry?: boolean;
   style?: ViewStyle;
   disabled?: boolean;
+  log?: boolean;
 }
 
 export const Input: FC<InputProps> = ({
@@ -34,10 +35,15 @@ export const Input: FC<InputProps> = ({
   secureTextEntry,
   style,
   disabled,
+  log,
 }) => {
   const [isEmpty, setIsEmpty] = useState(!value);
   const paddingTop = useSharedValue(!value ? 0 : TOP_PADDING);
   const opacity = useSharedValue(!value ? 0 : 1);
+
+  if (log) {
+    console.log('isEmpty', isEmpty);
+  }
 
   const labelStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,
