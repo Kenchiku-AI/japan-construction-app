@@ -11,6 +11,7 @@ import { fontColor2 } from '../../constants';
 import { Report } from '../../types';
 import { CreateReportModal } from './CreateReportModal';
 import { useReports } from './useReports';
+import { Loader } from '../shared/Loader';
 
 interface ReportsListScreenProps {
   navigation: NativeStackNavigationProp<
@@ -73,6 +74,7 @@ const ReportsListScreen: FC<ReportsListScreenProps> = ({ navigation }) => {
           }
         }}
       />
+      {loading && <Loader />}
     </>
   );
 };
