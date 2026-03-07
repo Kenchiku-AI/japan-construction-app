@@ -28,7 +28,7 @@ export const Modal: FC<ModalProps> = ({
   children,
 }) => {
   const opacity = useSharedValue(0);
-  const { setIsModalShown } = useModal();
+  const { setIsModalShown, fadeOpacity } = useModal();
   const { t } = useTranslation();
 
   const style = useAnimatedStyle(() => ({
@@ -47,6 +47,9 @@ export const Modal: FC<ModalProps> = ({
     setIsModalShown(isOpen);
 
     opacity.value = withTiming(isOpen ? 1 : 0, {
+      duration: 200,
+    });
+    fadeOpacity.value = withTiming(isOpen ? 1 : 0, {
       duration: 200,
     });
   }, [isOpen]);

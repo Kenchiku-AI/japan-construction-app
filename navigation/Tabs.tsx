@@ -102,19 +102,12 @@ const Tabs: FC = () => {
 
 const TabBar = (props: BottomTabBarProps) => {
   const { isSpeaking } = useSpeech();
-  const { isModalShown } = useModal();
+  const { isModalShown, fadeOpacity } = useModal();
   const isFadeShown = isSpeaking || isModalShown;
-  const fadeOpacity = useSharedValue(0);
 
   const fadeStyle = useAnimatedStyle(() => ({
     opacity: fadeOpacity.value,
   }));
-
-  useEffect(() => {
-    fadeOpacity.value = withTiming(isFadeShown ? 1 : 0, {
-      duration: 200,
-    });
-  }, [isFadeShown]);
 
   return (
     <View>

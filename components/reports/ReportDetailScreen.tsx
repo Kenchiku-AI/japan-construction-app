@@ -30,6 +30,7 @@ import { Loader } from '../shared/Loader';
 import { UnsavedChangesModal } from './UnsavedChangesModal';
 import { ReportMenu } from './ReportMenu';
 import { DeleteReportModal } from './DeleteReportModal';
+import { useModal } from '../../context/modal/ModalContext';
 
 interface ReportDetailScreenProps {
   navigation: NativeStackNavigationProp<
@@ -46,6 +47,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
   const { reportId, reportName } = route.params;
   const { isSpeaking, isProcessing, startSpeech, stopSpeech, resetSpeech } =
     useSpeech();
+  const { fadeOpacity } = useModal();
   const { top } = useSafeAreaInsets();
   const { report, updateReport, loading } = useReport(reportId);
   const { t } = useTranslation();
@@ -83,6 +85,9 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
 
   useEffect(() => {
     speakingFadeOpacity.value = withTiming(isSpeaking ? 0.5 : 0, {
+      duration: 200,
+    });
+    fadeOpacity.value = withTiming(isSpeaking ? 1 : 0, {
       duration: 200,
     });
   }, [isSpeaking]);

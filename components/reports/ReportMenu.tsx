@@ -25,7 +25,7 @@ export const ReportMenu: FC<ReportMenuProps> = ({
   onChangeName,
 }) => {
   const opacity = useSharedValue(0);
-  const { setIsModalShown } = useModal();
+  const { setIsModalShown, fadeOpacity } = useModal();
   const { t } = useTranslation();
   const { top } = useSafeAreaInsets();
 
@@ -45,6 +45,9 @@ export const ReportMenu: FC<ReportMenuProps> = ({
     setIsModalShown(isOpen);
 
     opacity.value = withTiming(isOpen ? 1 : 0, {
+      duration: 200,
+    });
+    fadeOpacity.value = withTiming(isOpen ? 1 : 0, {
       duration: 200,
     });
   }, [isOpen]);
