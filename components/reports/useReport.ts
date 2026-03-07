@@ -4,9 +4,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Report, ReportRequest } from '../../types';
 import { useApi } from '../../services/api/useApi';
+import { navigateBack } from '../../navigation/navigate';
 
 export const useReport = (reportId: string) => {
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [report, setReport] = useState<Report>();
   const { t } = useTranslation();
   const api = useApi();
@@ -22,7 +24,9 @@ export const useReport = (reportId: string) => {
       try {
         const response = await api.getReport(reportId);
         setReport(response);
-      } catch (err) {}
+      } catch (err) {
+        setError(t('get_report_error'));
+      }
 
       setLoading(false);
     },
@@ -37,7 +41,7 @@ export const useReport = (reportId: string) => {
         const response = await api.updateReport(reportId, request);
         setReport(response);
       } catch (err) {
-        // TODO: show error
+        setError(t('update_report_error'));
       }
 
       setLoading(false);
@@ -45,9 +49,25 @@ export const useReport = (reportId: string) => {
     [setReport, reportId],
   );
 
+  const deleteReport = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      await api.deleteReport(reportId);
+      navigateBack();
+    } catch (err) {
+      setError(t('delete_report_error'));
+    }
+
+    setLoading(false);
+  }, [setReport, reportId]);
+
   return {
     loading,
     report,
     updateReport,
+    deleteReport,
+    error,
+    setError,
   };
 };

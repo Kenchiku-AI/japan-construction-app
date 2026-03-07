@@ -98,6 +98,10 @@ export const useApi = () => {
       const url = '/reports/templates';
       return call(() => axios.get<ReportTemplate[]>(url));
     },
+    async deleteReport(reportId: string) {
+      const url = `/reports/${reportId}`;
+      return call(() => axios.delete(url));
+    },
   };
 };
 

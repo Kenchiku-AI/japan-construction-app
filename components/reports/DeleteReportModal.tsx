@@ -1,8 +1,7 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Modal } from '../shared';
 import { StyleSheet, View } from 'react-native';
-import { errorColor1 } from '../../constants';
 
 interface DeleteReportModalProps {
   isOpen: boolean;
@@ -16,6 +15,7 @@ export const DeleteReportModal: FC<DeleteReportModalProps> = ({
   onDelete,
 }) => {
   const { t } = useTranslation();
+  const [fadeSpeed, setFadeSpeed] = useState(200);
 
   return (
     <Modal
@@ -23,9 +23,16 @@ export const DeleteReportModal: FC<DeleteReportModalProps> = ({
       subtitle={t('delete_report_description')}
       isOpen={isOpen}
       onClose={onClose}
+      fadeSpeed={fadeSpeed}
     >
       <View style={styles.buttons}>
-        <Button label={t('delete_report')} onPress={onDelete} />
+        <Button
+          label={t('delete_report')}
+          onPress={() => {
+            setFadeSpeed(0);
+            onDelete();
+          }}
+        />
         <Button variant="secondary" label={t('cancel')} onPress={onClose} />
       </View>
     </Modal>

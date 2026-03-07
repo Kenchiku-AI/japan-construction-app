@@ -1,9 +1,9 @@
-import { FC, useState } from 'react';
+import { FC, useCallback, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View, FlatList } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ReportsStackNavigationParams } from '../../navigation/ReportsStack';
 import { ChevronRight, Plus, Reports } from '../shared/Icons';
-import { Label } from '../shared';
+import { Label, Modal } from '../shared';
 import { useTranslation } from 'react-i18next';
 import { Button, Divider } from '../shared';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -12,6 +12,7 @@ import { Report } from '../../types';
 import { CreateReportModal } from './CreateReportModal';
 import { useReports } from './useReports';
 import { Loader } from '../shared/Loader';
+import { useFocusEffect } from '@react-navigation/native';
 
 interface ReportsListScreenProps {
   navigation: NativeStackNavigationProp<
@@ -23,8 +24,15 @@ interface ReportsListScreenProps {
 const ReportsListScreen: FC<ReportsListScreenProps> = ({ navigation }) => {
   const { t } = useTranslation();
   const { top } = useSafeAreaInsets();
-  const { reports, createReport, loading } = useReports();
+  const { reports, getReports, createReport, loading, error, setError } =
+    useReports();
   const [showCreateReport, setShowCreateReport] = useState(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      getReports();
+    }, []),
+  );
 
   return (
     <>
@@ -73,6 +81,12 @@ const ReportsListScreen: FC<ReportsListScreenProps> = ({ navigation }) => {
             });
           }
         }}
+      />
+      <Modal
+        title={t('error')}
+        subtitle={error}
+        isOpen={!!error}
+        onClose={() => setError('')}
       />
       {loading && <Loader />}
     </>

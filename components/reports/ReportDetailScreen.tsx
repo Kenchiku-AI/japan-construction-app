@@ -27,6 +27,7 @@ import { ChevronLeft, Menu, Microphone } from '../shared/Icons';
 import { useSpeech } from '../../context/speech/SpeechContext';
 import PermissionModal from './PermissionModal';
 import { Loader } from '../shared/Loader';
+import { Modal } from '../shared/Modal';
 import { UnsavedChangesModal } from './UnsavedChangesModal';
 import { ReportMenu } from './ReportMenu';
 import { DeleteReportModal } from './DeleteReportModal';
@@ -49,7 +50,8 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
     useSpeech();
   const { fadeOpacity } = useModal();
   const { top } = useSafeAreaInsets();
-  const { report, updateReport, loading } = useReport(reportId);
+  const { report, updateReport, deleteReport, loading, error, setError } =
+    useReport(reportId);
   const { t } = useTranslation();
   const [fieldValues, setFieldValues] = useState<ReportFieldValues>();
   const [permissionStatus, setPermissionStatus] = useState('');
@@ -296,7 +298,16 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
       <DeleteReportModal
         isOpen={isDeleteModalShown}
         onClose={() => setIsDeleteModalShown(false)}
-        onDelete={() => {}}
+        onDelete={() => {
+          setIsDeleteModalShown(false);
+          deleteReport();
+        }}
+      />
+      <Modal
+        title={t('error')}
+        subtitle={error}
+        isOpen={!!error}
+        onClose={() => setError('')}
       />
     </>
   );

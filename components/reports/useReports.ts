@@ -8,14 +8,8 @@ import { useAuth } from '../../context/auth/AuthContext';
 export const useReports = () => {
   const [loading, setLoading] = useState(false);
   const [reports, setReports] = useState<Report[]>();
-  const { currentUser } = useAuth();
+  const [error, setError] = useState('');
   const api = useApi();
-
-  useEffect(() => {
-    if (!currentUser) return;
-
-    getReports();
-  }, [currentUser]);
 
   const getReports = useCallback(async () => {
     setLoading(true);
@@ -23,9 +17,11 @@ export const useReports = () => {
     try {
       const response = await api.getReports();
       setReports(response);
-    } finally {
-      setLoading(false);
+    } catch (err) {
+      setError('get_reports_error');
     }
+
+    setLoading(false);
   }, [setReports]);
 
   const createReport = useCallback(
@@ -34,12 +30,11 @@ export const useReports = () => {
 
       try {
         const response = await api.createReport(request);
-
         if (!response) throw new Error();
 
         return response;
       } catch (err) {
-        // TODO: show error
+        setError('create_report_error');
       } finally {
         setLoading(false);
       }
@@ -50,6 +45,9 @@ export const useReports = () => {
   return {
     loading,
     reports,
+    getReports,
     createReport,
+    error,
+    setError,
   };
 };

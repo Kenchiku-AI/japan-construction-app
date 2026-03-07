@@ -18,6 +18,7 @@ interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   children?: ReactNode;
+  fadeSpeed?: number;
 }
 
 export const Modal: FC<ModalProps> = ({
@@ -26,6 +27,7 @@ export const Modal: FC<ModalProps> = ({
   isOpen,
   onClose,
   children,
+  fadeSpeed,
 }) => {
   const opacity = useSharedValue(0);
   const { setIsModalShown, fadeOpacity } = useModal();
@@ -46,12 +48,11 @@ export const Modal: FC<ModalProps> = ({
 
     setIsModalShown(isOpen);
 
-    opacity.value = withTiming(isOpen ? 1 : 0, {
-      duration: 200,
-    });
-    fadeOpacity.value = withTiming(isOpen ? 1 : 0, {
-      duration: 200,
-    });
+    const duration = fadeSpeed == null ? 200 : fadeSpeed;
+    const newOpacity = isOpen ? 1 : 0;
+
+    opacity.value = withTiming(newOpacity, { duration });
+    fadeOpacity.value = withTiming(newOpacity, { duration });
   }, [isOpen]);
 
   const onPressClose = () => {
