@@ -31,10 +31,13 @@ export const CreateReportModal: FC<CreateReportModalProps> = ({
   const [templateId, setTemplateId] = useState('');
   const [projectId, setProjectId] = useState('');
   const [name, setName] = useState('');
+  const [isTemplateSelectOpen, setIsTemplateSelectOpen] = useState(false);
+  const [isProjectSelectOpen, setIsProjectSelectOpen] = useState(false);
   const [requireProjectId, setRequireProjectId] = useState(false);
   const hasEditedName = useRef(false);
   const projectHeight = useSharedValue(0);
   const projectOpacity = useSharedValue(0);
+  const [forceClose, setForceClose] = useState(false);
 
   useEffect(() => {
     const template = reportTemplates?.find(t => t.id === templateId);
@@ -55,6 +58,16 @@ export const CreateReportModal: FC<CreateReportModalProps> = ({
       setProjectId('');
     }
   }, [templateId, reportTemplates]);
+
+  useEffect(() => {
+    if (isOpen) {
+      setForceClose(true);
+
+      setTimeout(() => {
+        setForceClose(false);
+      }, 10);
+    }
+  }, [isOpen, forceClose]);
 
   const reset = () => {
     setName('');
@@ -105,10 +118,11 @@ export const CreateReportModal: FC<CreateReportModalProps> = ({
           options={templateOptions}
           value={templateId}
           setValue={setTemplateId}
-          onChange={t => {}}
+          onOpen={() => setIsTemplateSelectOpen(true)}
+          onClose={() => setIsTemplateSelectOpen(false)}
+          forceClose={isProjectSelectOpen || forceClose}
           placeholder={t('report_template')}
           style={styles.select}
-          zIndex={1001}
         />
         <Animated.View style={[projectStyle]}>
           <Select
@@ -116,7 +130,9 @@ export const CreateReportModal: FC<CreateReportModalProps> = ({
             value={projectId}
             setValue={setProjectId}
             placeholder={t('project')}
-            onChange={id => setProjectId(id as string)}
+            onOpen={() => setIsProjectSelectOpen(true)}
+            onClose={() => setIsProjectSelectOpen(false)}
+            forceClose={isTemplateSelectOpen || forceClose}
             style={styles.select}
           />
         </Animated.View>

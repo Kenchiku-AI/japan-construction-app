@@ -76,12 +76,6 @@ export const Menu = ({ color, size }: IconProps) => (
   </Svg>
 );
 
-export const SelectArrow = () => (
-  <Svg width="8" height="6" viewBox="0 0 12 8">
-    <Path d="M0 0h12L6 8z" fill={fontColor1} />
-  </Svg>
-);
-
 export const Microphone = ({ color, size }: IconProps) => (
   <Svg width={size ?? 24} height={size ?? 24} viewBox="0 0 24 24">
     <Path

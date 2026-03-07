@@ -4,9 +4,10 @@ import {
   TouchableOpacity,
   Text,
   ViewStyle,
-  View,
+  TextStyle,
 } from 'react-native';
 import { buttonColor, fontFamily } from '../../constants';
+import { FontStyle } from 'react-native-svg';
 
 interface ButtonProps {
   label: string;
@@ -16,6 +17,7 @@ interface ButtonProps {
   iconLeft?: FC;
   iconRight?: FC;
   style?: ViewStyle;
+  textStyle?: TextStyle;
 }
 
 export const Button: FC<ButtonProps> = ({
@@ -26,6 +28,7 @@ export const Button: FC<ButtonProps> = ({
   iconLeft,
   iconRight,
   style,
+  textStyle,
 }) => {
   const IconLeft = iconLeft;
   const IconRight = iconRight;
@@ -52,7 +55,7 @@ export const Button: FC<ButtonProps> = ({
       disabled={disabled}
     >
       {IconLeft && <IconLeft />}
-      <Text style={labelStyle}>{label}</Text>
+      <Text style={{ ...labelStyle, ...textStyle }}>{label}</Text>
       {IconRight && <IconRight />}
     </TouchableOpacity>
   );

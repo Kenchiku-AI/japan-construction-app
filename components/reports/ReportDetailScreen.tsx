@@ -28,6 +28,8 @@ import { useSpeech } from '../../context/speech/SpeechContext';
 import PermissionModal from './PermissionModal';
 import { Loader } from '../shared/Loader';
 import { UnsavedChangesModal } from './UnsavedChangesModal';
+import { ReportMenu } from './ReportMenu';
+import { DeleteReportModal } from './DeleteReportModal';
 
 interface ReportDetailScreenProps {
   navigation: NativeStackNavigationProp<
@@ -50,6 +52,8 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
   const [fieldValues, setFieldValues] = useState<ReportFieldValues>();
   const [permissionStatus, setPermissionStatus] = useState('');
   const [isUnsavedChangesShown, setIsUnsavedChangesShown] = useState(false);
+  const [isDeleteModalShown, setIsDeleteModalShown] = useState(false);
+  const [isMenuShown, setIsMenuShown] = useState(false);
   const speakingFadeOpacity = useSharedValue(0);
   const updateButtonHeight = useSharedValue(0);
   const updateButtonOpacity = useSharedValue(0);
@@ -191,12 +195,13 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
                   text={reportName}
                   style={styles.reportName}
                   numberOfLines={1}
-                  // adjustsFontSizeToFit
-                  // minimumFontScale={0.5}
                 />
               </View>
             </View>
-            <TouchableOpacity style={styles.menuButton} onPress={() => {}}>
+            <TouchableOpacity
+              style={styles.menuButton}
+              onPress={() => setIsMenuShown(true)}
+            >
               <Menu size={30} />
             </TouchableOpacity>
           </View>
@@ -274,6 +279,19 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
           await onPressUpdate();
           goBack();
         }}
+      />
+      <ReportMenu
+        isOpen={isMenuShown}
+        onClose={() => setIsMenuShown(false)}
+        onChangeName={() => {}}
+        onDelete={() => {
+          setIsDeleteModalShown(true);
+        }}
+      />
+      <DeleteReportModal
+        isOpen={isDeleteModalShown}
+        onClose={() => setIsDeleteModalShown(false)}
+        onDelete={() => {}}
       />
     </>
   );

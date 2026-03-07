@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Keyboard, StyleSheet, View } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthStackNavigationParams } from '../../navigation/AuthStack';
@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { useLogin } from './useLogin';
 import { Heading, Input, Button, Modal } from '../shared';
 import { Loader } from '../shared/Loader';
+import { useSpeech } from '../../context/speech/SpeechContext';
 
 interface LoginScreenProps {
   navigation: NativeStackNavigationProp<
@@ -17,8 +18,13 @@ interface LoginScreenProps {
 const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { resetSpeech } = useSpeech();
   const { loading, login, showError, setShowError } = useLogin();
   const { t } = useTranslation();
+
+  useEffect(() => {
+    resetSpeech();
+  }, []);
 
   return (
     <>

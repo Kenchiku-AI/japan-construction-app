@@ -122,7 +122,7 @@ const TabBar = (props: BottomTabBarProps) => {
         style={[styles.fade, fadeStyle]}
         pointerEvents={isFadeShown ? undefined : 'none'}
       >
-        <AudioVisualizer />
+        {isSpeaking && <AudioVisualizer />}
       </Animated.View>
       <BottomTabBar {...props} />
     </View>
