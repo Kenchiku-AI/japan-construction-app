@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   nav: {
-    height: 70,
+    height: 60,
     alignItems: 'center',
     justifyContent: 'space-between',
     flexDirection: 'row',

@@ -95,7 +95,8 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
   }, [isSpeaking]);
 
   const isUpdateDisabled = useMemo(() => {
-    if (!fieldValues || !report || isSpeaking || loading) return true;
+    if (!fieldValues || !report || isSpeaking || isProcessing || loading)
+      return true;
 
     return !report.fields.some(f => f.value !== fieldValues[f.id]);
   }, [report, fieldValues, isSpeaking, loading]);
