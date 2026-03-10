@@ -23,7 +23,7 @@ import { useReport } from './useReport';
 import { Button, Divider, Input, Label } from '../shared';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { bgColor1, buttonColor, errorColor1 } from '../../constants';
-import { ChevronLeft, Menu, Microphone } from '../shared/Icons';
+import { Camera, ChevronLeft, Menu, Microphone } from '../shared/Icons';
 import { useSpeech } from '../../context/speech/SpeechContext';
 import PermissionModal from './PermissionModal';
 import { Loader } from '../shared/Loader';
@@ -61,6 +61,8 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
   const speakingFadeOpacity = useSharedValue(0);
   const updateButtonHeight = useSharedValue(0);
   const updateButtonOpacity = useSharedValue(0);
+  const photoButtonWidth = useSharedValue(0.5);
+  const photoButtonOpacity = useSharedValue(1);
   const isLoaded = fieldValues !== undefined;
 
   const speakingFadeStyle = useAnimatedStyle(() => ({
@@ -71,6 +73,11 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
     height: updateButtonHeight.value,
     opacity: updateButtonOpacity.value,
     overflow: 'hidden',
+  }));
+
+  const photoButtonStyle = useAnimatedStyle(() => ({
+    width: `${photoButtonWidth.value * 100}%`,
+    opacity: photoButtonOpacity.value,
   }));
 
   useEffect(() => {
@@ -91,6 +98,12 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
     });
     fadeOpacity.value = withTiming(isSpeaking ? 1 : 0, {
       duration: 200,
+    });
+    photoButtonWidth.value = withTiming(isSpeaking ? 0 : 0.5, {
+      duration: 200,
+    });
+    photoButtonOpacity.value = withTiming(isSpeaking ? 0 : 1, {
+      duration: isSpeaking ? 100 : 400,
     });
   }, [isSpeaking]);
 
@@ -235,20 +248,28 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
               )}
               contentContainerStyle={styles.fields}
             />
-            <View style={styles.buttons}>
-              <Animated.View style={updateButtonStyle}>
-                <View style={styles.updateButtonContainer}>
-                  <Button
-                    label={t('update_report')}
-                    onPress={onPressUpdate}
-                    disabled={isUpdateDisabled}
-                    style={styles.updateButton}
-                  />
-                </View>
-              </Animated.View>
-              <View style={styles.speakButtonConatiner}>
+            <View style={styles.buttonsOuter}>
+              <View style={styles.buttonsInner}>
+                <Animated.View style={photoButtonStyle}>
+                  <View style={styles.photoButtonContainer}>
+                    <Button
+                      style={styles.photoButton}
+                      variant="secondary"
+                      label={t('add_photo')}
+                      iconLeft={() => (
+                        <View style={{ marginRight: 8 }}>
+                          <Camera />
+                        </View>
+                      )}
+                      onPress={() => {}}
+                    />
+                  </View>
+                </Animated.View>
                 <Button
-                  style={styles.speakButton}
+                  style={{
+                    ...styles.speakButton,
+                    marginLeft: isSpeaking ? 0 : 5,
+                  }}
                   label={t(
                     isSpeaking
                       ? 'done'
@@ -263,6 +284,16 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
                   onPress={onPressSpeech}
                 />
               </View>
+              <Animated.View style={updateButtonStyle}>
+                <View style={styles.updateButtonContainer}>
+                  <Button
+                    label={t('update_report')}
+                    onPress={onPressUpdate}
+                    disabled={isUpdateDisabled}
+                    style={styles.updateButton}
+                  />
+                </View>
+              </Animated.View>
             </View>
           </>
         ) : (
@@ -351,17 +382,26 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     paddingHorizontal: 16,
   },
-  buttons: {
+  buttonsOuter: {
     paddingBottom: 10,
     paddingHorizontal: 16,
     backgroundColor: bgColor1,
   },
-  speakButtonConatiner: {
-    paddingTop: 10,
+  buttonsInner: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  photoButtonContainer: {
+    flex: 1,
+    paddingRight: 5,
+  },
+  photoButton: {
+    flex: 1,
   },
   speakButton: {
     backgroundColor: errorColor1,
     zIndex: 300,
+    flex: 1,
   },
   updateButtonContainer: {
     paddingTop: 10,
