@@ -26,7 +26,7 @@ export const CreateReportModal: FC<CreateReportModalProps> = ({
   forceProjectId,
 }) => {
   const { t } = useTranslation();
-  const { loading, reportTemplates } = useReportTemplates();
+  const { reportTemplates } = useReportTemplates();
   const { currentUser } = useAuth();
   const [templateId, setTemplateId] = useState('');
   const [projectId, setProjectId] = useState('');

@@ -1,4 +1,4 @@
-const host = '192.168.86.24:8000'; // real device (if LAN IP address changes, run ifconfig and look for inet 192.168.x.x value)
+const host = '192.168.1.8:8000'; // real device (if LAN IP address changes, run ifconfig and look for inet 192.168.x.x value)
 // const host = '10.0.2.2:8000'; // simulator
 export const baseUrl = `http://${host}`;
 export const accessTokenStorageKey = 'access-token';

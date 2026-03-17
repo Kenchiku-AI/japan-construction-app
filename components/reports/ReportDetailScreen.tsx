@@ -5,6 +5,7 @@ import Animated, {
   useAnimatedStyle,
   withTiming,
 } from 'react-native-reanimated';
+import { Camera } from 'react-native-vision-camera';
 import { ReportsStackNavigationParams } from '../../navigation/ReportsStack';
 import {
   View,
@@ -23,7 +24,12 @@ import { useReport } from './useReport';
 import { Button, Divider, Input, Label } from '../shared';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { bgColor1, buttonColor, errorColor1 } from '../../constants';
-import { Camera, ChevronLeft, Menu, Microphone } from '../shared/Icons';
+import {
+  Camera as CameraIcon,
+  ChevronLeft,
+  Menu,
+  Microphone,
+} from '../shared/Icons';
 import { useSpeech } from '../../context/speech/SpeechContext';
 import PermissionModal from './PermissionModal';
 import { Loader } from '../shared/Loader';
@@ -258,10 +264,18 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
                       label={t('add_photo')}
                       iconLeft={() => (
                         <View style={{ marginRight: 8 }}>
-                          <Camera />
+                          <CameraIcon />
                         </View>
                       )}
-                      onPress={() => {}}
+                      onPress={async () => {
+                        const status = await Camera.requestCameraPermission();
+
+                        if (status === 'granted') {
+                          navigation
+                            .getParent()
+                            ?.navigate('CameraScreen', { reportId });
+                        }
+                      }}
                     />
                   </View>
                 </Animated.View>
@@ -381,9 +395,10 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 10,
     paddingHorizontal: 16,
+    flex: 1,
   },
   buttonsOuter: {
-    paddingBottom: 10,
+    paddingVertical: 10,
     paddingHorizontal: 16,
     backgroundColor: bgColor1,
   },

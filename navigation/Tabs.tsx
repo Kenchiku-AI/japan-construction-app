@@ -8,7 +8,7 @@ import ProjectsStack from './ProjectsStack';
 import ReportsStack from './ReportsStack';
 import SettingsStack from './SettingsStack';
 import { buttonColor, fontColor2, fontFamily } from '../constants';
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import {
   Hardhat,
@@ -19,11 +19,7 @@ import {
   SettingsFilled,
 } from '../components/shared/Icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-} from 'react-native-reanimated';
+import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { useSpeech } from '../context/speech/SpeechContext';
 import { useModal } from '../context/modal/ModalContext';
 import AudioVisualizer from '../components/shared/AudioVisualizer';

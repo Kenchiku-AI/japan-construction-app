@@ -78,6 +78,12 @@ export type ReportSpeechResponse = {
   field_values: ReportFieldValues;
 };
 
+export type UploadImageResponse = {
+  upload_url: string;
+  download_url: string;
+  image_id: string;
+};
+
 export enum ReportParentType {
   Company = 'company',
   Project = 'project',

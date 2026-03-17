@@ -1,5 +1,11 @@
 import { FC, ReactNode, useEffect } from 'react';
-import { View, TouchableOpacity, StyleSheet, Keyboard } from 'react-native';
+import {
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  Keyboard,
+  useWindowDimensions,
+} from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Heading } from './Heading';
 import { Button } from './Button';
@@ -11,6 +17,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { bgColor1 } from '../../constants';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface ModalProps {
   title?: string;
@@ -19,6 +26,7 @@ interface ModalProps {
   onClose: () => void;
   children?: ReactNode;
   fadeSpeed?: number;
+  height?: number;
 }
 
 export const Modal: FC<ModalProps> = ({
@@ -28,9 +36,13 @@ export const Modal: FC<ModalProps> = ({
   onClose,
   children,
   fadeSpeed,
+  height,
 }) => {
   const opacity = useSharedValue(0);
   const { setIsModalShown, fadeOpacity } = useModal();
+  const { top, bottom } = useSafeAreaInsets();
+  const { height: screenHeight } = useWindowDimensions();
+  const maxHeight = screenHeight - top - bottom - 32;
   const { t } = useTranslation();
 
   const style = useAnimatedStyle(() => ({
@@ -65,7 +77,7 @@ export const Modal: FC<ModalProps> = ({
       style={[style, styles.container]}
       pointerEvents={isOpen ? undefined : 'none'}
     >
-      <View style={styles.content}>
+      <View style={{ ...styles.content, maxHeight, height }}>
         <View style={styles.nav}>
           <TouchableOpacity style={styles.closeButton} onPress={onPressClose}>
             <Close />
