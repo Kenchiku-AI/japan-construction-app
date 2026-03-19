@@ -16,25 +16,18 @@ export const useReport = (reportId: string) => {
   const { t } = useTranslation();
   const api = useApi();
 
-  useEffect(() => {
-    getReport(reportId);
-  }, [reportId]);
+  const getReport = useCallback(async () => {
+    setLoading(true);
 
-  const getReport = useCallback(
-    async (reportId: string) => {
-      setLoading(true);
+    try {
+      const response = await api.getReport(reportId);
+      setReport(response);
+    } catch (err) {
+      setError(t('get_report_error'));
+    }
 
-      try {
-        const response = await api.getReport(reportId);
-        setReport(response);
-      } catch (err) {
-        setError(t('get_report_error'));
-      }
-
-      setLoading(false);
-    },
-    [setReport],
-  );
+    setLoading(false);
+  }, [reportId, setReport]);
 
   const updateReport = useCallback(
     async (request: ReportRequest) => {
@@ -78,7 +71,12 @@ export const useReport = (reportId: string) => {
           80,
         );
 
-        const urls = await api.uploadImage(reportId);
+        const request = {
+          width: resized.width,
+          height: resized.height,
+        };
+
+        const urls = await api.createReportImage(reportId, request);
         if (!urls) throw new Error();
 
         const response = await fetch(urls.upload_url, {
@@ -94,7 +92,7 @@ export const useReport = (reportId: string) => {
         setError(t('upload_image_error'));
       }
 
-      setLoading(false);
+      await getReport();
     },
     [reportId],
   );
@@ -112,6 +110,7 @@ export const useReport = (reportId: string) => {
   return {
     loading,
     report,
+    getReport,
     updateReport,
     deleteReport,
     uploadImage,

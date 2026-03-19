@@ -8,11 +8,9 @@ import {
 } from 'react-native-vision-camera';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { RootStackNavigationParams } from '../../navigation/RootNavigation';
-import { RouteProp } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Close, Image } from '../shared/Icons';
 import { ConfirmPhotoModal } from './ConfirmPhotoModal';
-import { useReport } from '../reports/useReport';
 import { useCamera } from '../../context/camera/CameraContext';
 
 interface CameraScreenProps {

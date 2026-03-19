@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Modal } from '../shared';
 import { Image, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { PhotoFile } from 'react-native-vision-camera';
+import { useModal } from '../../context/modal/ModalContext';
 
 interface ConfirmPhotoModalProps {
   photo?: PhotoFile;
@@ -19,6 +20,7 @@ export const ConfirmPhotoModal: FC<ConfirmPhotoModalProps> = ({
 }) => {
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
+  const { fadeOpacity } = useModal();
 
   const height = useMemo(() => {
     if (!photo) return undefined;
@@ -51,7 +53,13 @@ export const ConfirmPhotoModal: FC<ConfirmPhotoModalProps> = ({
         )}
       </View>
       <View style={styles.buttons}>
-        <Button label={t('confirm')} onPress={onConfirm} />
+        <Button
+          label={t('confirm')}
+          onPress={() => {
+            fadeOpacity.value = 0;
+            onConfirm();
+          }}
+        />
         <Button variant="secondary" label={t('cancel')} onPress={onClose} />
       </View>
     </Modal>

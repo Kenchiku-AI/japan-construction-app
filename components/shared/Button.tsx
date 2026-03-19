@@ -5,6 +5,7 @@ import {
   Text,
   ViewStyle,
   TextStyle,
+  View,
 } from 'react-native';
 import { buttonColor, fontFamily } from '../../constants';
 import { FontStyle } from 'react-native-svg';
@@ -54,14 +55,22 @@ export const Button: FC<ButtonProps> = ({
       }}
       disabled={disabled}
     >
-      {IconLeft && <IconLeft />}
-      <Text style={{ ...labelStyle, ...textStyle }}>{label}</Text>
-      {IconRight && <IconRight />}
+      <View style={styles.content}>
+        {IconLeft && <IconLeft />}
+        <Text style={{ ...labelStyle, ...textStyle }}>{label}</Text>
+        {IconRight && <IconRight />}
+      </View>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
+  content: {
+    flexDirection: 'row',
+    gap: 5,
+    alignItems: 'center',
+    alignSelf: 'center',
+  },
   primaryContainer: {
     backgroundColor: buttonColor,
     borderRadius: 10,
@@ -69,8 +78,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 16,
-    gap: 10,
-    flexDirection: 'row',
   },
   primaryLabel: {
     color: 'white',

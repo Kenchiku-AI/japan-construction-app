@@ -6,6 +6,7 @@ export type Report = {
   parent_id: string;
   company_id?: string;
   fields: ReportField[];
+  photo_count: number;
   created_at: string;
   updated_at: string;
 };
@@ -31,6 +32,27 @@ export type ReportRequest = {
 };
 
 export type ReportFieldValues = { [key: string]: string };
+
+export type ReportImage = {
+  id: string;
+  status: string;
+  download_url: string;
+  created_at: string;
+  updated_at: string;
+  width: number;
+  height: number;
+};
+
+export type ReportImageRequest = {
+  width: number;
+  height: number;
+};
+
+export type CreateImageResponse = {
+  upload_url: string;
+  download_url: string;
+  image_id: string;
+};
 
 export type ReportTemplate = {
   id: string;
@@ -76,12 +98,6 @@ export type ReportSpeechRequest = {
 
 export type ReportSpeechResponse = {
   field_values: ReportFieldValues;
-};
-
-export type UploadImageResponse = {
-  upload_url: string;
-  download_url: string;
-  image_id: string;
 };
 
 export enum ReportParentType {

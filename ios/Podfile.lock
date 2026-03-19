@@ -2,6 +2,32 @@ PODS:
   - boost (1.84.0)
   - DoubleConversion (1.1.6)
   - fast_float (8.0.0)
+  - FasterImage (1.7.2):
+    - FasterImage/Nuke (= 1.7.2)
+    - FasterImage/NukeUI (= 1.7.2)
+    - RCT-Folly
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Codegen
+    - React-Core
+    - React-RCTFabric
+    - ReactCommon/turbomodule/core
+  - FasterImage/Nuke (1.7.2):
+    - RCT-Folly
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Codegen
+    - React-Core
+    - React-RCTFabric
+    - ReactCommon/turbomodule/core
+  - FasterImage/NukeUI (1.7.2):
+    - RCT-Folly
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Codegen
+    - React-Core
+    - React-RCTFabric
+    - ReactCommon/turbomodule/core
   - FBLazyVector (0.83.1)
   - fmt (11.0.2)
   - glog (0.3.5)
@@ -50,6 +76,7 @@ PODS:
     - React-RCTText (= 0.83.1)
     - React-RCTVibration (= 0.83.1)
   - React-callinvoker (0.83.1)
+  - React-Codegen (0.1.0)
   - React-Core (0.83.1):
     - boost
     - DoubleConversion
@@ -2966,6 +2993,7 @@ DEPENDENCIES:
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - fast_float (from `../node_modules/react-native/third-party-podspecs/fast_float.podspec`)
+  - "FasterImage (from `../node_modules/@candlefinance/faster-image`)"
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - fmt (from `../node_modules/react-native/third-party-podspecs/fmt.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
@@ -3058,6 +3086,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - React-Codegen
     - SocketRocket
 
 EXTERNAL SOURCES:
@@ -3067,6 +3096,8 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
   fast_float:
     :podspec: "../node_modules/react-native/third-party-podspecs/fast_float.podspec"
+  FasterImage:
+    :path: "../node_modules/@candlefinance/faster-image"
   FBLazyVector:
     :path: "../node_modules/react-native/Libraries/FBLazyVector"
   fmt:
@@ -3247,6 +3278,7 @@ SPEC CHECKSUMS:
   boost: 7e761d76ca2ce687f7cc98e698152abd03a18f90
   DoubleConversion: cb417026b2400c8f53ae97020b2be961b59470cb
   fast_float: b32c788ed9c6a8c584d114d0047beda9664e7cc6
+  FasterImage: add4ffc88ddc00ae5d0a30ab93ac8b7781cd30fa
   FBLazyVector: 309703e71d3f2f1ed7dc7889d58309c9d77a95a4
   fmt: a40bb5bd0294ea969aaaba240a927bd33d878cdd
   glog: 5683914934d5b6e4240e497e0f4a3b42d1854183
@@ -3259,6 +3291,7 @@ SPEC CHECKSUMS:
   RCTTypeSafety: 27927d0ca04e419ed9467578b3e6297e37210b5c
   React: 4bc1f928568ad4bcfd147260f907b4ea5873a03b
   React-callinvoker: 87f8728235a0dc62e9dc19b3851c829d9347d015
+  React-Codegen: 4b8b4817cea7a54b83851d4c1f91f79aa73de30a
   React-Core: 19e0183e28d7a6613ecacebd7525fe6650efa3b6
   React-CoreModules: 73cc86f2a0ff84b93d6325073ad2e4874d21ad40
   React-cxxreact: 4bf734645c77c9b86e2f3e933e0411cf2f14d1ba

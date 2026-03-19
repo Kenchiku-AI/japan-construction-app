@@ -123,7 +123,7 @@ const ReportsListItem: FC<ReportsListItemProps> = ({ report, onPress }) => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     flex: 1,
   },
   nav: {
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     marginRight: -4,
   },
   heading: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
   },
   createButton: {
     flex: 1,

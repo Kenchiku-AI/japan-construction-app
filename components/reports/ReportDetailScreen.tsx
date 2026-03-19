@@ -17,16 +17,23 @@ import {
   PermissionsAndroid,
 } from 'react-native';
 import { check, PERMISSIONS, RESULTS } from 'react-native-permissions';
-import { RouteProp } from '@react-navigation/native';
+import { RouteProp, useFocusEffect } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { ReportFieldValues } from '../../types';
 import { useReport } from './useReport';
 import { Button, Divider, Input, Label } from '../shared';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { bgColor1, buttonColor, errorColor1 } from '../../constants';
+import {
+  bgColor1,
+  buttonColor,
+  errorColor1,
+  fontColor1,
+} from '../../constants';
 import {
   Camera as CameraIcon,
   ChevronLeft,
+  ChevronRight,
+  Image,
   Menu,
   Microphone,
 } from '../shared/Icons';
@@ -56,8 +63,15 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
     useSpeech();
   const { fadeOpacity } = useModal();
   const { top } = useSafeAreaInsets();
-  const { report, updateReport, deleteReport, loading, error, setError } =
-    useReport(reportId);
+  const {
+    report,
+    getReport,
+    updateReport,
+    deleteReport,
+    loading,
+    error,
+    setError,
+  } = useReport(reportId);
   const { t } = useTranslation();
   const [fieldValues, setFieldValues] = useState<ReportFieldValues>();
   const [permissionStatus, setPermissionStatus] = useState('');
@@ -85,6 +99,12 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
     width: `${photoButtonWidth.value * 100}%`,
     opacity: photoButtonOpacity.value,
   }));
+
+  useFocusEffect(
+    useCallback(() => {
+      getReport();
+    }, []),
+  );
 
   useEffect(() => {
     if (!report) return;
@@ -234,10 +254,10 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
           </View>
           <Divider />
         </View>
-        {isLoaded ? (
+        {isLoaded && report ? (
           <>
             <FlatList
-              data={report?.fields ?? []}
+              data={report.fields}
               renderItem={({ item }) => (
                 <Input
                   key={item.id}
@@ -252,6 +272,32 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
                   }}
                 />
               )}
+              ListHeaderComponent={() => {
+                if (report.photo_count < 1) return null;
+
+                return (
+                  <>
+                    <TouchableOpacity
+                      style={styles.photos}
+                      onPress={() => {
+                        navigation.navigate('ReportPhotosScreen', { reportId });
+                      }}
+                    >
+                      <View style={styles.photosInfo}>
+                        <Image color={fontColor1} size={26} />
+                        <Label
+                          text={t('photo_count', { count: report.photo_count })}
+                          style={styles.photosCount}
+                        />
+                      </View>
+                      <View style={styles.chevron}>
+                        <ChevronRight />
+                      </View>
+                    </TouchableOpacity>
+                    <Divider light />
+                  </>
+                );
+              }}
               contentContainerStyle={styles.fields}
             />
             <View style={styles.buttonsOuter}>
@@ -392,7 +438,6 @@ const styles = StyleSheet.create({
   },
   fields: {
     gap: 10,
-    paddingTop: 20,
     paddingBottom: 10,
     paddingHorizontal: 16,
     flex: 1,
@@ -434,6 +479,25 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     opacity: 0.5,
     zIndex: 200,
+  },
+  photos: {
+    height: 70,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexDirection: 'row',
+    paddingLeft: 8,
+  },
+  photosInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    flexShrink: 1,
+  },
+  photosCount: {
+    flexShrink: 1,
+  },
+  chevron: {
+    marginHorizontal: 12,
   },
 });
 

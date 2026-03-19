@@ -14,7 +14,9 @@ import {
   ReportRequest,
   ReportSpeechRequest,
   ReportSpeechResponse,
-  UploadImageResponse,
+  CreateImageResponse,
+  ReportImage,
+  ReportImageRequest,
 } from '../../types';
 import { baseUrl } from '../../constants';
 import { useAuth } from '../../context/auth/AuthContext';
@@ -103,9 +105,17 @@ export const useApi = () => {
       const url = `/reports/${reportId}`;
       return call(() => axios.delete(url));
     },
-    async uploadImage(reportId: string) {
-      const url = `/reports/${reportId}/upload`;
-      return call(() => axios.post<UploadImageResponse>(url, {}));
+    async createReportImage(reportId: string, request: ReportImageRequest) {
+      const url = `/reports/${reportId}/images`;
+      return call(() => axios.post<CreateImageResponse>(url, request));
+    },
+    async getReportImages(reportId: string) {
+      const url = `/reports/${reportId}/images`;
+      return call(() => axios.get<ReportImage[]>(url));
+    },
+    async deleteImage(reportId: string, imageId: string) {
+      const url = `/reports/${reportId}/images/${imageId}`;
+      return call(() => axios.delete(url));
     },
   };
 };
