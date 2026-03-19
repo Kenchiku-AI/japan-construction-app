@@ -32,7 +32,7 @@ export const ConfirmPhotoModal: FC<ConfirmPhotoModalProps> = ({
 
     const photoWidth = width - 64;
     const photoHeight = factor * photoWidth;
-    return photoHeight + 320;
+    return photoHeight + 310;
   }, [photo, width]);
 
   return (
@@ -42,6 +42,7 @@ export const ConfirmPhotoModal: FC<ConfirmPhotoModalProps> = ({
       isOpen={isOpen}
       onClose={onClose}
       height={height}
+      tabsHidden
     >
       <View style={styles.photo}>
         {photo && (
@@ -71,6 +72,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   photo: {
+    marginVertical: 20,
     flex: 1,
   },
 });

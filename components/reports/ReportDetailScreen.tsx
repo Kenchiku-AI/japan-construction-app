@@ -45,6 +45,7 @@ import { UnsavedChangesModal } from './UnsavedChangesModal';
 import { ReportMenu } from './ReportMenu';
 import { DeleteReportModal } from './DeleteReportModal';
 import { useModal } from '../../context/modal/ModalContext';
+import { useCamera } from '../../context/camera/CameraContext';
 
 interface ReportDetailScreenProps {
   navigation: NativeStackNavigationProp<
@@ -68,10 +69,12 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
     getReport,
     updateReport,
     deleteReport,
+    uploadImage,
     loading,
     error,
     setError,
   } = useReport(reportId);
+  const { setOnConfirmImage } = useCamera();
   const { t } = useTranslation();
   const [fieldValues, setFieldValues] = useState<ReportFieldValues>();
   const [permissionStatus, setPermissionStatus] = useState('');
@@ -102,6 +105,11 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
 
   useFocusEffect(
     useCallback(() => {
+      setOnConfirmImage(() => async (uri: string) => {
+        await uploadImage(uri);
+        getReport();
+      });
+
       getReport();
     }, []),
   );

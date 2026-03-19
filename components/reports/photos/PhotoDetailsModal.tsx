@@ -7,7 +7,6 @@ import { CachedImage } from '../../shared/CachedImage';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Tag, Trash } from '../../shared/Icons';
 import { errorColor1, fontColor2 } from '../../../constants';
-import dayjs from 'dayjs';
 import { useDate } from '../../../services/localization/useDate';
 
 interface PhotoDetailsModalProps {
@@ -34,8 +33,6 @@ export const PhotoDetailsModal: FC<PhotoDetailsModalProps> = ({
     if (!image?.created_at) return null;
     return formatDate(image.created_at);
   }, [image?.created_at]);
-
-  console.log('DATE', `${date}`);
 
   return (
     <Modal

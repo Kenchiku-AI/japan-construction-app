@@ -1,18 +1,16 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ImageResizer from 'react-native-image-resizer';
 import { Report, ReportRequest } from '../../types';
 import { useApi } from '../../services/api/useApi';
 import { navigateBack } from '../../navigation/navigate';
-import { useCamera } from '../../context/camera/CameraContext';
 
 export const useReport = (reportId: string) => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [report, setReport] = useState<Report>();
-  const { setOnConfirmImage } = useCamera();
   const { t } = useTranslation();
   const api = useApi();
 
@@ -76,10 +74,10 @@ export const useReport = (reportId: string) => {
           height: resized.height,
         };
 
-        const urls = await api.createReportImage(reportId, request);
-        if (!urls) throw new Error();
+        const createResponse = await api.createReportImage(reportId, request);
+        if (!createResponse) throw new Error();
 
-        const response = await fetch(urls.upload_url, {
+        const uploadResponse = await fetch(createResponse.upload_url, {
           method: 'PUT',
           headers: {
             'Content-Type': 'image/jpeg',
@@ -87,25 +85,17 @@ export const useReport = (reportId: string) => {
           body: resized,
         });
 
-        if (!response.ok) throw new Error();
+        if (!uploadResponse.ok) throw new Error();
+
+        return createResponse;
       } catch (err) {
         setError(t('upload_image_error'));
+      } finally {
+        setLoading(false);
       }
-
-      await getReport();
     },
     [reportId],
   );
-
-  useEffect(() => {
-    setOnConfirmImage(() => (uri: string) => {
-      uploadImage(uri);
-    });
-
-    return () => {
-      setOnConfirmImage(undefined);
-    };
-  }, [uploadImage]);
 
   return {
     loading,

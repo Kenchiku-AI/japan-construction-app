@@ -27,6 +27,7 @@ interface ModalProps {
   children?: ReactNode;
   fadeSpeed?: number;
   height?: number;
+  tabsHidden?: boolean;
 }
 
 export const Modal: FC<ModalProps> = ({
@@ -37,12 +38,14 @@ export const Modal: FC<ModalProps> = ({
   children,
   fadeSpeed,
   height,
+  tabsHidden,
 }) => {
   const opacity = useSharedValue(0);
   const { setIsModalShown, fadeOpacity } = useModal();
   const { top, bottom } = useSafeAreaInsets();
   const { height: screenHeight } = useWindowDimensions();
-  const maxHeight = screenHeight - top - bottom - 100;
+  const maxHeight = screenHeight - top - bottom - (tabsHidden ? 0 : 80) - 20;
+  const marginTop = tabsHidden ? 0 : top;
   const { t } = useTranslation();
 
   const style = useAnimatedStyle(() => ({
@@ -77,7 +80,7 @@ export const Modal: FC<ModalProps> = ({
       style={[style, styles.container]}
       pointerEvents={isOpen ? undefined : 'none'}
     >
-      <View style={{ ...styles.content, maxHeight, height, marginTop: top }}>
+      <View style={{ ...styles.content, maxHeight, height, marginTop }}>
         <View style={styles.nav}>
           <TouchableOpacity style={styles.closeButton} onPress={onPressClose}>
             <Close />

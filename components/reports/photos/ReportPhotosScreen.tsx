@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Dimensions,
   Pressable,
@@ -7,21 +7,23 @@ import {
   View,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { Camera } from 'react-native-vision-camera';
 import { ReportsStackNavigationParams } from '../../../navigation/ReportsStack';
-import { Menu } from '../../shared/Icons';
 import { useTranslation } from 'react-i18next';
-import { Divider, Label, Modal } from '../../shared';
+import { Button, Divider, Label, Modal } from '../../shared';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useReportPhotos } from './useReportPhotos';
 import { Loader } from '../../shared/Loader';
 import { FlashList } from '@shopify/flash-list';
-import { RouteProp } from '@react-navigation/native';
-import { ChevronLeft } from '../../shared/Icons';
+import { RouteProp, useFocusEffect } from '@react-navigation/native';
+import { ChevronLeft, Menu, Camera as CameraIcon } from '../../shared/Icons';
 import { buttonColor } from '../../../constants';
 import { ReportPhotosMenu } from './ReportPhotosMenu';
 import { CachedImage } from '../../shared/CachedImage';
 import { PhotoDetailsModal } from './PhotoDetailsModal';
 import { ReportImage } from '../../../types';
+import { useCamera } from '../../../context/camera/CameraContext';
+import { useReport } from '../useReport';
 
 interface ReportPhotosScreenProps {
   navigation: NativeStackNavigationProp<
@@ -44,17 +46,43 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
   const { t } = useTranslation();
   const { reportId } = route.params;
   const { top } = useSafeAreaInsets();
-  const { photos, deletePhoto, loading, error, setError } =
-    useReportPhotos(reportId);
+  const { setOnConfirmImage } = useCamera();
+  const {
+    photos,
+    getPhotos,
+    addPhoto,
+    deletePhoto,
+    loading: photosLoading,
+    error,
+    setError,
+  } = useReportPhotos(reportId);
+  const { uploadImage, loading: reportLoading } = useReport(reportId);
   const [isMenuShown, setIsMenuShown] = useState(false);
   const [isDetailModalShown, setIsDetailModalShown] = useState(false);
   const [groupBy, setGroupBy] = useState(ReportPhotosGroupBy.None);
   const [selectedPhoto, setSelectedPhoto] = useState<ReportImage>();
   const screenWidth = Dimensions.get('window').width;
+  const loading = photosLoading || reportLoading;
+
+  console.log('report loading', reportLoading);
 
   const columnWidth = useMemo(() => {
     return (screenWidth - 42) / 2;
   }, [screenWidth]);
+
+  useFocusEffect(
+    useCallback(() => {
+      setOnConfirmImage(() => async (uri: string) => {
+        const newPhoto = await uploadImage(uri);
+
+        if (newPhoto) {
+          addPhoto(newPhoto);
+        }
+      });
+
+      getPhotos();
+    }, []),
+  );
 
   useEffect(() => {
     if (selectedPhoto) {
@@ -114,6 +142,23 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
           );
         }}
         contentContainerStyle={styles.images}
+      />
+      <Button
+        style={styles.button}
+        variant="secondary"
+        label={t('add_photo')}
+        iconLeft={() => (
+          <View style={{ marginRight: 8 }}>
+            <CameraIcon />
+          </View>
+        )}
+        onPress={async () => {
+          const status = await Camera.requestCameraPermission();
+
+          if (status === 'granted') {
+            navigation.getParent()?.navigate('CameraScreen', { reportId });
+          }
+        }}
       />
       <ReportPhotosMenu
         isOpen={isMenuShown}
@@ -178,6 +223,10 @@ const styles = StyleSheet.create({
   image: {
     marginTop: 10,
     marginLeft: 10,
+  },
+  button: {
+    marginHorizontal: 16,
+    marginVertical: 10,
   },
 });
 

@@ -38,7 +38,6 @@ export type ReportImage = {
   status: string;
   download_url: string;
   created_at: string;
-  updated_at: string;
   width: number;
   height: number;
 };
@@ -49,9 +48,13 @@ export type ReportImageRequest = {
 };
 
 export type CreateImageResponse = {
+  id: string;
+  status: string;
   upload_url: string;
   download_url: string;
-  image_id: string;
+  created_at: string;
+  width: number;
+  height: number;
 };
 
 export type ReportTemplate = {
