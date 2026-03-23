@@ -16,7 +16,8 @@ import {
   ReportSpeechResponse,
   CreateImageResponse,
   ReportImage,
-  ReportImageRequest,
+  ReportImageCreateRequest,
+  ReportImageUpdateRequest,
 } from '../../types';
 import { baseUrl } from '../../constants';
 import { useAuth } from '../../context/auth/AuthContext';
@@ -105,7 +106,10 @@ export const useApi = () => {
       const url = `/reports/${reportId}`;
       return call(() => axios.delete(url));
     },
-    async createReportImage(reportId: string, request: ReportImageRequest) {
+    async createReportImage(
+      reportId: string,
+      request: ReportImageCreateRequest,
+    ) {
       const url = `/reports/${reportId}/images`;
       return call(() => axios.post<CreateImageResponse>(url, request));
     },
@@ -116,6 +120,14 @@ export const useApi = () => {
     async deleteImage(reportId: string, imageId: string) {
       const url = `/reports/${reportId}/images/${imageId}`;
       return call(() => axios.delete(url));
+    },
+    async updateImage(
+      reportId: string,
+      imageId: string,
+      request: ReportImageUpdateRequest,
+    ) {
+      const url = `/reports/${reportId}/images/${imageId}`;
+      return call(() => axios.patch<ReportImage>(url, request));
     },
   };
 };

@@ -25,6 +25,8 @@ interface InputProps {
   style?: ViewStyle;
   disabled?: boolean;
   log?: boolean;
+  multiline?: boolean;
+  height?: number;
 }
 
 export const Input: FC<InputProps> = ({
@@ -35,6 +37,7 @@ export const Input: FC<InputProps> = ({
   secureTextEntry,
   style,
   disabled,
+  multiline,
 }) => {
   const [isEmpty, setIsEmpty] = useState(!value);
   const paddingTop = useSharedValue(!value ? 0 : TOP_PADDING);
@@ -96,6 +99,8 @@ export const Input: FC<InputProps> = ({
           autoFocus={false}
           secureTextEntry={secureTextEntry}
           editable={!disabled}
+          multiline={multiline}
+          textAlignVertical={multiline ? 'top' : undefined}
         />
       </Animated.View>
     </View>

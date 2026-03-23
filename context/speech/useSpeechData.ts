@@ -62,7 +62,7 @@ export const useSpeechData = () => {
     }
   };
 
-  const startSpeech = useCallback(
+  const startReportSpeech = useCallback(
     async (
       reportId: string,
       onFieldsReceived: (fieldValues: ReportFieldValues) => void,
@@ -90,6 +90,32 @@ export const useSpeechData = () => {
     [reportOutputLanguage],
   );
 
+  const startPhotoSpeech = useCallback(
+    async (onChange: (text?: string) => void) => {
+      setIsSpeaking(true);
+
+      try {
+        const whisper = await createWhisperContext();
+
+        const transcriber = await whisper.transcribeRealtime({
+          realtimeAudioSec: 300,
+          realtimeAudioSliceSec: 20,
+          realtimeAudioMinSec: 2,
+        });
+
+        transcriber.subscribe(async (event: any) => {
+          const text = event.data?.result?.replaceAll('[BLANK_AUDIO]', '');
+          onChange(text);
+
+          if (stopRequested.current) resetSpeech();
+        });
+      } catch (err) {
+        console.log('Error starting transcription:', err);
+      }
+    },
+    [reportOutputLanguage],
+  );
+
   const stopSpeech = () => {
     setIsSpeaking(false);
     setIsProcessing(true);
@@ -106,7 +132,8 @@ export const useSpeechData = () => {
   return {
     isSpeaking,
     isProcessing,
-    startSpeech,
+    startReportSpeech,
+    startPhotoSpeech,
     stopSpeech,
     resetSpeech,
   };

@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Dimensions,
   Pressable,
@@ -15,13 +15,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useReportPhotos } from './useReportPhotos';
 import { Loader } from '../../shared/Loader';
 import { FlashList } from '@shopify/flash-list';
-import { RouteProp, useFocusEffect } from '@react-navigation/native';
+import { RouteProp } from '@react-navigation/native';
 import { ChevronLeft, Menu, Camera as CameraIcon } from '../../shared/Icons';
 import { buttonColor } from '../../../constants';
 import { ReportPhotosMenu } from './ReportPhotosMenu';
 import { CachedImage } from '../../shared/CachedImage';
-import { PhotoDetailsModal } from './PhotoDetailsModal';
-import { ReportImage } from '../../../types';
 import { useCamera } from '../../../context/camera/CameraContext';
 import { useReport } from '../useReport';
 
@@ -44,59 +42,45 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
   route,
 }) => {
   const { t } = useTranslation();
-  const { reportId } = route.params;
+  const { reportId, deletedImageId } = route.params;
   const { top } = useSafeAreaInsets();
   const { setOnConfirmImage } = useCamera();
   const {
     photos,
     getPhotos,
     addPhoto,
-    deletePhoto,
+    removePhoto,
     loading: photosLoading,
     error,
     setError,
   } = useReportPhotos(reportId);
   const { uploadImage, loading: reportLoading } = useReport(reportId);
   const [isMenuShown, setIsMenuShown] = useState(false);
-  const [isDetailModalShown, setIsDetailModalShown] = useState(false);
   const [groupBy, setGroupBy] = useState(ReportPhotosGroupBy.None);
-  const [selectedPhoto, setSelectedPhoto] = useState<ReportImage>();
   const screenWidth = Dimensions.get('window').width;
   const loading = photosLoading || reportLoading;
-
-  console.log('report loading', reportLoading);
 
   const columnWidth = useMemo(() => {
     return (screenWidth - 42) / 2;
   }, [screenWidth]);
 
-  useFocusEffect(
-    useCallback(() => {
-      setOnConfirmImage(() => async (uri: string) => {
-        const newPhoto = await uploadImage(uri);
+  useEffect(() => {
+    setOnConfirmImage(() => async (uri: string) => {
+      const newPhoto = await uploadImage(uri);
 
-        if (newPhoto) {
-          addPhoto(newPhoto);
-        }
-      });
+      if (newPhoto) {
+        addPhoto(newPhoto);
+      }
+    });
 
-      getPhotos();
-    }, []),
-  );
+    getPhotos();
+  }, []);
 
   useEffect(() => {
-    if (selectedPhoto) {
-      setIsDetailModalShown(true);
+    if (deletedImageId) {
+      removePhoto(deletedImageId);
     }
-  }, [selectedPhoto]);
-
-  const closePhotoDetailsModal = () => {
-    setIsDetailModalShown(false);
-
-    setTimeout(() => {
-      setSelectedPhoto(undefined);
-    }, 500);
-  };
+  }, [deletedImageId]);
 
   return (
     <>
@@ -135,7 +119,9 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
           return (
             <Pressable
               style={styles.image}
-              onPress={() => setSelectedPhoto(item)}
+              onPress={() =>
+                navigation.navigate('PhotoDetailScreen', { image: item })
+              }
             >
               <CachedImage image={item} width={columnWidth} />
             </Pressable>
@@ -164,20 +150,6 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
         isOpen={isMenuShown}
         onClose={() => setIsMenuShown(false)}
         onGroupBySelected={gb => setGroupBy(gb)}
-      />
-      <PhotoDetailsModal
-        image={selectedPhoto}
-        isOpen={isDetailModalShown}
-        onClose={() => {
-          closePhotoDetailsModal();
-        }}
-        onDelete={() => {
-          if (selectedPhoto) {
-            deletePhoto(selectedPhoto.id);
-          }
-
-          closePhotoDetailsModal();
-        }}
       />
       <Modal
         title={t('error')}

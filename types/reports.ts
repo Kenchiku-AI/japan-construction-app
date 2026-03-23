@@ -35,20 +35,27 @@ export type ReportFieldValues = { [key: string]: string };
 
 export type ReportImage = {
   id: string;
+  report_id: string;
   status: string;
   download_url: string;
   created_at: string;
   width: number;
   height: number;
+  description?: string;
 };
 
-export type ReportImageRequest = {
+export type ReportImageCreateRequest = {
   width: number;
   height: number;
 };
 
+export type ReportImageUpdateRequest = {
+  description: string;
+};
+
 export type CreateImageResponse = {
   id: string;
+  report_id: string;
   status: string;
   upload_url: string;
   download_url: string;

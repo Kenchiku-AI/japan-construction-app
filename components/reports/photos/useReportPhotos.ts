@@ -44,26 +44,10 @@ export const useReportPhotos = (reportId: string) => {
     setPhotos(photosRef.current.filter(p => p.id !== id));
   };
 
-  const deletePhoto = useCallback(
-    async (imageId: string) => {
-      setLoading(true);
-
-      try {
-        await api.deleteImage(reportId, imageId);
-      } catch (err) {
-        setError(t('delete_photo_error'));
-      }
-
-      removePhoto(imageId);
-      setLoading(false);
-    },
-    [reportId],
-  );
-
   return {
     getPhotos,
     addPhoto,
-    deletePhoto,
+    removePhoto,
     loading,
     photos,
     error,

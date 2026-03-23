@@ -60,8 +60,13 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
   route,
 }) => {
   const { reportId, reportName } = route.params;
-  const { isSpeaking, isProcessing, startSpeech, stopSpeech, resetSpeech } =
-    useSpeech();
+  const {
+    isSpeaking,
+    isProcessing,
+    startReportSpeech,
+    stopSpeech,
+    resetSpeech,
+  } = useSpeech();
   const { fadeOpacity } = useModal();
   const { top } = useSafeAreaInsets();
   const {
@@ -174,7 +179,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
     if (isSpeaking) {
       stopSpeech();
     } else {
-      startSpeech(report.id, fieldValues => {
+      startReportSpeech(report.id, fieldValues => {
         setFieldValues(prev => {
           const newValues = { ...prev };
 
@@ -188,7 +193,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
         });
       });
     }
-  }, [isSpeaking, stopSpeech, startSpeech, report]);
+  }, [isSpeaking, stopSpeech, startReportSpeech, report]);
 
   const goBack = () => {
     resetSpeech();
