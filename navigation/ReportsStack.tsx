@@ -16,9 +16,6 @@ export type ReportsStackNavigationParams = {
     reportId: string;
     deletedImageId?: string;
   };
-  PhotoDetailScreen: {
-    image: ReportImage;
-  };
 };
 
 const ReportsStack: FC = () => {
@@ -28,7 +25,6 @@ const ReportsStack: FC = () => {
       <Stack.Screen name="ReportsListScreen" component={ReportsListScreen} />
       <Stack.Screen name="ReportDetailScreen" component={ReportDetailScreen} />
       <Stack.Screen name="ReportPhotosScreen" component={ReportPhotosScreen} />
-      <Stack.Screen name="PhotoDetailScreen" component={PhotoDetailScreen} />
     </Stack.Navigator>
   );
 };

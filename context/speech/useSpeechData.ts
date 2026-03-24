@@ -104,7 +104,10 @@ export const useSpeechData = () => {
         });
 
         transcriber.subscribe(async (event: any) => {
-          const text = event.data?.result?.replaceAll('[BLANK_AUDIO]', '');
+          const text = event.data?.result
+            ?.replaceAll('[BLANK_AUDIO]', '')
+            .trim();
+
           onChange(text);
 
           if (stopRequested.current) resetSpeech();

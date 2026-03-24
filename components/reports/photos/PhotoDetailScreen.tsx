@@ -13,17 +13,11 @@ import {
   View,
 } from 'react-native';
 import { CachedImage } from '../../shared/CachedImage';
-import { ChevronLeft, Microphone, Tag, Trash } from '../../shared/Icons';
-import {
-  bgColor1,
-  buttonColor,
-  errorColor1,
-  fontColor2,
-} from '../../../constants';
+import { Close, Microphone, Trash, Zoom } from '../../shared/Icons';
+import { bgColor1, errorColor1 } from '../../../constants';
 import { useDate } from '../../../services/localization/useDate';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { check, PERMISSIONS, RESULTS } from 'react-native-permissions';
-import { ReportsStackNavigationParams } from '../../../navigation/ReportsStack';
 import { RouteProp } from '@react-navigation/native';
 import { ConfirmDeletePhotoModal } from './ConfirmDeletePhotoModal';
 import { useReportPhoto } from './useReportPhoto';
@@ -37,13 +31,14 @@ import { useSpeech } from '../../../context/speech/SpeechContext';
 import PermissionModal from '../PermissionModal';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Loader } from '../../shared/Loader';
+import { RootNavigationParams } from '../../../navigation/navigate';
 
 interface PhotoDetailScreenProps {
   navigation: NativeStackNavigationProp<
-    ReportsStackNavigationParams,
+    RootNavigationParams,
     'PhotoDetailScreen'
   >;
-  route: RouteProp<ReportsStackNavigationParams, 'PhotoDetailScreen'>;
+  route: RouteProp<RootNavigationParams, 'PhotoDetailScreen'>;
 }
 
 export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
@@ -55,9 +50,10 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
     useReportPhoto(initialImage);
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
-  const { top } = useSafeAreaInsets();
+  const { top, bottom } = useSafeAreaInsets();
   const { formatDate } = useDate();
   const [isConfirmDeleteShown, setIsConfirmDeleteShown] = useState(false);
+  const [isZoomShown, setIsZoomShown] = useState(false);
   const [permissionStatus, setPermissionStatus] = useState('');
   const [description, setDescription] = useState(initialImage.description);
   const {
@@ -89,6 +85,17 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
     opacity: photoButtonOpacity.value,
   }));
 
+  const date = useMemo(() => {
+    if (!image?.created_at) return null;
+    return formatDate(image.created_at);
+  }, [image?.created_at]);
+
+  const isUpdateDisabled = useMemo(() => {
+    if (isSpeaking || isProcessing || loading) return true;
+
+    return description === image.description;
+  }, [description, image, isSpeaking, isProcessing, loading]);
+
   useEffect(() => {
     speakingFadeOpacity.value = withTiming(isSpeaking ? 0.5 : 0, {
       duration: 200,
@@ -104,16 +111,14 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
     });
   }, [isSpeaking]);
 
-  const date = useMemo(() => {
-    if (!image?.created_at) return null;
-    return formatDate(image.created_at);
-  }, [image?.created_at]);
-
-  const isUpdateDisabled = useMemo(() => {
-    if (isSpeaking || isProcessing || loading) return true;
-
-    return description === image.description;
-  }, [description, image, isSpeaking, loading]);
+  useEffect(() => {
+    updateButtonHeight.value = withTiming(isUpdateDisabled ? 0 : 70, {
+      duration: 200,
+    });
+    updateButtonOpacity.value = withTiming(isUpdateDisabled ? 0 : 1, {
+      duration: 200,
+    });
+  }, [isUpdateDisabled]);
 
   const onPressUpdate = useCallback(async () => {
     if (!description) return;
@@ -171,15 +176,6 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
       <View style={{ paddingTop: top, ...styles.navContainer }}>
         <View style={styles.nav}>
           <View style={styles.navLeft}>
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={() => {
-                resetSpeech();
-                navigation.goBack();
-              }}
-            >
-              <ChevronLeft color={buttonColor} size={20} />
-            </TouchableOpacity>
             <View style={{ flexShrink: 1 }}>
               <Label
                 text={t('photo_details')}
@@ -188,24 +184,47 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
               />
             </View>
           </View>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.goBack();
+            }}
+          >
+            <Close />
+          </TouchableOpacity>
         </View>
         <Divider />
       </View>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.image}>
-          {image && <CachedImage image={image} width={width - 32} />}
+          {image && (
+            <TouchableOpacity
+              onPress={() => {
+                setIsZoomShown(true);
+              }}
+              style={styles.imageButton}
+            >
+              <CachedImage image={image} width={width - 32} maxHeight={320} />
+              <View style={styles.zoomIcon}>
+                <Zoom />
+              </View>
+            </TouchableOpacity>
+          )}
         </View>
         {date && <Text style={styles.date}>{t('photo_taken', { date })}</Text>}
-        <Input
-          placeholder={t('description')}
-          value={description}
-          onChange={d => setDescription(d)}
-          style={{ height: 120 }}
-          multiline
-        />
+        <View style={styles.descriptionContainer}>
+          <Input
+            placeholder={t('description')}
+            value={description}
+            onChange={d => setDescription(d)}
+            onClear={() => setDescription('')}
+            style={styles.description}
+            multiline
+          />
+        </View>
         <View style={styles.tags}></View>
       </ScrollView>
-      <View style={styles.buttonsOuter}>
+      <Divider style={styles.divider} light />
+      <View style={{ paddingBottom: bottom + 10, ...styles.buttonsOuter }}>
         <View style={styles.buttonsInner}>
           <Animated.View style={deleteButtonStyle}>
             <View style={styles.deleteButtonContainer}>
@@ -271,6 +290,28 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
         onClose={() => setPermissionStatus('')}
         status={permissionStatus}
       />
+      {isZoomShown && (
+        <View
+          style={{
+            ...styles.zoomContainer,
+            paddingTop: top,
+            paddingBottom: bottom,
+          }}
+        >
+          <View style={styles.zoomHeader}>
+            <TouchableOpacity
+              onPress={() => {
+                setIsZoomShown(false);
+              }}
+            >
+              <Close color="white" />
+            </TouchableOpacity>
+          </View>
+          <ScrollView>
+            <CachedImage image={image} width={width} />
+          </ScrollView>
+        </View>
+      )}
       {loading && <Loader />}
     </>
   );
@@ -306,8 +347,8 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   date: {
-    marginTop: 10,
-    color: fontColor2,
+    marginTop: 16,
+    fontSize: 18,
   },
   buttons: {
     gap: 10,
@@ -327,6 +368,30 @@ const styles = StyleSheet.create({
   },
   image: {
     alignItems: 'center',
+    marginTop: 4,
+  },
+  imageButton: {
+    flexDirection: 'row',
+    position: 'relative',
+  },
+  zoomIcon: {
+    position: 'absolute',
+    backgroundColor: '#FFFFFF80',
+    height: 40,
+    width: 40,
+    borderRadius: 20,
+    top: 0,
+    right: -40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  descriptionContainer: {
+    marginTop: 16,
+  },
+  description: {
+    height: 120,
+    justifyContent: 'flex-start',
+    paddingTop: 8,
   },
   buttonsOuter: {
     paddingVertical: 10,
@@ -369,5 +434,23 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     opacity: 0.5,
     zIndex: 200,
+  },
+  divider: {
+    marginHorizontal: 16,
+  },
+  zoomContainer: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#000000',
+    zIndex: 100000,
+  },
+  zoomHeader: {
+    height: 60,
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    marginRight: 16,
   },
 });

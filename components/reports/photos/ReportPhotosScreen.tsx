@@ -129,23 +129,26 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
         }}
         contentContainerStyle={styles.images}
       />
-      <Button
-        style={styles.button}
-        variant="secondary"
-        label={t('add_photo')}
-        iconLeft={() => (
-          <View style={{ marginRight: 8 }}>
-            <CameraIcon />
-          </View>
-        )}
-        onPress={async () => {
-          const status = await Camera.requestCameraPermission();
+      <View style={styles.buttons}>
+        <Divider light />
+        <Button
+          style={styles.button}
+          variant="secondary"
+          label={t('add_photo')}
+          iconLeft={() => (
+            <View style={{ marginRight: 8 }}>
+              <CameraIcon />
+            </View>
+          )}
+          onPress={async () => {
+            const status = await Camera.requestCameraPermission();
 
-          if (status === 'granted') {
-            navigation.getParent()?.navigate('CameraScreen', { reportId });
-          }
-        }}
-      />
+            if (status === 'granted') {
+              navigation.getParent()?.navigate('CameraScreen', { reportId });
+            }
+          }}
+        />
+      </View>
       <ReportPhotosMenu
         isOpen={isMenuShown}
         onClose={() => setIsMenuShown(false)}
@@ -196,8 +199,10 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginLeft: 10,
   },
-  button: {
+  buttons: {
     marginHorizontal: 16,
+  },
+  button: {
     marginVertical: 10,
   },
 });

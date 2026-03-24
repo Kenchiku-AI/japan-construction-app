@@ -32,7 +32,7 @@ export const ConfirmPhotoModal: FC<ConfirmPhotoModalProps> = ({
 
     const photoWidth = width - 64;
     const photoHeight = factor * photoWidth;
-    return photoHeight + 310;
+    return photoHeight + 240;
   }, [photo, width]);
 
   return (
@@ -55,13 +55,19 @@ export const ConfirmPhotoModal: FC<ConfirmPhotoModalProps> = ({
       </View>
       <View style={styles.buttons}>
         <Button
+          variant="secondary"
+          label={t('cancel')}
+          onPress={onClose}
+          style={styles.button}
+        />
+        <Button
           label={t('confirm')}
           onPress={() => {
             fadeOpacity.value = 0;
             onConfirm();
           }}
+          style={styles.button}
         />
-        <Button variant="secondary" label={t('cancel')} onPress={onClose} />
       </View>
     </Modal>
   );
@@ -70,9 +76,14 @@ export const ConfirmPhotoModal: FC<ConfirmPhotoModalProps> = ({
 const styles = StyleSheet.create({
   buttons: {
     gap: 10,
+    paddingRight: 10,
+    flexDirection: 'row',
   },
   photo: {
     marginVertical: 20,
     flex: 1,
+  },
+  button: {
+    width: '50%',
   },
 });

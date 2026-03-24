@@ -313,6 +313,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
               }}
               contentContainerStyle={styles.fields}
             />
+            <Divider style={styles.divider} light />
             <View style={styles.buttonsOuter}>
               <View style={styles.buttonsInner}>
                 <Animated.View style={photoButtonStyle}>
@@ -511,6 +512,9 @@ const styles = StyleSheet.create({
   },
   chevron: {
     marginHorizontal: 12,
+  },
+  divider: {
+    marginHorizontal: 16,
   },
 });
 
