@@ -1,110 +1,58 @@
-import { FC, useMemo } from 'react';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Divider, Label, Modal } from '../../shared';
+import { Divider, Label, Modal } from '../../shared';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { errorColor1, fontColor2 } from '../../../constants';
-import { ReportImageTag, ReportImageTagResponse } from '../../../types';
-import { useTags } from './useTags';
+import { errorColor1, fontColor1, fontColor2 } from '../../../constants';
+import { ReportImageTagResponse } from '../../../types';
 import { Tag } from '../../shared/Icons';
-import { Loader } from '../../shared/Loader';
 
 interface AddTagModalProps {
-  companyId: string;
-  existingTags: ReportImageTag[];
+  tags: ReportImageTagResponse[];
   isOpen: boolean;
   onClose: () => void;
   onAdd: (tagId: string) => void;
 }
 
 export const AddTagModal: FC<AddTagModalProps> = ({
-  companyId,
-  existingTags,
+  tags,
   isOpen,
   onClose,
   onAdd,
 }) => {
   const { t } = useTranslation();
-  const { tags: allTags, loading, error } = useTags(companyId);
-
-  const tags = useMemo(() => {
-    return allTags.filter(at => existingTags.some(et => et.tag_id === at.id));
-  }, [existingTags, allTags]);
 
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={t(error ? 'error' : 'add_tag')}
-      subtitle={t(error ?? 'add_tag_description')}
+      title={t('add_tag')}
+      subtitle={t('add_tag_description')}
     >
-      <AddTagModalContent
-        tags={tags}
-        loading={loading}
-        hasError={!!error}
-        onAdd={onAdd}
-        onClose={onClose}
-      />
+      <View style={styles.tags}>
+        <Divider light />
+        {tags.map(tag => (
+          <>
+            <TouchableOpacity
+              style={styles.tag}
+              onPress={() => {
+                onAdd(tag.id);
+                onClose();
+              }}
+            >
+              <View style={styles.icon}>
+                <Tag color={fontColor1} size={26} />
+              </View>
+              <Label text={tag.name} style={styles.tagName} numberOfLines={1} />
+            </TouchableOpacity>
+            <Divider light />
+          </>
+        ))}
+      </View>
     </Modal>
   );
 };
 
-interface AddTagModalContentProps {
-  loading: boolean;
-  hasError: boolean;
-  tags: ReportImageTagResponse[];
-  onAdd: (tagId: string) => void;
-  onClose: () => void;
-}
-
-const AddTagModalContent: FC<AddTagModalContentProps> = ({
-  loading,
-  hasError,
-  tags,
-  onAdd,
-  onClose,
-}) => {
-  const { t } = useTranslation();
-
-  if (loading) {
-    return (
-      <View style={styles.loader}>
-        <Loader />
-      </View>
-    );
-  }
-
-  if (hasError) {
-    return <Button style={styles.button} label={t('ok')} onPress={onClose} />;
-  }
-
-  return (
-    <>
-      <Divider style={styles.divider} light />
-      {!tags.length && (
-        <View style={styles.empty}>
-          <Label text={t('empty_tags_description')} light />
-        </View>
-      )}
-      {tags.map(tag => (
-        <>
-          <TouchableOpacity style={styles.tag} onPress={() => onAdd(tag.id)}>
-            <View style={styles.icon}>
-              <Tag size={26} />
-            </View>
-            <Label text={tag.name} style={styles.tagName} numberOfLines={1} />
-          </TouchableOpacity>
-          <Divider light />
-        </>
-      ))}
-    </>
-  );
-};
-
 const styles = StyleSheet.create({
-  tags: {
-    flexDirection: 'row',
-    gap: 10,
-  },
   date: {
     marginTop: 10,
     color: fontColor2,
@@ -136,7 +84,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   icon: {
-    marginRight: 4,
+    marginRight: 8,
   },
   loader: {},
   tag: {
@@ -149,14 +97,15 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
   empty: {
-    height: 120,
+    height: 160,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  divider: {
-    marginTop: 24,
-  },
   button: {
     marginTop: 24,
+  },
+  tags: {
+    paddingTop: 20,
+    paddingBottom: 10,
   },
 });

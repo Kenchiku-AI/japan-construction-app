@@ -133,15 +133,15 @@ export const useApi = () => {
       return call(() => axios.patch<ReportImage>(url, request));
     },
     async getTags(companyId: string) {
-      const url = `/${companyId}/tags`;
+      const url = `/companies/${companyId}/tags`;
       return call(() => axios.get<ReportImageTagResponse[]>(url));
     },
     async addTag(reportId: string, imageId: string, request: AddTagRequest) {
-      const url = `/${reportId}/images/${imageId}/tags`;
+      const url = `/reports/${reportId}/images/${imageId}/tags`;
       return call(() => axios.post<ReportImageTag>(url, request));
     },
     async removeTag(reportId: string, imageId: string, linkId: string) {
-      const url = `/${reportId}/images/${imageId}/tags/${linkId}`;
+      const url = `/reports/${reportId}/images/${imageId}/tags/${linkId}`;
       return call(() => axios.delete(url));
     },
   };

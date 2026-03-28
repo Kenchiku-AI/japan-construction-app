@@ -162,8 +162,8 @@ const styles = StyleSheet.create({
   },
   clear: {
     position: 'absolute',
-    paddingHorizontal: 20,
-    top: -6,
+    paddingHorizontal: 12,
+    top: -4,
     height: 40,
     justifyContent: 'center',
     right: 0,

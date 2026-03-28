@@ -85,7 +85,7 @@ export const useReportPhoto = (initialImage: ReportImage) => {
 
         onTagRemoved?.(image.id, linkId);
 
-        const tags = image.tags.filter(t => t.link_id === linkId);
+        const tags = image.tags.filter(t => t.link_id !== linkId);
         setImage({ ...image, tags });
       } catch (err) {
         console.log(err);

@@ -7,7 +7,6 @@ import { useApi } from '../../../services/api/useApi';
 
 export const useTags = (companyId: string) => {
   const [tags, setTags] = useState<ReportImageTagResponse[]>([]);
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
   const api = useApi();
@@ -22,16 +21,13 @@ export const useTags = (companyId: string) => {
     try {
       const response = await api.getTags(companyId);
       if (response) setTags(response);
-    } catch (err) {
-      setError(t('get_tags_error'));
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   }, [companyId]);
 
   return {
     tags,
     loading,
-    error,
   };
 };

@@ -23,12 +23,7 @@ import { ReportFieldValues } from '../../types';
 import { useReport } from './useReport';
 import { Button, Divider, Input, Label } from '../shared';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import {
-  bgColor1,
-  buttonColor,
-  errorColor1,
-  fontColor1,
-} from '../../constants';
+import { bgColor1, buttonColor, fontColor1 } from '../../constants';
 import {
   Camera as CameraIcon,
   ChevronLeft,
@@ -316,7 +311,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
               }}
               contentContainerStyle={styles.fields}
             />
-            <Divider style={styles.divider} />
+            <Divider style={styles.divider} light />
             <View style={styles.buttonsOuter}>
               <View style={styles.buttonsInner}>
                 <Animated.View style={photoButtonStyle}>
@@ -364,7 +359,8 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
               <Animated.View style={updateButtonStyle}>
                 <View style={styles.updateButtonContainer}>
                   <Button
-                    label={t('update_report')}
+                    variant="secondary"
+                    label={t('save_changes')}
                     onPress={onPressUpdate}
                     disabled={isUpdateDisabled}
                     style={styles.updateButton}
@@ -476,7 +472,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   speakButton: {
-    backgroundColor: errorColor1,
     zIndex: 300,
     flex: 1,
   },

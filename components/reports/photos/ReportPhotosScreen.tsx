@@ -22,7 +22,7 @@ import { ReportPhotosMenu } from './ReportPhotosMenu';
 import { CachedImage } from '../../shared/CachedImage';
 import { useReport } from '../useReport';
 import { usePhotos } from '../../../context/photos/PhotosContext';
-import { ReportImage } from '../../../types';
+import { ReportImage, ReportImageTag } from '../../../types';
 
 interface ReportPhotosScreenProps {
   navigation: NativeStackNavigationProp<
@@ -88,11 +88,11 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
       replacePhoto(photo);
     });
 
-    setOnTagAdded((imageId, tagId) => {
-      addTag(imageId, tagId);
+    setOnTagAdded(() => (imageId: string, tag: ReportImageTag) => {
+      addTag(imageId, tag);
     });
 
-    setOnTagRemoved((imageId, linkId) => {
+    setOnTagRemoved(() => (imageId: string, linkId: string) => {
       removeTag(imageId, linkId);
     });
 

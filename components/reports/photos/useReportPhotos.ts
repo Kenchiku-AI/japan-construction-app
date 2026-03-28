@@ -54,10 +54,18 @@ export const useReportPhotos = (reportId: string) => {
   };
 
   const addTag = (imageId: string, tag: ReportImageTag) => {
+    console.log('YOOOOOOOO');
+
     const index = photosRef.current.findIndex(p => p.id === imageId);
+
+    console.log('index', index);
+
     if (index === -1) return;
 
     let photo = { ...photosRef.current[index] };
+
+    console.log('photo', photo);
+
     const hasTag = photo.tags.some(t => t.tag_id === tag.tag_id);
 
     if (!hasTag) {

@@ -20,12 +20,18 @@ import {
   Trash,
   Zoom,
 } from '../../shared/Icons';
-import { bgColor1, errorColor1, fontColor2 } from '../../../constants';
+import {
+  bgColor1,
+  bgColor2,
+  errorColor1,
+  fontColor2,
+} from '../../../constants';
 import { useDate } from '../../../services/localization/useDate';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { check, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import { RouteProp } from '@react-navigation/native';
 import { ConfirmDeletePhotoModal } from './ConfirmDeletePhotoModal';
+import { ConfirmDeleteTagModal } from './ConfirmDeleteTagModal';
 import { useReportPhoto } from './useReportPhoto';
 import Animated, {
   useAnimatedStyle,
@@ -42,6 +48,8 @@ import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-vi
 import { usePhotos } from '../../../context/photos/PhotosContext';
 import AudioVisualizer from '../../shared/AudioVisualizer';
 import { AddTagModal } from './AddTagModal';
+import { useTags } from './useTags';
+import { ReportImageTag } from '../../../types';
 
 interface PhotoDetailScreenProps {
   navigation: NativeStackNavigationProp<
@@ -56,13 +64,21 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
   route,
 }) => {
   const { image: initialImage, companyId } = route.params;
-  const { image, deleteImage, updateImage, addTag, loading } =
-    useReportPhoto(initialImage);
+  const {
+    image,
+    deleteImage,
+    updateImage,
+    addTag,
+    removeTag,
+    loading: photoLoading,
+  } = useReportPhoto(initialImage);
+  const { tags: allTags, loading: tagsLoading } = useTags(companyId);
   const { t } = useTranslation();
   const { width, height } = useWindowDimensions();
   const { top, bottom } = useSafeAreaInsets();
   const { formatDate } = useDate();
   const [isConfirmDeleteShown, setIsConfirmDeleteShown] = useState(false);
+  const [deleteTag, setDeleteTag] = useState<ReportImageTag>();
   const [isAddTagModalShown, setIsAddTagModalShown] = useState(false);
   const [isZoomShown, setIsZoomShown] = useState(false);
   const [permissionStatus, setPermissionStatus] = useState('');
@@ -83,6 +99,7 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
   const photoButtonWidth = useSharedValue(0.5);
   const photoButtonOpacity = useSharedValue(1);
   const zoomOpacity = useSharedValue(0);
+  const loading = photoLoading || tagsLoading;
 
   const speakingFadeStyle = useAnimatedStyle(() => ({
     opacity: speakingFadeOpacity.value,
@@ -205,6 +222,10 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
     }
   }, [isSpeaking, stopSpeech, startPhotoSpeech, description, image]);
 
+  const availableTags = useMemo(() => {
+    return allTags.filter(at => !image.tags.some(t => t.tag_id === at.id));
+  }, [image.tags, allTags]);
+
   return (
     <>
       <View style={{ paddingTop: top, ...styles.navContainer }}>
@@ -259,27 +280,39 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
             multiline
           />
         </View>
-        <Label style={styles.tagsTitle} text={t('tags')} />
-        <Divider light />
-        <View>
-          {image.tags.map(t => (
-            <View style={styles.tag}>
-              <Label text={t.name} />
-              <TouchableOpacity onPress={() => {}}>
-                <Close />
-              </TouchableOpacity>
-            </View>
-          ))}
-        </View>
-        <Button
-          variant="tertiary"
-          label={t('add_tag')}
-          iconLeft={() => <Plus size={30} />}
-          onPress={() => {
-            setIsAddTagModalShown(true);
-          }}
-          style={styles.addTagButton}
-        />
+        {allTags.length > 0 && (
+          <>
+            <Label style={styles.tagsTitle} text={t('tags')} />
+            <Divider light />
+            {image.tags.length > 0 && (
+              <View style={styles.tags}>
+                {image.tags.map(t => (
+                  <View key={t.tag_id} style={styles.tag}>
+                    <Label text={t.name} />
+                    <TouchableOpacity
+                      onPress={() => {
+                        setDeleteTag(t);
+                      }}
+                    >
+                      <Close size={24} color={errorColor1} />
+                    </TouchableOpacity>
+                  </View>
+                ))}
+              </View>
+            )}
+            {availableTags.length > 0 && (
+              <Button
+                variant="tertiary"
+                label={t('add_tag')}
+                iconLeft={() => <Plus size={30} />}
+                onPress={() => {
+                  setIsAddTagModalShown(true);
+                }}
+                style={styles.addTagButton}
+              />
+            )}
+          </>
+        )}
       </ScrollView>
       <Divider style={styles.divider} light />
       <View style={{ paddingBottom: bottom + 20, ...styles.buttonsOuter }}>
@@ -320,7 +353,8 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
             <Animated.View style={updateButtonStyle}>
               {(!isUpdateDisabled || isProcessing) && (
                 <Button
-                  label={t('update_photo')}
+                  variant="secondary"
+                  label={t('save_changes')}
                   disabled={isUpdateDisabled}
                   onPress={onPressUpdate}
                 />
@@ -349,14 +383,23 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
           navigation.goBack();
         }}
       />
+      <ConfirmDeleteTagModal
+        isOpen={!!deleteTag}
+        onClose={() => setDeleteTag(undefined)}
+        onDelete={async () => {
+          const linkId = deleteTag?.link_id;
+          setDeleteTag(undefined);
+
+          if (linkId) await removeTag(linkId);
+        }}
+      />
       <PermissionModal
         isOpen={!!permissionStatus}
         onClose={() => setPermissionStatus('')}
         status={permissionStatus}
       />
       <AddTagModal
-        companyId={companyId}
-        existingTags={image.tags}
+        tags={availableTags}
         isOpen={isAddTagModalShown}
         onClose={() => {
           setIsAddTagModalShown(false);
@@ -449,11 +492,27 @@ const styles = StyleSheet.create({
     marginTop: 24,
     marginBottom: 12,
   },
-  tags: { marginTop: 16 },
-  tag: {},
+  tags: {
+    marginTop: 12,
+    marginBottom: 8,
+    flexDirection: 'row',
+    gap: 10,
+  },
+  tag: {
+    flexDirection: 'row',
+    backgroundColor: bgColor2,
+    height: 50,
+    paddingLeft: 25,
+    paddingRight: 15,
+    borderRadius: 25,
+    gap: 10,
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+  },
   addTagButton: {
     alignSelf: 'flex-start',
     height: 50,
+    marginTop: 4,
   },
   zoomDescription: {
     flexDirection: 'row',
@@ -509,7 +568,6 @@ const styles = StyleSheet.create({
     color: errorColor1,
   },
   speakButton: {
-    backgroundColor: errorColor1,
     zIndex: 300,
     flex: 1,
   },

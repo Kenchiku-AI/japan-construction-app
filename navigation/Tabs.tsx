@@ -47,20 +47,6 @@ const Tabs: FC = () => {
       tabBar={props => <TabBar {...props} />}
     >
       <Tabs.Screen
-        name="ProjectsStack"
-        options={{
-          title: t('sites'),
-          tabBarIcon: ({ focused }) =>
-            focused ? (
-              <HarhatFilled color={buttonColor} />
-            ) : (
-              <Hardhat color={fontColor2} />
-            ),
-          tabBarIconStyle: styles.icon,
-        }}
-        component={ProjectsStack}
-      />
-      <Tabs.Screen
         name="ReportsStack"
         options={{
           title: t('reports'),
@@ -75,6 +61,20 @@ const Tabs: FC = () => {
           tabBarIconStyle: styles.icon,
         }}
         component={ReportsStack}
+      />
+      <Tabs.Screen
+        name="ProjectsStack"
+        options={{
+          title: t('sites'),
+          tabBarIcon: ({ focused }) =>
+            focused ? (
+              <HarhatFilled color={buttonColor} />
+            ) : (
+              <Hardhat color={fontColor2} />
+            ),
+          tabBarIconStyle: styles.icon,
+        }}
+        component={ProjectsStack}
       />
       <Tabs.Screen
         name="SettingsStack"
