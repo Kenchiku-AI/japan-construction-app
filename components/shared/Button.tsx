@@ -8,7 +8,6 @@ import {
   View,
 } from 'react-native';
 import { buttonColor, fontFamily } from '../../constants';
-import { FontStyle } from 'react-native-svg';
 
 interface ButtonProps {
   label: string;

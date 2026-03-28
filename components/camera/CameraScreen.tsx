@@ -11,7 +11,7 @@ import { RootStackNavigationParams } from '../../navigation/RootNavigation';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Close, Image } from '../shared/Icons';
 import { ConfirmPhotoModal } from './ConfirmPhotoModal';
-import { useCamera } from '../../context/camera/CameraContext';
+import { usePhotos } from '../../context/photos/PhotosContext';
 
 interface CameraScreenProps {
   navigation: NativeStackNavigationProp<
@@ -21,7 +21,7 @@ interface CameraScreenProps {
 }
 
 const CameraScreen: FC<CameraScreenProps> = ({ navigation }) => {
-  const { onConfirmImage } = useCamera();
+  const { onPhotoAdded } = usePhotos();
   const devices = useCameraDevices();
   const cameraRef = useRef<Camera | null>(null);
   const [photo, setPhoto] = useState<PhotoFile>();
@@ -54,7 +54,7 @@ const CameraScreen: FC<CameraScreenProps> = ({ navigation }) => {
           style={{ top, ...styles.closeButton }}
           onPress={() => navigation.goBack()}
         >
-          <Close />
+          <Close color="black" />
         </TouchableOpacity>
 
         <View style={{ ...styles.buttonContainer, bottom: bottom + 50 }}>
@@ -84,7 +84,7 @@ const CameraScreen: FC<CameraScreenProps> = ({ navigation }) => {
                 const uri = result.assets?.[0]?.uri;
                 if (!uri) return;
 
-                onConfirmImage?.(uri);
+                onPhotoAdded?.(uri);
                 navigation.goBack();
               } catch (err) {
                 console.log(err);
@@ -104,8 +104,8 @@ const CameraScreen: FC<CameraScreenProps> = ({ navigation }) => {
         onConfirm={() => {
           setIsConfirmPhotoShown(false);
 
-          if (photo && onConfirmImage) {
-            onConfirmImage(`file://${photo.path}`);
+          if (photo) {
+            onPhotoAdded?.(`file://${photo.path}`);
           }
 
           navigation.goBack();

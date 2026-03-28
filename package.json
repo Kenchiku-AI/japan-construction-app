@@ -12,6 +12,7 @@
   "dependencies": {
     "@candlefinance/faster-image": "^1.7.2",
     "@fugood/react-native-audio-pcm-stream": "^1.1.4",
+    "@openspacelabs/react-native-zoomable-view": "^2.4.2",
     "@react-navigation/bottom-tabs": "^7.9.1",
     "@react-navigation/native": "^7.1.27",
     "@react-navigation/native-stack": "^7.9.1",
@@ -28,8 +29,10 @@
     "react-native-image-picker": "^8.2.1",
     "react-native-image-resizer": "^1.4.5",
     "react-native-keychain": "^10.0.0",
+    "react-native-linear-gradient": "^2.8.3",
     "react-native-permissions": "^5.4.4",
     "react-native-reanimated": "^4.2.2",
+    "react-native-reanimated-skeleton": "^1.6.0",
     "react-native-safe-area-context": "^5.6.2",
     "react-native-screens": "^4.19.0",
     "react-native-svg": "^15.15.3",

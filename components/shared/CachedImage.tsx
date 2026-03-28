@@ -1,5 +1,6 @@
 import { FC, useEffect, useMemo, useState } from 'react';
-import { View, ActivityIndicator } from 'react-native';
+import { View } from 'react-native';
+import Skeleton from 'react-native-reanimated-skeleton';
 import { FasterImageView } from '@candlefinance/faster-image';
 import { useImageCache } from '../../services/storage/useImageCache';
 import { ReportImage } from '../../types';
@@ -40,20 +41,27 @@ export const CachedImage: FC<CachedImageProps> = ({
     return () => {
       isMounted = false;
     };
-  }, [image.download_url, image.id, image.updated_at]);
+  }, [image.download_url, image.id]);
 
   return (
-    <View style={{ width, height, backgroundColor: bgColor2 }}>
-      {localUri && (
-        <FasterImageView
-          style={{ width: '100%', height: '100%' }}
-          source={{
-            transitionDuration: 0.3,
-            url: localUri,
-            resizeMode: 'cover',
-          }}
-        />
-      )}
-    </View>
+    <Skeleton
+      isLoading={!localUri}
+      boneColor={bgColor2}
+      highlightColor={'white'}
+      animationDirection="diagonalDownRight"
+    >
+      <View style={{ width, height }}>
+        {localUri && (
+          <FasterImageView
+            style={{ width: '100%', height: '100%' }}
+            source={{
+              transitionDuration: 0.3,
+              url: localUri,
+              resizeMode: 'cover',
+            }}
+          />
+        )}
+      </View>
+    </Skeleton>
   );
 };

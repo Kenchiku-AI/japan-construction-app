@@ -42,6 +42,22 @@ export type ReportImage = {
   width: number;
   height: number;
   description?: string;
+  tags: ReportImageTag[];
+};
+
+export type ReportImageTag = {
+  tag_id: string;
+  link_id: string;
+  name: string;
+};
+
+export type AddTagRequest = {
+  tag_id: string;
+};
+
+export type ReportImageTagResponse = {
+  id: string;
+  name: string;
 };
 
 export type ReportImageCreateRequest = {
@@ -62,6 +78,7 @@ export type CreateImageResponse = {
   created_at: string;
   width: number;
   height: number;
+  tags: ReportImageTag[];
 };
 
 export type ReportTemplate = {

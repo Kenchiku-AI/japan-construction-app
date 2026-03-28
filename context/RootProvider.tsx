@@ -3,12 +3,12 @@ import { AuthProvider } from './auth/AuthContext';
 import { SpeechProvider } from './speech/SpeechContext';
 import { SettingsProvider } from './settings/SettingsContext';
 import { ModalProvider } from './modal/ModalContext';
-import { CameraProvider } from './camera/CameraContext';
+import { PhotosProvider } from './photos/PhotosContext';
 
 const providers = [
   AuthProvider,
   ModalProvider,
-  CameraProvider,
+  PhotosProvider,
   SettingsProvider,
   SpeechProvider,
 ];

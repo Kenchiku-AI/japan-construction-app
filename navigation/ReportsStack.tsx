@@ -3,8 +3,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ReportsListScreen from '../components/reports/ReportsListScreen';
 import ReportDetailScreen from '../components/reports/ReportDetailScreen';
 import ReportPhotosScreen from '../components/reports/photos/ReportPhotosScreen';
-import { ReportImage } from '../types';
-import { PhotoDetailScreen } from '../components/reports/photos/PhotoDetailScreen';
 
 export type ReportsStackNavigationParams = {
   ReportsListScreen: undefined;
@@ -14,7 +12,7 @@ export type ReportsStackNavigationParams = {
   };
   ReportPhotosScreen: {
     reportId: string;
-    deletedImageId?: string;
+    companyId?: string;
   };
 };
 

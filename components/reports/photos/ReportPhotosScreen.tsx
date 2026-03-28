@@ -20,8 +20,9 @@ import { ChevronLeft, Menu, Camera as CameraIcon } from '../../shared/Icons';
 import { buttonColor } from '../../../constants';
 import { ReportPhotosMenu } from './ReportPhotosMenu';
 import { CachedImage } from '../../shared/CachedImage';
-import { useCamera } from '../../../context/camera/CameraContext';
 import { useReport } from '../useReport';
+import { usePhotos } from '../../../context/photos/PhotosContext';
+import { ReportImage } from '../../../types';
 
 interface ReportPhotosScreenProps {
   navigation: NativeStackNavigationProp<
@@ -42,14 +43,23 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
   route,
 }) => {
   const { t } = useTranslation();
-  const { reportId, deletedImageId } = route.params;
+  const { reportId, companyId } = route.params;
   const { top } = useSafeAreaInsets();
-  const { setOnConfirmImage } = useCamera();
+  const {
+    setOnPhotoAdded,
+    setOnPhotoDeleted,
+    setOnPhotoUpdated,
+    setOnTagAdded,
+    setOnTagRemoved,
+  } = usePhotos();
   const {
     photos,
     getPhotos,
     addPhoto,
     removePhoto,
+    replacePhoto,
+    addTag,
+    removeTag,
     loading: photosLoading,
     error,
     setError,
@@ -65,22 +75,29 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
   }, [screenWidth]);
 
   useEffect(() => {
-    setOnConfirmImage(() => async (uri: string) => {
+    setOnPhotoAdded(() => async (uri: string) => {
       const newPhoto = await uploadImage(uri);
+      if (newPhoto) addPhoto(newPhoto);
+    });
 
-      if (newPhoto) {
-        addPhoto(newPhoto);
-      }
+    setOnPhotoDeleted(() => async (imageId: string) => {
+      removePhoto(imageId);
+    });
+
+    setOnPhotoUpdated(() => async (photo: ReportImage) => {
+      replacePhoto(photo);
+    });
+
+    setOnTagAdded((imageId, tagId) => {
+      addTag(imageId, tagId);
+    });
+
+    setOnTagRemoved((imageId, linkId) => {
+      removeTag(imageId, linkId);
     });
 
     getPhotos();
   }, []);
-
-  useEffect(() => {
-    if (deletedImageId) {
-      removePhoto(deletedImageId);
-    }
-  }, [deletedImageId]);
 
   return (
     <>
@@ -120,7 +137,9 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
             <Pressable
               style={styles.image}
               onPress={() =>
-                navigation.navigate('PhotoDetailScreen', { image: item })
+                navigation
+                  .getParent()
+                  ?.navigate('PhotoDetailScreen', { image: item, companyId })
               }
             >
               <CachedImage image={item} width={columnWidth} />

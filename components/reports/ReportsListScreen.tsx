@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
-    paddingLeft: 8,
+    paddingLeft: 16,
   },
   reportInfo: {
     flexDirection: 'row',

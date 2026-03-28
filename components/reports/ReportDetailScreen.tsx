@@ -45,7 +45,7 @@ import { UnsavedChangesModal } from './UnsavedChangesModal';
 import { ReportMenu } from './ReportMenu';
 import { DeleteReportModal } from './DeleteReportModal';
 import { useModal } from '../../context/modal/ModalContext';
-import { useCamera } from '../../context/camera/CameraContext';
+import { usePhotos } from '../../context/photos/PhotosContext';
 
 interface ReportDetailScreenProps {
   navigation: NativeStackNavigationProp<
@@ -79,7 +79,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
     error,
     setError,
   } = useReport(reportId);
-  const { setOnConfirmImage } = useCamera();
+  const { setOnPhotoAdded } = usePhotos();
   const { t } = useTranslation();
   const [fieldValues, setFieldValues] = useState<ReportFieldValues>();
   const [permissionStatus, setPermissionStatus] = useState('');
@@ -110,7 +110,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
 
   useFocusEffect(
     useCallback(() => {
-      setOnConfirmImage(() => async (uri: string) => {
+      setOnPhotoAdded(() => async (uri: string) => {
         await uploadImage(uri);
         getReport();
       });
@@ -293,7 +293,10 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
                     <TouchableOpacity
                       style={styles.photos}
                       onPress={() => {
-                        navigation.navigate('ReportPhotosScreen', { reportId });
+                        navigation.navigate('ReportPhotosScreen', {
+                          reportId,
+                          companyId: report.company_id,
+                        });
                       }}
                     >
                       <View style={styles.photosInfo}>
@@ -313,7 +316,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
               }}
               contentContainerStyle={styles.fields}
             />
-            <Divider style={styles.divider} light />
+            <Divider style={styles.divider} />
             <View style={styles.buttonsOuter}>
               <View style={styles.buttonsInner}>
                 <Animated.View style={photoButtonStyle}>
@@ -499,7 +502,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
-    paddingLeft: 8,
+    paddingLeft: 16,
   },
   photosInfo: {
     flexDirection: 'row',

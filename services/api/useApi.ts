@@ -18,6 +18,9 @@ import {
   ReportImage,
   ReportImageCreateRequest,
   ReportImageUpdateRequest,
+  ReportImageTagResponse,
+  ReportImageTag,
+  AddTagRequest,
 } from '../../types';
 import { baseUrl } from '../../constants';
 import { useAuth } from '../../context/auth/AuthContext';
@@ -128,6 +131,18 @@ export const useApi = () => {
     ) {
       const url = `/reports/${reportId}/images/${imageId}`;
       return call(() => axios.patch<ReportImage>(url, request));
+    },
+    async getTags(companyId: string) {
+      const url = `/${companyId}/tags`;
+      return call(() => axios.get<ReportImageTagResponse[]>(url));
+    },
+    async addTag(reportId: string, imageId: string, request: AddTagRequest) {
+      const url = `/${reportId}/images/${imageId}/tags`;
+      return call(() => axios.post<ReportImageTag>(url, request));
+    },
+    async removeTag(reportId: string, imageId: string, linkId: string) {
+      const url = `/${reportId}/images/${imageId}/tags/${linkId}`;
+      return call(() => axios.delete(url));
     },
   };
 };

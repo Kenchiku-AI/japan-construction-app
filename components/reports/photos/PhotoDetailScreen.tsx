@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Divider, Input, Label } from '../../shared';
 import {
@@ -7,14 +7,20 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
-  Text,
   TouchableOpacity,
   useWindowDimensions,
   View,
 } from 'react-native';
 import { CachedImage } from '../../shared/CachedImage';
-import { Close, Microphone, Trash, Zoom } from '../../shared/Icons';
-import { bgColor1, errorColor1 } from '../../../constants';
+import {
+  Close,
+  Microphone,
+  Pinch,
+  Plus,
+  Trash,
+  Zoom,
+} from '../../shared/Icons';
+import { bgColor1, errorColor1, fontColor2 } from '../../../constants';
 import { useDate } from '../../../services/localization/useDate';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { check, PERMISSIONS, RESULTS } from 'react-native-permissions';
@@ -32,6 +38,10 @@ import PermissionModal from '../PermissionModal';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Loader } from '../../shared/Loader';
 import { RootNavigationParams } from '../../../navigation/navigate';
+import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
+import { usePhotos } from '../../../context/photos/PhotosContext';
+import AudioVisualizer from '../../shared/AudioVisualizer';
+import { AddTagModal } from './AddTagModal';
 
 interface PhotoDetailScreenProps {
   navigation: NativeStackNavigationProp<
@@ -45,17 +55,19 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
   navigation,
   route,
 }) => {
-  const { image: initialImage } = route.params;
-  const { image, deleteImage, updateImage, loading } =
+  const { image: initialImage, companyId } = route.params;
+  const { image, deleteImage, updateImage, addTag, loading } =
     useReportPhoto(initialImage);
   const { t } = useTranslation();
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
   const { top, bottom } = useSafeAreaInsets();
   const { formatDate } = useDate();
   const [isConfirmDeleteShown, setIsConfirmDeleteShown] = useState(false);
+  const [isAddTagModalShown, setIsAddTagModalShown] = useState(false);
   const [isZoomShown, setIsZoomShown] = useState(false);
   const [permissionStatus, setPermissionStatus] = useState('');
   const [description, setDescription] = useState(initialImage.description);
+  const descriptionRef = useRef(initialImage.description);
   const {
     isSpeaking,
     isProcessing,
@@ -64,25 +76,34 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
     resetSpeech,
   } = useSpeech();
   const { fadeOpacity } = useModal();
+  const { onPhotoDeleted } = usePhotos();
   const speakingFadeOpacity = useSharedValue(0);
-  const updateButtonHeight = useSharedValue(0);
+  const bottomButtonsHeight = useSharedValue(0);
   const updateButtonOpacity = useSharedValue(0);
   const photoButtonWidth = useSharedValue(0.5);
   const photoButtonOpacity = useSharedValue(1);
+  const zoomOpacity = useSharedValue(0);
 
   const speakingFadeStyle = useAnimatedStyle(() => ({
     opacity: speakingFadeOpacity.value,
   }));
 
-  const updateButtonStyle = useAnimatedStyle(() => ({
-    height: updateButtonHeight.value,
-    opacity: updateButtonOpacity.value,
+  const bottomButtonsStyle = useAnimatedStyle(() => ({
+    height: bottomButtonsHeight.value,
     overflow: 'hidden',
+  }));
+
+  const updateButtonStyle = useAnimatedStyle(() => ({
+    opacity: updateButtonOpacity.value,
   }));
 
   const deleteButtonStyle = useAnimatedStyle(() => ({
     width: `${photoButtonWidth.value * 100}%`,
     opacity: photoButtonOpacity.value,
+  }));
+
+  const zoomStyle = useAnimatedStyle(() => ({
+    opacity: zoomOpacity.value,
   }));
 
   const date = useMemo(() => {
@@ -112,13 +133,24 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
   }, [isSpeaking]);
 
   useEffect(() => {
-    updateButtonHeight.value = withTiming(isUpdateDisabled ? 0 : 70, {
+    const hasHeight = !isUpdateDisabled || isSpeaking || isProcessing;
+
+    bottomButtonsHeight.value = withTiming(hasHeight ? 70 : 0, {
       duration: 200,
     });
-    updateButtonOpacity.value = withTiming(isUpdateDisabled ? 0 : 1, {
+    updateButtonOpacity.value = withTiming(
+      !isUpdateDisabled || isProcessing ? 1 : 0,
+      {
+        duration: 200,
+      },
+    );
+  }, [isUpdateDisabled, isSpeaking]);
+
+  useEffect(() => {
+    zoomOpacity.value = withTiming(isZoomShown ? 1 : 0, {
       duration: 200,
     });
-  }, [isUpdateDisabled]);
+  }, [isZoomShown]);
 
   const onPressUpdate = useCallback(async () => {
     if (!description) return;
@@ -165,11 +197,13 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
     if (isSpeaking) {
       stopSpeech();
     } else {
+      descriptionRef.current = description;
+
       startPhotoSpeech(text => {
-        setDescription(text);
+        setDescription(`${descriptionRef.current} ${text}`.trim());
       });
     }
-  }, [isSpeaking, stopSpeech, startPhotoSpeech, image]);
+  }, [isSpeaking, stopSpeech, startPhotoSpeech, description, image]);
 
   return (
     <>
@@ -187,6 +221,7 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
           <TouchableOpacity
             onPress={() => {
               navigation.goBack();
+              resetSpeech();
             }}
           >
             <Close />
@@ -195,22 +230,25 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
         <Divider />
       </View>
       <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.image}>
-          {image && (
-            <TouchableOpacity
-              onPress={() => {
-                setIsZoomShown(true);
-              }}
-              style={styles.imageButton}
-            >
-              <CachedImage image={image} width={width - 32} maxHeight={320} />
-              <View style={styles.zoomIcon}>
-                <Zoom />
-              </View>
-            </TouchableOpacity>
-          )}
-        </View>
-        {date && <Text style={styles.date}>{t('photo_taken', { date })}</Text>}
+        {image && (
+          <TouchableOpacity
+            onPress={() => {
+              setIsZoomShown(true);
+            }}
+          >
+            <CachedImage image={image} width={width - 32} maxHeight={320} />
+            <View style={styles.zoomDescription}>
+              <Zoom size={16} />
+              <Label
+                style={styles.zoomDescriptionText}
+                text={t('tap_to_zoom')}
+              />
+            </View>
+          </TouchableOpacity>
+        )}
+        {date && (
+          <Label style={styles.date} text={t('photo_taken', { date })} />
+        )}
         <View style={styles.descriptionContainer}>
           <Input
             placeholder={t('description')}
@@ -221,10 +259,30 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
             multiline
           />
         </View>
-        <View style={styles.tags}></View>
+        <Label style={styles.tagsTitle} text={t('tags')} />
+        <Divider light />
+        <View>
+          {image.tags.map(t => (
+            <View style={styles.tag}>
+              <Label text={t.name} />
+              <TouchableOpacity onPress={() => {}}>
+                <Close />
+              </TouchableOpacity>
+            </View>
+          ))}
+        </View>
+        <Button
+          variant="tertiary"
+          label={t('add_tag')}
+          iconLeft={() => <Plus size={30} />}
+          onPress={() => {
+            setIsAddTagModalShown(true);
+          }}
+          style={styles.addTagButton}
+        />
       </ScrollView>
       <Divider style={styles.divider} light />
-      <View style={{ paddingBottom: bottom + 10, ...styles.buttonsOuter }}>
+      <View style={{ paddingBottom: bottom + 20, ...styles.buttonsOuter }}>
         <View style={styles.buttonsInner}>
           <Animated.View style={deleteButtonStyle}>
             <View style={styles.deleteButtonContainer}>
@@ -257,16 +315,24 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
             onPress={onPressSpeech}
           />
         </View>
-        <Animated.View style={updateButtonStyle}>
+        <Animated.View style={bottomButtonsStyle}>
           <View style={styles.updateButtonContainer}>
-            <Button
-              label={t('update_photo')}
-              onPress={onPressUpdate}
-              disabled={isUpdateDisabled}
-              style={styles.updateButton}
-            />
+            <Animated.View style={updateButtonStyle}>
+              {(!isUpdateDisabled || isProcessing) && (
+                <Button
+                  label={t('update_photo')}
+                  disabled={isUpdateDisabled}
+                  onPress={onPressUpdate}
+                />
+              )}
+            </Animated.View>
           </View>
         </Animated.View>
+        {isSpeaking && (
+          <View style={styles.audioVisualizer}>
+            <AudioVisualizer />
+          </View>
+        )}
       </View>
       <Animated.View
         style={[styles.speakingFade, speakingFadeStyle]}
@@ -278,11 +344,9 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
         onDelete={async () => {
           setIsConfirmDeleteShown(false);
           await deleteImage();
+          onPhotoDeleted?.(image.id);
           resetSpeech();
-          navigation.navigate('ReportPhotosScreen', {
-            reportId: image.report_id,
-            deletedImageId: image.id,
-          });
+          navigation.goBack();
         }}
       />
       <PermissionModal
@@ -290,27 +354,49 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
         onClose={() => setPermissionStatus('')}
         status={permissionStatus}
       />
+      <AddTagModal
+        companyId={companyId}
+        existingTags={image.tags}
+        isOpen={isAddTagModalShown}
+        onClose={() => {
+          setIsAddTagModalShown(false);
+        }}
+        onAdd={async tagId => {
+          await addTag(tagId);
+        }}
+      />
       {isZoomShown && (
-        <View
-          style={{
-            ...styles.zoomContainer,
-            paddingTop: top,
-            paddingBottom: bottom,
-          }}
+        <Animated.View
+          style={[
+            zoomStyle,
+            {
+              ...styles.zoomContainer,
+            },
+          ]}
         >
-          <View style={styles.zoomHeader}>
-            <TouchableOpacity
-              onPress={() => {
-                setIsZoomShown(false);
-              }}
-            >
-              <Close color="white" />
-            </TouchableOpacity>
+          <TouchableOpacity
+            style={{ ...styles.closeZoom, top: top + 10 }}
+            onPress={() => {
+              setIsZoomShown(false);
+            }}
+          >
+            <Close color="black" />
+          </TouchableOpacity>
+          <ReactNativeZoomableView
+            maxZoom={5}
+            visualTouchFeedbackEnabled={false}
+          >
+            <CachedImage
+              image={image}
+              width={width}
+              maxHeight={height - top - bottom - 10}
+            />
+          </ReactNativeZoomableView>
+          <View style={{ ...styles.pinch, bottom }}>
+            <Pinch />
+            <Label style={styles.pinchText} text={t('pinch_to_zoom')} />
           </View>
-          <ScrollView>
-            <CachedImage image={image} width={width} />
-          </ScrollView>
-        </View>
+        </Animated.View>
       )}
       {loading && <Loader />}
     </>
@@ -342,12 +428,8 @@ const styles = StyleSheet.create({
   container: {
     padding: 16,
   },
-  tags: {
-    flexDirection: 'row',
-    gap: 10,
-  },
   date: {
-    marginTop: 16,
+    marginTop: 10,
     fontSize: 18,
   },
   buttons: {
@@ -363,27 +445,40 @@ const styles = StyleSheet.create({
     gap: 10,
     marginTop: 20,
   },
-  tagButton: {
-    width: '50%',
+  tagsTitle: {
+    marginTop: 24,
+    marginBottom: 12,
   },
-  image: {
-    alignItems: 'center',
-    marginTop: 4,
+  tags: { marginTop: 16 },
+  tag: {},
+  addTagButton: {
+    alignSelf: 'flex-start',
+    height: 50,
   },
-  imageButton: {
+  zoomDescription: {
     flexDirection: 'row',
-    position: 'relative',
-  },
-  zoomIcon: {
-    position: 'absolute',
-    backgroundColor: '#FFFFFF80',
-    height: 40,
-    width: 40,
-    borderRadius: 20,
-    top: 0,
-    right: -40,
     justifyContent: 'center',
     alignItems: 'center',
+    gap: 3,
+    marginTop: 2,
+  },
+  zoomDescriptionText: {
+    color: fontColor2,
+    marginBottom: 2,
+  },
+  pinch: {
+    flexDirection: 'row',
+    position: 'absolute',
+    zIndex: -1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingRight: 24,
+    alignSelf: 'center',
+    height: 80,
+  },
+  pinchText: {
+    color: 'white',
+    fontSize: 18,
   },
   descriptionContainer: {
     marginTop: 16,
@@ -421,10 +516,6 @@ const styles = StyleSheet.create({
   updateButtonContainer: {
     paddingTop: 10,
   },
-  updateButton: {
-    opacity: 1,
-    height: '100%',
-  },
   speakingFade: {
     position: 'absolute',
     top: 0,
@@ -444,13 +535,26 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: '#000000',
+    backgroundColor: '#000000E6',
     zIndex: 100000,
   },
-  zoomHeader: {
-    height: 60,
-    alignItems: 'flex-end',
+  closeZoom: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 16,
+    backgroundColor: '#FFFFFFBF',
+    zIndex: 100001,
+    position: 'absolute',
+    right: 14,
+  },
+  audioVisualizer: {
+    zIndex: 300,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 80,
+    bottom: 0,
   },
 });

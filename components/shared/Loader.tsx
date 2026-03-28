@@ -4,13 +4,14 @@ import { FC } from 'react';
 
 interface LoaderProps {
   fullScreen?: boolean;
+  color?: string;
 }
 
-export const Loader: FC<LoaderProps> = ({ fullScreen = true }) => (
+export const Loader: FC<LoaderProps> = ({ fullScreen = true, color }) => (
   <View
     style={fullScreen ? styles.fullScreenContainer : styles.inlineContainer}
   >
-    <ActivityIndicator size="large" color={fontColor1} />
+    <ActivityIndicator size="large" color={color ?? fontColor1} />
   </View>
 );
 

@@ -53,7 +53,7 @@ export const Input: FC<InputProps> = ({
   const inputRef = useRef<any>(null);
   const [isEmpty, setIsEmpty] = useState(!value);
   const paddingTop = useSharedValue(
-    !value ? style?.paddingTop ?? 0 : TOP_PADDING,
+    !value ? 0 : style?.paddingTop ?? TOP_PADDING,
   );
   const opacity = useSharedValue(!value ? 0 : 1);
   const { t } = useTranslation();
@@ -171,5 +171,6 @@ const styles = StyleSheet.create({
   },
   clearText: {
     color: errorColor1,
+    fontFamily,
   },
 });
