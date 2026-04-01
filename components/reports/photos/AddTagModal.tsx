@@ -33,6 +33,7 @@ export const AddTagModal: FC<AddTagModalProps> = ({
         {tags.map(tag => (
           <>
             <TouchableOpacity
+              key={tag.id}
               style={styles.tag}
               onPress={() => {
                 onAdd(tag.id);

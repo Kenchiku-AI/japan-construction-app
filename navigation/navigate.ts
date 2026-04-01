@@ -2,15 +2,13 @@ import { createRef } from 'react';
 import { NavigationContainerRef } from '@react-navigation/native';
 import { RootStackNavigationParams } from './RootNavigation';
 import { TabsNavigationParams } from './Tabs';
-import { ProfileStackNavigationParams } from './SettingsStack';
 import { ProjectsStackNavigationParams } from './ProjectsStack';
 import { ReportsStackNavigationParams } from './ReportsStack';
 
 export type RootNavigationParams = RootStackNavigationParams &
   TabsNavigationParams &
   ProjectsStackNavigationParams &
-  ReportsStackNavigationParams &
-  ProfileStackNavigationParams;
+  ReportsStackNavigationParams;
 
 export const ref = createRef<NavigationContainerRef<RootNavigationParams>>();
 

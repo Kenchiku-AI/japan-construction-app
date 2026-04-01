@@ -1,10 +1,6 @@
 import { FC } from 'react';
-import {
-  createNativeStackNavigator,
-  NativeStackNavigationOptions,
-} from '@react-navigation/native-stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SettingsScreen from '../components/settings/SettingsScreen';
-import { buttonColor } from '../constants';
 
 export type SettingsStackNavigationParams = {
   SettingsScreen: undefined;
