@@ -31,9 +31,8 @@ export const AddTagModal: FC<AddTagModalProps> = ({
       <View style={styles.tags}>
         <Divider light />
         {tags.map(tag => (
-          <>
+          <View key={tag.id}>
             <TouchableOpacity
-              key={tag.id}
               style={styles.tag}
               onPress={() => {
                 onAdd(tag.id);
@@ -46,7 +45,7 @@ export const AddTagModal: FC<AddTagModalProps> = ({
               <Label text={tag.name} style={styles.tagName} numberOfLines={1} />
             </TouchableOpacity>
             <Divider light />
-          </>
+          </View>
         ))}
       </View>
     </Modal>

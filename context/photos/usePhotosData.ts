@@ -17,15 +17,18 @@ export const usePhotosData = () => {
   const [onTagRemoved, setOnTagRemoved] = useState<OnTagRemoved>();
 
   const wsRef = useRef<WebSocket | null>(null);
-  const { currentUser } = useAuth();
+  const { accessToken } = useAuth();
 
   useEffect(() => {
-    if (!currentUser?.id) {
+    if (!accessToken) {
       wsRef.current?.close();
       return;
     }
 
-    const ws = new WebSocket(wsUrl);
+    const encodedToken = encodeURIComponent(accessToken);
+    const ws = new WebSocket(
+      `${wsUrl}/reports/images/ws?access_token=${encodedToken}`,
+    );
 
     ws.onopen = () => {
       console.log('WebSocket connected');
@@ -57,9 +60,7 @@ export const usePhotosData = () => {
     return () => {
       ws.close();
     };
-  }, [currentUser?.id]);
-
-  console.log('USER ID', currentUser?.id);
+  }, [accessToken]);
 
   return {
     onPhotoAdded,

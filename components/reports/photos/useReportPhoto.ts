@@ -57,8 +57,6 @@ export const useReportPhoto = (initialImage: ReportImage) => {
         const response = await api.addTag(image.report_id, image.id, request);
 
         if (response) {
-          onTagAdded?.(image.id, response);
-
           const hasTag = image.tags.some(t => t.tag_id === tagId);
 
           if (!hasTag) {
@@ -66,6 +64,8 @@ export const useReportPhoto = (initialImage: ReportImage) => {
             tags.push(response);
             setImage({ ...image, tags });
           }
+
+          onTagAdded?.(image.id, response);
         }
       } catch (err) {
         console.log(err);
