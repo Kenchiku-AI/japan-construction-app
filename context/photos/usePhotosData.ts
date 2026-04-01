@@ -6,14 +6,17 @@ import { wsUrl } from '../../constants';
 type OnPhotoAdded = (uri: string) => void;
 type OnPhotoDeleted = (imageId: string) => void;
 type OnPhotoUpdated = (photo: ReportImage) => void;
-type OnTagAdded = (imageId: string, tag: ReportImageTag) => void;
+type OnTagsAdded = (imageId: string, tags: ReportImageTag[]) => void;
+type OnCurrenImageTagsAdded = (tags: ReportImageTag[]) => void;
 type OnTagRemoved = (imageId: string, linkId: string) => void;
 
 export const usePhotosData = () => {
   const [onPhotoAdded, setOnPhotoAdded] = useState<OnPhotoAdded>();
   const [onPhotoDeleted, setOnPhotoDeleted] = useState<OnPhotoDeleted>();
   const [onPhotoUpdated, setOnPhotoUpdated] = useState<OnPhotoUpdated>();
-  const [onTagAdded, setOnTagAdded] = useState<OnTagAdded>();
+  const [onTagsAdded, setOnTagsAdded] = useState<OnTagsAdded>();
+  const [onCurrentImageTagsAdded, setOnCurrentImageTagsAdded] =
+    useState<OnTagsAdded>();
   const [onTagRemoved, setOnTagRemoved] = useState<OnTagRemoved>();
 
   const wsRef = useRef<WebSocket | null>(null);
@@ -41,6 +44,7 @@ export const usePhotosData = () => {
         const data = JSON.parse(event.data);
 
         if (data.type === 'image_tags_ready') {
+          const;
         }
       } catch (err) {
         console.warn('Invalid WS message', err);
@@ -60,7 +64,7 @@ export const usePhotosData = () => {
     return () => {
       ws.close();
     };
-  }, [accessToken]);
+  }, [accessToken, onTagsAdded, onCurrentImageTagsAdded]);
 
   return {
     onPhotoAdded,
@@ -69,9 +73,10 @@ export const usePhotosData = () => {
     setOnPhotoDeleted,
     onPhotoUpdated,
     setOnPhotoUpdated,
-    onTagAdded,
-    setOnTagAdded,
+    onTagsAdded,
+    setOnTagsAdded,
     onTagRemoved,
     setOnTagRemoved,
+    setOnCurrentImageTagsAdded,
   };
 };

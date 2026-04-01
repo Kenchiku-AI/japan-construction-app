@@ -53,21 +53,24 @@ export const useReportPhotos = (reportId: string) => {
     setPhotos(newPhotos);
   };
 
-  const addTag = (imageId: string, tag: ReportImageTag) => {
+  const addTags = (imageId: string, tags: ReportImageTag[]) => {
     const index = photosRef.current.findIndex(p => p.id === imageId);
     if (index === -1) return;
 
     let photo = { ...photosRef.current[index] };
+    photo.status = 'completed';
 
-    const hasTag = photo.tags.some(t => t.tag_id === tag.tag_id);
+    tags.forEach(tag => {
+      const hasTag = photo.tags.some(t => t.tag_id === tag.tag_id);
 
-    if (!hasTag) {
-      photo.tags.push(tag);
+      if (!hasTag) {
+        photo.tags.push(tag);
+      }
+    });
 
-      const newPhotos = [...photosRef.current];
-      newPhotos[index] = photo;
-      setPhotos(newPhotos);
-    }
+    const newPhotos = [...photosRef.current];
+    newPhotos[index] = photo;
+    setPhotos(newPhotos);
   };
 
   const removeTag = (imageId: string, linkId: string) => {
@@ -87,7 +90,7 @@ export const useReportPhotos = (reportId: string) => {
     addPhoto,
     removePhoto,
     replacePhoto,
-    addTag,
+    addTags,
     removeTag,
     loading,
     photos,

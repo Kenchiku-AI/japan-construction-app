@@ -128,6 +128,17 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
     return formatDate(image.created_at);
   }, [image?.created_at]);
 
+  const isTagProcessingShown = useMemo(() => {
+    const statuses = ['pending', 'processing'];
+
+    if (!statuses.includes(image.status)) return false;
+
+    const createdAt = new Date(image.created_at).getMilliseconds();
+    const now = new Date().getMilliseconds();
+    const fiveMinutes = 5 * 60 * 1000;
+    return now - createdAt < fiveMinutes;
+  }, [image]);
+
   const isUpdateDisabled = useMemo(() => {
     if (isSpeaking || isProcessing || loading) return true;
 
@@ -282,7 +293,12 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
         </View>
         {allTags.length > 0 && (
           <>
-            <Label style={styles.tagsTitle} text={t('tags')} />
+            <View style={styles.tagsHeader}>
+              <Label style={styles.tagsTitle} text={t('tags')} />
+              {isTagProcessingShown && (
+                <Label text={t('tags_processing')} light />
+              )}
+            </View>
             <Divider light />
             {image.tags.length > 0 && (
               <View style={styles.tags}>
@@ -488,8 +504,12 @@ const styles = StyleSheet.create({
     gap: 10,
     marginTop: 20,
   },
+  tagsHeader: {
+    flexDirection: 'row',
+    gap: 10,
+    marginTop: 28,
+  },
   tagsTitle: {
-    marginTop: 24,
     marginBottom: 12,
   },
   tags: {

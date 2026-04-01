@@ -1,8 +1,8 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ReportImage } from '../../../types';
+import { ReportImage, ReportImageTag } from '../../../types';
 import { useApi } from '../../../services/api/useApi';
 import { usePhotos } from '../../../context/photos/PhotosContext';
 
@@ -10,9 +10,31 @@ export const useReportPhoto = (initialImage: ReportImage) => {
   const [image, setImage] = useState(initialImage);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const { onPhotoUpdated, onTagAdded, onTagRemoved } = usePhotos();
+  const {
+    setOnCurrentImageTagsAdded,
+    onPhotoUpdated,
+    onTagsAdded,
+    onTagRemoved,
+  } = usePhotos();
   const { t } = useTranslation();
   const api = useApi();
+
+  useEffect(() => {
+    setOnCurrentImageTagsAdded(() => (tags: ReportImageTag[]) => {
+      let newImage = { ...image };
+      newImage.status = 'completed';
+
+      tags.forEach(tag => {
+        const hasTag = newImage.tags.some(t => t.tag_id === tag.tag_id);
+
+        if (!hasTag) {
+          newImage.tags.push(tag);
+        }
+      });
+
+      setImage(newImage);
+    });
+  }, [image]);
 
   const deleteImage = useCallback(async () => {
     setLoading(true);
@@ -65,7 +87,7 @@ export const useReportPhoto = (initialImage: ReportImage) => {
             setImage({ ...image, tags });
           }
 
-          onTagAdded?.(image.id, response);
+          onTagsAdded?.(image.id, [response]);
         }
       } catch (err) {
         console.log(err);
@@ -73,7 +95,7 @@ export const useReportPhoto = (initialImage: ReportImage) => {
 
       setLoading(false);
     },
-    [image, onTagAdded],
+    [image, onTagsAdded],
   );
 
   const removeTag = useCallback(
@@ -83,17 +105,17 @@ export const useReportPhoto = (initialImage: ReportImage) => {
       try {
         await api.removeTag(image.report_id, image.id, linkId);
 
-        onTagRemoved?.(image.id, linkId);
-
         const tags = image.tags.filter(t => t.link_id !== linkId);
         setImage({ ...image, tags });
+
+        onTagRemoved?.(image.id, linkId);
       } catch (err) {
         console.log(err);
       }
 
       setLoading(false);
     },
-    [image, onTagAdded],
+    [image, onTagRemoved],
   );
 
   return {

@@ -49,7 +49,7 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
     setOnPhotoAdded,
     setOnPhotoDeleted,
     setOnPhotoUpdated,
-    setOnTagAdded,
+    setOnTagsAdded,
     setOnTagRemoved,
   } = usePhotos();
   const {
@@ -58,7 +58,7 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
     addPhoto,
     removePhoto,
     replacePhoto,
-    addTag,
+    addTags,
     removeTag,
     loading: photosLoading,
     error,
@@ -88,8 +88,8 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
       replacePhoto(photo);
     });
 
-    setOnTagAdded(() => (imageId: string, tag: ReportImageTag) => {
-      addTag(imageId, tag);
+    setOnTagsAdded(() => (imageId: string, tags: ReportImageTag[]) => {
+      addTags(imageId, tags);
     });
 
     setOnTagRemoved(() => (imageId: string, linkId: string) => {
