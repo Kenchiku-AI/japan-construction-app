@@ -48,6 +48,7 @@
   "email_registered": "そのメールアドレスは既に登録されています。",
   "empty_companies_description": "会社がまだありません。",
   "empty_companies_search_description": "検索条件に一致する会社がありません。",
+  "empty_photos_description": "写真はありません。",
   "empty_projects_description": "まだプロジェクトはありません。",
   "empty_reports_description": "まだ報告書はありません。",
   "empty_report_template_fields_description": "項目がまだありません。",

@@ -3,6 +3,7 @@ import {
   Dimensions,
   Pressable,
   StyleSheet,
+  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -127,6 +128,11 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
         </View>
         <Divider />
       </View>
+      {photos.length === 0 && (
+        <View style={styles.emptyPhotos}>
+          <Label text={t('empty_photos_description')} light />
+        </View>
+      )}
       <FlashList
         data={photos}
         masonry
@@ -223,6 +229,11 @@ const styles = StyleSheet.create({
   },
   button: {
     marginVertical: 10,
+  },
+  emptyPhotos: {
+    height: 150,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
