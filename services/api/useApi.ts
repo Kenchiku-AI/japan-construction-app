@@ -77,6 +77,10 @@ export const useApi = () => {
       const url = '/auth/signup';
       return handleResponse(() => axios.post<SignupResponse>(url, request));
     },
+    async forgotPassword(request: ForgotPasswordRequest) {
+      const url = '/auth/forgot-password';
+      return handleResponse(() => axios.post(url, request));
+    },
     async getCurrentUser() {
       const url = '/users/me';
       return call(() => axios.get<CurrentUser>(url));

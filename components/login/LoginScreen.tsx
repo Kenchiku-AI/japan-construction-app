@@ -1,5 +1,12 @@
 import { FC, useEffect, useState } from 'react';
-import { Keyboard, StyleSheet, View } from 'react-native';
+import {
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthStackNavigationParams } from '../../navigation/AuthStack';
 import { useTranslation } from 'react-i18next';
@@ -7,6 +14,7 @@ import { useLogin } from './useLogin';
 import { Heading, Input, Button, Modal } from '../shared';
 import { Loader } from '../shared/Loader';
 import { useSpeech } from '../../context/speech/SpeechContext';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface LoginScreenProps {
   navigation: NativeStackNavigationProp<
@@ -21,6 +29,7 @@ const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
   const { resetSpeech } = useSpeech();
   const { loading, login, showError, setShowError } = useLogin();
   const { t } = useTranslation();
+  const { top } = useSafeAreaInsets();
 
   useEffect(() => {
     resetSpeech();
@@ -28,46 +37,54 @@ const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
 
   return (
     <>
-      <View style={styles.container}>
-        <Heading title={t('login')} subtitle={t('login_description')} />
-        <View style={styles.fields}>
-          <Input
-            value={email}
-            placeholder={t('email')}
-            onChange={t => setEmail(t)}
-          />
-          <Input
-            value={password}
-            placeholder={t('password')}
-            onChange={t => setPassword(t)}
-            secureTextEntry
-          />
-        </View>
-        <Button
-          label={t('login')}
-          onPress={() => {
-            Keyboard.dismiss();
-            login(email, password);
-          }}
-          disabled={!email || !password}
-        />
-        <View style={styles.buttons}>
+      <KeyboardAvoidingView
+        style={{ flex: 1, marginTop: top }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={styles.container}
+        >
+          <Heading title={t('login')} subtitle={t('login_description')} />
+          <View style={styles.fields}>
+            <Input
+              value={email}
+              placeholder={t('email')}
+              onChange={t => setEmail(t)}
+            />
+            <Input
+              value={password}
+              placeholder={t('password')}
+              onChange={t => setPassword(t)}
+              secureTextEntry
+            />
+          </View>
           <Button
-            variant="tertiary"
-            label={t('forgot_password')}
+            label={t('login')}
             onPress={() => {
-              navigation.navigate('ForgotPasswordScreen');
+              Keyboard.dismiss();
+              login(email, password);
             }}
+            disabled={!email || !password}
           />
-          <Button
-            variant="tertiary"
-            label={t('sign_up')}
-            onPress={() => {
-              navigation.navigate('SignUpScreen');
-            }}
-          />
-        </View>
-      </View>
+          <View style={styles.buttons}>
+            <Button
+              variant="tertiary"
+              label={t('forgot_password')}
+              onPress={() => {
+                navigation.navigate('ForgotPasswordScreen');
+              }}
+            />
+            <Button
+              variant="tertiary"
+              label={t('sign_up')}
+              onPress={() => {
+                navigation.navigate('SignUpScreen');
+              }}
+            />
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
       {loading && <Loader />}
       <Modal
         title={t('error')}
@@ -83,9 +100,9 @@ const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    margin: 20,
-    flex: 1,
+    padding: 20,
     justifyContent: 'center',
+    flexGrow: 1,
   },
   fields: {
     marginVertical: 20,

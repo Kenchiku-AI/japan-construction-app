@@ -22,6 +22,10 @@ export type SignupResponse = {
   refresh_token: string;
 };
 
+export type ForgotPasswordRequest = {
+  email: string;
+};
+
 export type RefreshRequest = {
   refresh_token: string;
 };

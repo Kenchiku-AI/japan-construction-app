@@ -5,6 +5,7 @@ import { useAuth } from '../../context/auth/AuthContext';
 export const useSignup = () => {
   const [loading, setLoading] = useState(false);
   const { updateAccessToken, updateRefreshToken, setCurrentUser } = useAuth();
+  const [showError, setShowError] = useState(false);
   const api = useApi();
 
   const signup = async (
@@ -25,6 +26,7 @@ export const useSignup = () => {
       const user = await api.getCurrentUser();
       setCurrentUser(user);
     } catch (err) {
+      setShowError(true);
       console.log('sign up error', err);
     }
 
@@ -34,5 +36,7 @@ export const useSignup = () => {
   return {
     loading,
     signup,
+    showError,
+    setShowError,
   };
 };
