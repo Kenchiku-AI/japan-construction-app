@@ -75,13 +75,13 @@ const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
                 navigation.navigate('ForgotPasswordScreen');
               }}
             />
-            <Button
+            {/* <Button
               variant="tertiary"
               label={t('sign_up')}
               onPress={() => {
                 navigation.navigate('SignUpScreen');
               }}
-            />
+            /> */}
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
