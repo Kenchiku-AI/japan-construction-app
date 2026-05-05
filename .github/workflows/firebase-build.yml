@@ -146,6 +146,7 @@ jobs:
             -scheme "Kenchiku AI" \
             -configuration Release \
             -archivePath build/app.xcarchive \
+            -allowProvisioningUpdates
             archive
 
       - name: Export IPA
