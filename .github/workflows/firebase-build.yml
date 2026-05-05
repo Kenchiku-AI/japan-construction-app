@@ -1,0 +1,138 @@
+name: React Native CI → Firebase App Distribution
+
+on:
+  push:
+    branches:
+      - develop
+  workflow_dispatch:
+
+jobs:
+  android:
+    name: Build Android
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Decode Android keystore
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/app/keystore.jks
+
+      - name: Build Android Release APK
+        run: |
+          cd android
+          ./gradlew assembleRelease
+
+      - name: Upload Android to Firebase
+        run: |
+          npx firebase appdistribution:distribute \
+            android/app/build/outputs/apk/release/app-release.apk \
+            --app ${{ secrets.FIREBASE_APP_ID_ANDROID }} \
+            --groups internal-testers \
+            --release-notes "${{ github.event.head_commit.message }}"
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+
+  ios:
+    name: Build iOS
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install CocoaPods
+        run: |
+          cd ios
+          pod install
+
+      # ----------------------------
+      # iOS Signing Setup
+      # ----------------------------
+
+      - name: Decode signing certificate
+        run: |
+          echo "${{ secrets.IOS_P12_BASE64 }}" | base64 --decode > cert.p12
+
+      - name: Create keychain
+        run: |
+          security create-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" build.keychain
+          security set-keychain-settings -t 3600 -u build.keychain
+
+      - name: Import certificate
+        run: |
+          security import cert.p12 \
+            -k build.keychain \
+            -P "${{ secrets.IOS_P12_PASSWORD }}" \
+            -T /usr/bin/codesign
+
+      - name: Install provisioning profile
+        run: |
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          echo "${{ secrets.IOS_PROVISION_PROFILE_BASE64 }}" | base64 --decode > profile.mobileprovision
+          cp profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+
+      # ----------------------------
+      # Build IPA
+      # ----------------------------
+
+      - name: Build iOS Archive
+        run: |
+          cd ios
+
+          xcodebuild \
+            -workspace *.xcworkspace \
+            -scheme Kenchiku AI \
+            -configuration Release \
+            -archivePath build/app.xcarchive \
+            archive
+
+      - name: Export IPA
+        run: |
+          cd ios
+
+          xcodebuild \
+            -exportArchive \
+            -archivePath build/app.xcarchive \
+            -exportPath build \
+            -exportOptionsPlist exportOptions.plist
+
+      # ----------------------------
+      # Upload to Firebase
+      # ----------------------------
+
+      - name: Upload iOS to Firebase
+        run: |
+          npx firebase appdistribution:distribute ios/build/*.ipa \
+            --app ${{ secrets.FIREBASE_APP_ID_IOS }} \
+            --groups internal-testers \
+            --release-notes "${{ github.event.head_commit.message }}"
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}

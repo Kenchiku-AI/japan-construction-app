@@ -1,4 +1,4 @@
-package com.japanconstruction
+package ai.kenchiku.app
 
 import android.app.Application
 import com.facebook.react.PackageList

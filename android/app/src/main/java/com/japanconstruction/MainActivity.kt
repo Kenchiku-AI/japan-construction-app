@@ -1,4 +1,4 @@
-package com.japanconstruction
+package ai.kenchiku.app
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
