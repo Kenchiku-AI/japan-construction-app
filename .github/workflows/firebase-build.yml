@@ -1,4 +1,4 @@
-name: React Native CI → Firebase App Distribution
+name: Build → Firebase App Distribution
 
 on:
   push:
