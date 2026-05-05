@@ -119,13 +119,19 @@ jobs:
         run: |
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
 
-          printf '%s' "${{ secrets.IOS_PROVISION_PROFILE_BASE64 }}" \
+          echo "${{ secrets.IOS_PROVISION_PROFILE_BASE64 }}" \
             | base64 --decode > profile.mobileprovision
 
-          cp profile.mobileprovision \
-            ~/Library/MobileDevice/Provisioning\ Profiles/
+          UUID=$(
+            security cms -D -i profile.mobileprovision \
+            | plutil -extract UUID raw -o - -
+          )
 
-          ls -lh ~/Library/MobileDevice/Provisioning\ Profiles/
+          cp profile.mobileprovision \
+            ~/Library/MobileDevice/Provisioning\ Profiles/$UUID.mobileprovision
+
+          echo "Installed provisioning profile:"
+          ls -l ~/Library/MobileDevice/Provisioning\ Profiles
 
       # ----------------------------
       # Build IPA
