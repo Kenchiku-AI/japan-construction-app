@@ -77,14 +77,30 @@ jobs:
 
       - name: Decode signing certificate
         run: |
-          echo "${{ secrets.IOS_P12_BASE64 }}" | base64 --decode > cert.p12
+          printf '%s' "${{ secrets.IOS_P12_BASE64 }}" | base64 --decode > cert.p12
+
+          ls -lh cert.p12
+
+          openssl pkcs12 -info \
+            -in cert.p12 \
+            -passin pass:"${{ secrets.IOS_P12_PASSWORD }}" \
+            -nokeys
 
       - name: Create keychain
         run: |
-          security create-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" build.keychain
-          security default-keychain -s build.keychain
-          security unlock-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" build.keychain
-          security set-keychain-settings -t 3600 -u build.keychain
+          security create-keychain \
+            -p "${{ secrets.KEYCHAIN_PASSWORD }}" \
+            build.keychain
+
+          security default-keychain \
+            -s build.keychain
+
+          security unlock-keychain \
+            -p "${{ secrets.KEYCHAIN_PASSWORD }}" \
+            build.keychain
+
+          security set-keychain-settings \
+            -t 3600 -u build.keychain
 
       - name: Import certificate
         run: |
@@ -93,11 +109,25 @@ jobs:
             -P "${{ secrets.IOS_P12_PASSWORD }}" \
             -T /usr/bin/codesign
 
+      - name: Allow codesign access
+        run: |
+          security set-key-partition-list \
+            -S apple-tool:,apple: \
+            -s \
+            -k "${{ secrets.KEYCHAIN_PASSWORD }}" \
+            build.keychain
+
       - name: Install provisioning profile
         run: |
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          echo "${{ secrets.IOS_PROVISION_PROFILE_BASE64 }}" | base64 --decode > profile.mobileprovision
-          cp profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+
+          printf '%s' "${{ secrets.IOS_PROVISION_PROFILE_BASE64 }}" \
+            | base64 --decode > profile.mobileprovision
+
+          cp profile.mobileprovision \
+            ~/Library/MobileDevice/Provisioning\ Profiles/
+
+          ls -lh ~/Library/MobileDevice/Provisioning\ Profiles/
 
       # ----------------------------
       # Build IPA
