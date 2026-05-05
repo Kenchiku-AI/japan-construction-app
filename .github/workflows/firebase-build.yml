@@ -66,6 +66,25 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Prepare whisper-rn
+        run: |
+          ls node_modules/whisper.rn
+
+          if [ -f node_modules/whisper.rn/package.json ]; then
+            cd node_modules/whisper.rn
+
+            echo "whisper.rn package:"
+            cat package.json
+
+            if npm run | grep -q postinstall; then
+              echo "Running whisper-rn postinstall..."
+              npm run postinstall
+            fi
+          fi
+
+          echo "whisper-rn ios contents:"
+          ls -R node_modules/whisper.rn/ios || true
+
       - name: Install CocoaPods
         run: |
           cd ios
