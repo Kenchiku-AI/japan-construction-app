@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0C80B921A6F3F58F76C31292 /* libPods-JapanConstruction.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-JapanConstruction.a */; };
+		0BC6788E2F977EB4363DB3C8 /* libPods-Kenchiku AI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 82C9F901D5EE17675950F4E1 /* libPods-Kenchiku AI.a */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		1D527D716383EB90C96684C9 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
@@ -24,13 +24,15 @@
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = JapanConstruction/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-JapanConstruction.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JapanConstruction.debug.xcconfig"; path = "Target Support Files/Pods-JapanConstruction/Pods-JapanConstruction.debug.xcconfig"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-JapanConstruction.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JapanConstruction.release.xcconfig"; path = "Target Support Files/Pods-JapanConstruction/Pods-JapanConstruction.release.xcconfig"; sourceTree = "<group>"; };
-		5DCACB8F33CDC322A6C60F78 /* libPods-JapanConstruction.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-JapanConstruction.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = JapanConstruction/AppDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = JapanConstruction/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		82C9F901D5EE17675950F4E1 /* libPods-Kenchiku AI.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Kenchiku AI.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B53D77AC2FA6F5EE00C5D6ED /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		B59ED2D02F5111E400E5BB98 /* ggml-silero-v6.2.0.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; name = "ggml-silero-v6.2.0.bin"; path = "../assets/models/ggml-silero-v6.2.0.bin"; sourceTree = "<group>"; };
 		B5DE98C72F502060009A1CEE /* ggml-base.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; name = "ggml-base.bin"; path = "../assets/models/ggml-base.bin"; sourceTree = "<group>"; };
+		D8AA9D832929706FAE91A67D /* Pods-Kenchiku AI.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kenchiku AI.debug.xcconfig"; path = "Target Support Files/Pods-Kenchiku AI/Pods-Kenchiku AI.debug.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		FA8ED9ADD8518C5EDBE03F52 /* Pods-Kenchiku AI.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kenchiku AI.release.xcconfig"; path = "Target Support Files/Pods-Kenchiku AI/Pods-Kenchiku AI.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -38,14 +40,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0C80B921A6F3F58F76C31292 /* libPods-JapanConstruction.a in Frameworks */,
+				0BC6788E2F977EB4363DB3C8 /* libPods-Kenchiku AI.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		13B07FAE1A68108700A75B9A /* JapanConstruction */ = {
+		13B07FAE1A68108700A75B9A /* Kenchiku AI */ = {
 			isa = PBXGroup;
 			children = (
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -57,14 +59,14 @@
 				B59ED2D02F5111E400E5BB98 /* ggml-silero-v6.2.0.bin */,
 				B53D77AC2FA6F5EE00C5D6ED /* GoogleService-Info.plist */,
 			);
-			name = JapanConstruction;
+			name = "Kenchiku AI";
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				5DCACB8F33CDC322A6C60F78 /* libPods-JapanConstruction.a */,
+				82C9F901D5EE17675950F4E1 /* libPods-Kenchiku AI.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -79,7 +81,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				13B07FAE1A68108700A75B9A /* JapanConstruction */,
+				13B07FAE1A68108700A75B9A /* Kenchiku AI */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
@@ -103,6 +105,8 @@
 			children = (
 				3B4392A12AC88292D35C810B /* Pods-JapanConstruction.debug.xcconfig */,
 				5709B34CF0A7D63546082F79 /* Pods-JapanConstruction.release.xcconfig */,
+				D8AA9D832929706FAE91A67D /* Pods-Kenchiku AI.debug.xcconfig */,
+				FA8ED9ADD8518C5EDBE03F52 /* Pods-Kenchiku AI.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -201,19 +205,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-JapanConstruction/Pods-JapanConstruction-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Kenchiku AI/Pods-Kenchiku AI-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-JapanConstruction/Pods-JapanConstruction-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Kenchiku AI/Pods-Kenchiku AI-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-JapanConstruction/Pods-JapanConstruction-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Kenchiku AI/Pods-Kenchiku AI-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		C38B50BA6285516D6DCD4F65 /* [CP] Check Pods Manifest.lock */ = {
@@ -231,7 +231,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-JapanConstruction-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-Kenchiku AI-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -244,19 +244,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-JapanConstruction/Pods-JapanConstruction-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Kenchiku AI/Pods-Kenchiku AI-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-JapanConstruction/Pods-JapanConstruction-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Kenchiku AI/Pods-Kenchiku AI-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-JapanConstruction/Pods-JapanConstruction-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Kenchiku AI/Pods-Kenchiku AI-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -275,7 +271,7 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3B4392A12AC88292D35C810B /* Pods-JapanConstruction.debug.xcconfig */;
+			baseConfigurationReference = D8AA9D832929706FAE91A67D /* Pods-Kenchiku AI.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -304,7 +300,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5709B34CF0A7D63546082F79 /* Pods-JapanConstruction.release.xcconfig */;
+			baseConfigurationReference = FA8ED9ADD8518C5EDBE03F52 /* Pods-Kenchiku AI.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
