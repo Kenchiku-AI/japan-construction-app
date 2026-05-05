@@ -108,7 +108,7 @@ jobs:
           cd ios
 
           xcodebuild \
-            -workspace *.xcworkspace \
+            -workspace "Kenchiku AI.xcworkspace" \
             -scheme "Kenchiku AI" \
             -configuration Release \
             -archivePath build/app.xcarchive \
