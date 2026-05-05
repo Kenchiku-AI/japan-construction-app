@@ -80,6 +80,8 @@ jobs:
           printf '%s' "${{ secrets.IOS_P12_BASE64 }}" | base64 --decode > cert.p12
 
           ls -lh cert.p12
+          file cert.p12
+          shasum cert.p12
 
           openssl pkcs12 -info \
             -in cert.p12 \
