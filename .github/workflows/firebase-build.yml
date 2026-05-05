@@ -117,22 +117,23 @@ jobs:
 
       - name: Install provisioning profile
         run: |
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          PROFILE_DIR="$HOME/Library/MobileDevice/Provisioning Profiles"
+          PROFILE_PATH="$PROFILE_DIR/profile.mobileprovision"
+
+          mkdir -p "$PROFILE_DIR"
 
           echo "${{ secrets.IOS_PROVISION_PROFILE_BASE64 }}" \
-            | base64 --decode \
-            > ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision
+            | base64 --decode > "$PROFILE_PATH"
 
           UUID=$(
-            security cms -D -i profile.mobileprovision \
+            security cms -D -i "$PROFILE_PATH" \
             | plutil -extract UUID raw -o - -
           )
 
-          cp profile.mobileprovision \
-            ~/Library/MobileDevice/Provisioning\ Profiles/$UUID.mobileprovision
+          mv "$PROFILE_PATH" "$PROFILE_DIR/$UUID.mobileprovision"
 
           echo "Installed provisioning profile:"
-          ls -l ~/Library/MobileDevice/Provisioning\ Profiles
+          ls -l "$PROFILE_DIR"
 
       # ----------------------------
       # Build IPA
