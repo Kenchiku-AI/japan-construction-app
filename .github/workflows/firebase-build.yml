@@ -120,7 +120,8 @@ jobs:
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
 
           echo "${{ secrets.IOS_PROVISION_PROFILE_BASE64 }}" \
-            | base64 --decode > profile.mobileprovision
+            | base64 --decode \
+            > ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision
 
           UUID=$(
             security cms -D -i profile.mobileprovision \
