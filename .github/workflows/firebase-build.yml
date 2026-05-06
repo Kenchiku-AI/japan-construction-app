@@ -68,13 +68,11 @@ jobs:
 
       - name: Prepare whisper-rn
         run: |
-          cd node_modules/whisper.rn
-
-          echo "Building whisper-rn iOS frameworks..."
-          npm run build:ios-frameworks
+          echo "whisper-rn package contents:"
+          ls -R node_modules/whisper.rn
 
           echo "whisper-rn ios contents:"
-          ls -R ios
+          ls -R node_modules/whisper.rn/ios || true
 
       - name: Install CocoaPods
         run: |
