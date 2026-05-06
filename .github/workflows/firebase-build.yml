@@ -70,11 +70,8 @@ jobs:
         run: |
           cd node_modules/whisper.rn
 
-          echo "whisper.rn package:"
-          cat package.json
-
-          echo "Running whisper-rn postinstall..."
-          npm run postinstall || npm run install
+          echo "Building whisper-rn iOS frameworks..."
+          npm run build:ios-frameworks
 
           echo "whisper-rn ios contents:"
           ls -R ios
