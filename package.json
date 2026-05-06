@@ -38,6 +38,7 @@
     "react-native-svg": "^15.15.3",
     "react-native-vision-camera": "^4.7.3",
     "react-native-worklets": "^0.8.3",
+    "react-native-worklets-core": "^1.6.3",
     "whisper.rn": "file:whisper.rn"
   },
   "devDependencies": {
