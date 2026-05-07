@@ -389,6 +389,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
         onClose={() => setIsUnsavedChangesShown(false)}
         onLeave={goBack}
         onSave={async () => {
+          setIsUnsavedChangesShown(false);
           await onPressUpdate();
           goBack();
         }}
