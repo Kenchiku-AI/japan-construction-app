@@ -83,6 +83,8 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
 
   useEffect(() => {
     setOnPhotoAdded(() => async (uri: string) => {
+      console.log('PHOTO ADDED', uri);
+
       const newPhoto = await uploadImage(uri);
       if (newPhoto) {
         addPhoto(newPhoto);
@@ -138,7 +140,7 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
               />
             </View>
           </View>
-          {allTags.length && (
+          {(allTags?.length ?? 0) > 0 && (
             <TouchableOpacity
               style={styles.tagsButton}
               onPress={() => setIsMenuShown(true)}
@@ -152,7 +154,7 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
         </View>
         <Divider />
       </View>
-      {photos.length === 0 && (
+      {!loading && filteredPhotos.length === 0 && (
         <View style={styles.emptyPhotos}>
           <Label text={t('empty_photos_description')} light />
         </View>
