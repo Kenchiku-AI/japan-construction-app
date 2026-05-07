@@ -1,13 +1,16 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { ReportImage, ReportImageTag } from '../../types';
-import { useAuth } from '../auth/AuthContext';
-import { wsUrl } from '../../constants';
+import { useApi } from '../../services/api/useApi';
 
 type OnPhotoAdded = (uri: string) => void;
 type OnPhotoDeleted = (imageId: string) => void;
 type OnPhotoUpdated = (photo: ReportImage) => void;
 type OnTagsAdded = (imageId: string, tags: ReportImageTag[]) => void;
-type OnCurrentImageTagsAdded = (tags: ReportImageTag[]) => void;
+type OnDescriptionAdded = (imageId: string, description?: string) => void;
+type OnCurrentImageUpdated = (
+  tags: ReportImageTag[],
+  description?: string,
+) => void;
 type OnTagRemoved = (imageId: string, linkId: string) => void;
 
 export const usePhotosData = () => {
@@ -15,57 +18,81 @@ export const usePhotosData = () => {
   const [onPhotoDeleted, setOnPhotoDeleted] = useState<OnPhotoDeleted>();
   const [onPhotoUpdated, setOnPhotoUpdated] = useState<OnPhotoUpdated>();
   const [onTagsAdded, setOnTagsAdded] = useState<OnTagsAdded>();
-  const [onCurrentImageTagsAdded, setOnCurrentImageTagsAdded] =
-    useState<OnCurrentImageTagsAdded>();
+  const onTagsAddedRef = useRef<OnTagsAdded | undefined>(undefined);
   const [onTagRemoved, setOnTagRemoved] = useState<OnTagRemoved>();
-
-  const wsRef = useRef<WebSocket | null>(null);
-  const { accessToken } = useAuth();
+  const [onDescriptionAdded, setOnDescriptionAdded] =
+    useState<OnDescriptionAdded>();
+  const onDescriptionAddedRef = useRef<OnDescriptionAdded | undefined>(
+    undefined,
+  );
+  const [onCurrentImageUpdated, setOnCurrentImageUpdated] =
+    useState<OnCurrentImageUpdated>();
+  const onCurrentImageUpdatedRef = useRef<OnCurrentImageUpdated | undefined>(
+    undefined,
+  );
+  const pollingRef = useRef<Record<string, number>>({});
+  const api = useApi();
 
   useEffect(() => {
-    if (!accessToken) {
-      wsRef.current?.close();
-      return;
-    }
+    onTagsAddedRef.current = onTagsAdded;
+  }, [onTagsAdded]);
 
-    const encodedToken = encodeURIComponent(accessToken);
-    const ws = new WebSocket(
-      `${wsUrl}/reports/images/ws?access_token=${encodedToken}`,
-    );
+  useEffect(() => {
+    onDescriptionAddedRef.current = onDescriptionAdded;
+  }, [onDescriptionAdded]);
 
-    ws.onopen = () => {
-      console.log('WebSocket connected');
-    };
+  useEffect(() => {
+    onCurrentImageUpdatedRef.current = onCurrentImageUpdated;
+  }, [onCurrentImageUpdated]);
 
-    ws.onmessage = event => {
-      console.log('WS EVENT', event);
+  const pollImageStatus = useCallback(
+    (reportId: string, imageId: string) => {
+      let attempts = 0;
+      const maxAttempts = 30;
 
-      try {
-        const data = JSON.parse(event.data);
+      const poll = async () => {
+        attempts++;
 
-        if (data.type === 'image_tags_ready' && data.tags && data.image_id) {
-          onTagsAdded?.(data.image_id, data.tags);
-          onCurrentImageTagsAdded?.(data.tags);
+        try {
+          const data = await api.getImageStatus(reportId, imageId);
+          if (!data) return;
+
+          console.log('POLLED', data);
+
+          if (
+            data.status === 'completed' ||
+            data.status === 'failed' ||
+            attempts >= maxAttempts
+          ) {
+            clearInterval(pollingRef.current[imageId]);
+            delete pollingRef.current[imageId];
+          }
+
+          if (data.status === 'completed') {
+            console.log(
+              'COMPLETED!',
+              onTagsAddedRef.current,
+              onDescriptionAddedRef.current,
+              onCurrentImageUpdatedRef.current,
+            );
+            onTagsAddedRef.current?.(imageId, data.tags);
+            onDescriptionAddedRef.current?.(imageId, data.description);
+            onCurrentImageUpdatedRef.current?.(data.tags, data.description);
+          }
+        } catch (err) {
+          // console.error("Polling error:", err);
         }
-      } catch (err) {
-        console.warn('Invalid WS message', err);
+      };
+
+      if (!pollingRef.current[imageId]) {
+        const interval = setInterval(poll, 1000);
+        pollingRef.current[imageId] = interval;
       }
-    };
 
-    ws.onerror = err => {
-      console.error('WebSocket error', err);
-    };
-
-    ws.onclose = () => {
-      console.log('WebSocket disconnected');
-    };
-
-    wsRef.current = ws;
-
-    return () => {
-      ws.close();
-    };
-  }, [accessToken, onTagsAdded, onCurrentImageTagsAdded]);
+      poll();
+    },
+    [api],
+  );
 
   return {
     onPhotoAdded,
@@ -78,6 +105,8 @@ export const usePhotosData = () => {
     setOnTagsAdded,
     onTagRemoved,
     setOnTagRemoved,
-    setOnCurrentImageTagsAdded,
+    setOnDescriptionAdded,
+    setOnCurrentImageUpdated,
+    pollImageStatus,
   };
 };

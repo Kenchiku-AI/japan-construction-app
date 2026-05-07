@@ -51,6 +51,13 @@ export type ReportImageTag = {
   name: string;
 };
 
+export type ReportImagePollResponse = {
+  id: string;
+  status: string;
+  description?: string;
+  tags: ReportImageTag[];
+};
+
 export type AddTagRequest = {
   tag_id: string;
 };

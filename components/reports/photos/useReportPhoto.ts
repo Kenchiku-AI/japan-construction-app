@@ -6,12 +6,15 @@ import { ReportImage, ReportImageTag } from '../../../types';
 import { useApi } from '../../../services/api/useApi';
 import { usePhotos } from '../../../context/photos/PhotosContext';
 
-export const useReportPhoto = (initialImage: ReportImage) => {
+export const useReportPhoto = (
+  initialImage: ReportImage,
+  onDescriptionUpdated: (description: string) => void,
+) => {
   const [image, setImage] = useState(initialImage);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const {
-    setOnCurrentImageTagsAdded,
+    setOnCurrentImageUpdated,
     onPhotoUpdated,
     onTagsAdded,
     onTagRemoved,
@@ -20,20 +23,26 @@ export const useReportPhoto = (initialImage: ReportImage) => {
   const api = useApi();
 
   useEffect(() => {
-    setOnCurrentImageTagsAdded(() => (tags: ReportImageTag[]) => {
-      let newImage = { ...image };
-      newImage.status = 'completed';
+    setOnCurrentImageUpdated(
+      () => (tags: ReportImageTag[], description?: string) => {
+        let newImage = { ...image };
+        newImage.status = 'completed';
 
-      tags.forEach(tag => {
-        const hasTag = newImage.tags.some(t => t.tag_id === tag.tag_id);
+        tags.forEach(tag => {
+          const hasTag = newImage.tags.some(t => t.tag_id === tag.tag_id);
 
-        if (!hasTag) {
-          newImage.tags.push(tag);
+          if (!hasTag) {
+            newImage.tags.push(tag);
+          }
+        });
+
+        if (description) {
+          onDescriptionUpdated(description);
         }
-      });
 
-      setImage(newImage);
-    });
+        setImage(newImage);
+      },
+    );
   }, [image]);
 
   const deleteImage = useCallback(async () => {

@@ -1,9 +1,8 @@
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import {
   Dimensions,
   Pressable,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -17,13 +16,23 @@ import { useReportPhotos } from './useReportPhotos';
 import { Loader } from '../../shared/Loader';
 import { FlashList } from '@shopify/flash-list';
 import { RouteProp } from '@react-navigation/native';
-import { ChevronLeft, Menu, Camera as CameraIcon } from '../../shared/Icons';
+import {
+  ChevronLeft,
+  Menu,
+  Camera as CameraIcon,
+  Tag,
+} from '../../shared/Icons';
 import { buttonColor } from '../../../constants';
-import { ReportPhotosMenu } from './ReportPhotosMenu';
+import { ReportPhotosTagsMenu } from './ReportPhotosTagsMenu';
 import { CachedImage } from '../../shared/CachedImage';
 import { useReport } from '../useReport';
 import { usePhotos } from '../../../context/photos/PhotosContext';
-import { ReportImage, ReportImageTag } from '../../../types';
+import {
+  ReportImage,
+  ReportImageTag,
+  ReportImageTagResponse,
+} from '../../../types';
+import { useTags } from './useTags';
 
 interface ReportPhotosScreenProps {
   navigation: NativeStackNavigationProp<
@@ -31,12 +40,6 @@ interface ReportPhotosScreenProps {
     'ReportPhotosScreen'
   >;
   route: RouteProp<ReportsStackNavigationParams, 'ReportPhotosScreen'>;
-}
-
-export enum ReportPhotosGroupBy {
-  None,
-  Tag,
-  Date,
 }
 
 const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
@@ -52,6 +55,7 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
     setOnPhotoUpdated,
     setOnTagsAdded,
     setOnTagRemoved,
+    setOnDescriptionAdded,
   } = usePhotos();
   const {
     photos,
@@ -61,15 +65,17 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
     replacePhoto,
     addTags,
     removeTag,
+    addDescription,
     loading: photosLoading,
     error,
     setError,
   } = useReportPhotos(reportId);
   const { uploadImage, loading: reportLoading } = useReport(reportId);
   const [isMenuShown, setIsMenuShown] = useState(false);
-  const [groupBy, setGroupBy] = useState(ReportPhotosGroupBy.None);
+  const [selectedTag, setSelectedTag] = useState<ReportImageTagResponse>();
   const screenWidth = Dimensions.get('window').width;
   const loading = photosLoading || reportLoading;
+  const { tags: allTags } = useTags(companyId);
 
   const columnWidth = useMemo(() => {
     return (screenWidth - 42) / 2;
@@ -78,7 +84,9 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
   useEffect(() => {
     setOnPhotoAdded(() => async (uri: string) => {
       const newPhoto = await uploadImage(uri);
-      if (newPhoto) addPhoto(newPhoto);
+      if (newPhoto) {
+        addPhoto(newPhoto);
+      }
     });
 
     setOnPhotoDeleted(() => async (imageId: string) => {
@@ -97,8 +105,19 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
       removeTag(imageId, linkId);
     });
 
+    setOnDescriptionAdded(() => (imageId: string, description?: string) => {
+      console.log('added description', description);
+      addDescription(imageId, description);
+    });
+
     getPhotos();
   }, []);
+
+  const filteredPhotos = useMemo(() => {
+    if (!selectedTag) return photos;
+
+    return photos.filter(p => p.tags.some(t => t.tag_id === selectedTag.id));
+  }, [selectedTag, photos]);
 
   return (
     <>
@@ -119,12 +138,17 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
               />
             </View>
           </View>
-          <TouchableOpacity
-            style={styles.menuButton}
-            onPress={() => setIsMenuShown(true)}
-          >
-            <Menu size={30} />
-          </TouchableOpacity>
+          {allTags.length && (
+            <TouchableOpacity
+              style={styles.tagsButton}
+              onPress={() => setIsMenuShown(true)}
+            >
+              {selectedTag && (
+                <Label text={selectedTag.name} style={{ color: buttonColor }} />
+              )}
+              <Tag size={30} />
+            </TouchableOpacity>
+          )}
         </View>
         <Divider />
       </View>
@@ -134,7 +158,7 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
         </View>
       )}
       <FlashList
-        data={photos}
+        data={filteredPhotos}
         masonry
         numColumns={2}
         keyExtractor={item => item.id}
@@ -174,10 +198,11 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
           }}
         />
       </View>
-      <ReportPhotosMenu
+      <ReportPhotosTagsMenu
         isOpen={isMenuShown}
         onClose={() => setIsMenuShown(false)}
-        onGroupBySelected={gb => setGroupBy(gb)}
+        tags={allTags}
+        onTagSelected={t => setSelectedTag(t)}
       />
       <Modal
         title={t('error')}
@@ -212,8 +237,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     lineHeight: 30,
   },
-  menuButton: {
+  tagsButton: {
     paddingLeft: 18,
+    gap: 6,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   images: {
     paddingLeft: 6,

@@ -74,6 +74,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
     error,
     setError,
   } = useReport(reportId);
+
   const { setOnPhotoAdded } = usePhotos();
   const { t } = useTranslation();
   const [fieldValues, setFieldValues] = useState<ReportFieldValues>();

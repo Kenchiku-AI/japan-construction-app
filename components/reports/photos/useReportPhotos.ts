@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ReportImage, ReportImageTag } from '../../../types';
 import { useApi } from '../../../services/api/useApi';
+import { usePhotos } from '../../../context/photos/PhotosContext';
 
 export const useReportPhotos = (reportId: string) => {
   const [loading, setLoading] = useState(true);
@@ -12,29 +13,11 @@ export const useReportPhotos = (reportId: string) => {
   const photosRef = useRef<ReportImage[]>([]);
   const { t } = useTranslation();
   const api = useApi();
+  const { pollImageStatus } = usePhotos();
 
   useEffect(() => {
     photosRef.current = photos;
   }, [photos]);
-
-  const getPhotos = useCallback(async () => {
-    setLoading(true);
-
-    try {
-      const response = await api.getReportImages(reportId);
-
-      const sortedPhotos = [...(response ?? [])].sort(
-        (a, b) =>
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-      );
-
-      setPhotos(sortedPhotos);
-    } catch (err) {
-      setError(t('get_photos_error'));
-    }
-
-    setLoading(false);
-  }, [reportId]);
 
   const addPhoto = (photo: ReportImage) => {
     setPhotos([photo, ...photosRef.current]);
@@ -85,6 +68,49 @@ export const useReportPhotos = (reportId: string) => {
     setPhotos(newPhotos);
   };
 
+  const addDescription = (imageId: string, description?: string) => {
+    if (!description) return;
+
+    const index = photosRef.current.findIndex(p => p.id === imageId);
+    if (index === -1) return;
+
+    let photo = { ...photosRef.current[index] };
+    photo.description = `${
+      photo.description ? `${photo.description} ` : ''
+    }${description}`;
+
+    console.log('added description photo', photo);
+
+    const newPhotos = [...photosRef.current];
+    newPhotos[index] = photo;
+    setPhotos(newPhotos);
+  };
+
+  const getPhotos = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const response = await api.getReportImages(reportId);
+
+      const sortedPhotos = [...(response ?? [])].sort(
+        (a, b) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+      );
+
+      setPhotos(sortedPhotos);
+
+      (response ?? []).forEach((img: ReportImage) => {
+        if (img.status === 'pending' || img.status === 'processing') {
+          pollImageStatus(reportId, img.id);
+        }
+      });
+    } catch (err) {
+      setError(t('get_photos_error'));
+    }
+
+    setLoading(false);
+  }, [reportId, pollImageStatus]);
+
   return {
     getPhotos,
     addPhoto,
@@ -92,6 +118,7 @@ export const useReportPhotos = (reportId: string) => {
     replacePhoto,
     addTags,
     removeTag,
+    addDescription,
     loading,
     photos,
     error,

@@ -1,4 +1,4 @@
-import { FC, ReactNode, useEffect } from 'react';
+import { FC, useEffect } from 'react';
 import { View, TouchableOpacity, StyleSheet, Keyboard } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useModal } from '../../../context/modal/ModalContext';
@@ -10,18 +10,20 @@ import Animated, {
 import { bgColor1 } from '../../../constants';
 import { Divider, Label } from '../../shared';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ReportPhotosGroupBy } from './ReportPhotosScreen';
+import { ReportImageTagResponse } from '../../../types';
 
-interface ReportPhotosMenuProps {
+interface ReportPhotosTagsMenuProps {
   isOpen: boolean;
   onClose: () => void;
-  onGroupBySelected: (groupBy: ReportPhotosGroupBy) => void;
+  tags: ReportImageTagResponse[];
+  onTagSelected: (tag?: ReportImageTagResponse) => void;
 }
 
-export const ReportPhotosMenu: FC<ReportPhotosMenuProps> = ({
+export const ReportPhotosTagsMenu: FC<ReportPhotosTagsMenuProps> = ({
   isOpen,
   onClose,
-  onGroupBySelected,
+  tags,
+  onTagSelected,
 }) => {
   const opacity = useSharedValue(0);
   const { setIsModalShown, fadeOpacity } = useModal();
@@ -67,32 +69,26 @@ export const ReportPhotosMenu: FC<ReportPhotosMenuProps> = ({
         <TouchableOpacity
           style={styles.button}
           onPress={() => {
-            onGroupBySelected(ReportPhotosGroupBy.None);
+            onTagSelected(undefined);
             onPressClose();
           }}
         >
           <Label text={t('none')} />
         </TouchableOpacity>
-        <Divider light />
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            onGroupBySelected(ReportPhotosGroupBy.Tag);
-            onPressClose();
-          }}
-        >
-          <Label text={t('tag')} />
-        </TouchableOpacity>
-        <Divider light />
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            onGroupBySelected(ReportPhotosGroupBy.Date);
-            onPressClose();
-          }}
-        >
-          <Label text={t('date')} />
-        </TouchableOpacity>
+        {tags.map(t => (
+          <>
+            <Divider light />
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                onTagSelected(t);
+                onPressClose();
+              }}
+            >
+              <Label text={t.name} />
+            </TouchableOpacity>
+          </>
+        ))}
       </View>
     </Animated.View>
   );

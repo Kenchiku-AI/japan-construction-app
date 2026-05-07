@@ -16,6 +16,7 @@ import { Divider } from '../shared';
 import { Project } from '../../types';
 import { useAuth } from '../../context/auth/AuthContext';
 import { fontColor2 } from '../../constants';
+import { navigate } from '../../navigation/navigate';
 
 interface ProjectsListScreenProps {
   navigation: NativeStackNavigationProp<
@@ -39,8 +40,13 @@ const ProjectsListScreen: FC<ProjectsListScreenProps> = () => {
         style={styles.projects}
         contentContainerStyle={styles.content}
         data={currentUser?.projects}
-        renderItem={({ item, index }) => (
-          <ProjectsListItem project={item} onPress={() => {}} />
+        renderItem={({ item }) => (
+          <ProjectsListItem
+            project={item}
+            onPress={() => {
+              navigate('ProjectDetailScreen', { project: item });
+            }}
+          />
         )}
       />
     </View>

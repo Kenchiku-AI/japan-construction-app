@@ -21,6 +21,8 @@ import {
   ReportImageTagResponse,
   ReportImageTag,
   AddTagRequest,
+  ReportImagePollResponse,
+  ForgotPasswordRequest,
 } from '../../types';
 import { baseUrl } from '../../constants';
 import { useAuth } from '../../context/auth/AuthContext';
@@ -127,6 +129,10 @@ export const useApi = () => {
     async deleteImage(reportId: string, imageId: string) {
       const url = `/reports/${reportId}/images/${imageId}`;
       return call(() => axios.delete(url));
+    },
+    async getImageStatus(reportId: string, imageId: string) {
+      const url = `/reports/${reportId}/images/${imageId}/status`;
+      return call(() => axios.get<ReportImagePollResponse>(url));
     },
     async updateImage(
       reportId: string,

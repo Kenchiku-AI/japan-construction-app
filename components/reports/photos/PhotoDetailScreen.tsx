@@ -64,14 +64,6 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
   route,
 }) => {
   const { image: initialImage, companyId } = route.params;
-  const {
-    image,
-    deleteImage,
-    updateImage,
-    addTag,
-    removeTag,
-    loading: photoLoading,
-  } = useReportPhoto(initialImage);
   const { tags: allTags, loading: tagsLoading } = useTags(companyId);
   const { t } = useTranslation();
   const { width, height } = useWindowDimensions();
@@ -99,6 +91,18 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
   const photoButtonWidth = useSharedValue(0.5);
   const photoButtonOpacity = useSharedValue(1);
   const zoomOpacity = useSharedValue(0);
+  const {
+    image,
+    deleteImage,
+    updateImage,
+    addTag,
+    removeTag,
+    loading: photoLoading,
+  } = useReportPhoto(initialImage, (newDescription: string) => {
+    setDescription(prev => {
+      return `${prev ? `${prev} ` : ''}${newDescription}`;
+    });
+  });
   const loading = photoLoading || tagsLoading;
 
   const speakingFadeStyle = useAnimatedStyle(() => ({
@@ -128,7 +132,7 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
     return formatDate(image.created_at);
   }, [image?.created_at]);
 
-  const isTagProcessingShown = useMemo(() => {
+  const isProcessingShown = useMemo(() => {
     const statuses = ['pending', 'processing'];
 
     if (!statuses.includes(image.status)) return false;
@@ -242,12 +246,19 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
       <View style={{ paddingTop: top, ...styles.navContainer }}>
         <View style={styles.nav}>
           <View style={styles.navLeft}>
-            <View style={{ flexShrink: 1 }}>
+            <View style={styles.header}>
               <Label
                 text={t('photo_details')}
                 style={styles.title}
                 numberOfLines={1}
               />
+              {isProcessingShown && (
+                <Label
+                  style={styles.title}
+                  text={`(${t('processing')})`}
+                  light
+                />
+              )}
             </View>
           </View>
           <TouchableOpacity
@@ -293,12 +304,7 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
         </View>
         {allTags.length > 0 && (
           <>
-            <View style={styles.tagsHeader}>
-              <Label style={styles.tagsTitle} text={t('tags')} />
-              {isTagProcessingShown && (
-                <Label text={t('tags_processing')} light />
-              )}
-            </View>
+            <Label style={styles.tagsTitle} text={t('tags')} />
             <Divider light />
             {image.tags.length > 0 && (
               <View style={styles.tags}>
@@ -484,6 +490,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     lineHeight: 30,
   },
+  header: {
+    flexDirection: 'row',
+    gap: 10,
+    flexShrink: 1,
+    alignItems: 'center',
+  },
   container: {
     padding: 16,
   },
@@ -504,12 +516,8 @@ const styles = StyleSheet.create({
     gap: 10,
     marginTop: 20,
   },
-  tagsHeader: {
-    flexDirection: 'row',
-    gap: 10,
-    marginTop: 28,
-  },
   tagsTitle: {
+    marginTop: 28,
     marginBottom: 12,
   },
   tags: {

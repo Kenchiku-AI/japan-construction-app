@@ -1,14 +1,12 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useCallback, useEffect, useState } from 'react';
 import { ReportImageTagResponse } from '../../../types';
 import { useApi } from '../../../services/api/useApi';
 
-export const useTags = (companyId: string) => {
+export const useTags = (companyId?: string) => {
   const [tags, setTags] = useState<ReportImageTagResponse[]>([]);
   const [loading, setLoading] = useState(true);
-  const { t } = useTranslation();
   const api = useApi();
 
   useEffect(() => {
@@ -16,6 +14,8 @@ export const useTags = (companyId: string) => {
   }, []);
 
   const getTags = useCallback(async () => {
+    if (!companyId) return;
+
     setLoading(true);
 
     try {

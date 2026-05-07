@@ -1,7 +1,8 @@
-const host = '192.168.86.40:8000'; // real device (if LAN IP address changes, run ifconfig and look for inet 192.168.x.x value)
+const host = 'dev.api.kenchiku.ai';
+// real device (if LAN IP address changes, run ifconfig and look for inet 192.168.x.x value)
 // const host = '10.0.2.2:8000'; // simulator
-export const baseUrl = `http://${host}`;
-export const wsUrl = `ws://${host}`; // switch to wss for prod
+
+export const baseUrl = `https://${host}`;
 export const accessTokenStorageKey = 'access-token';
 export const refreshTokenStorageKey = 'refresh-token';
 export const bgColor1 = '#FDFDFD';

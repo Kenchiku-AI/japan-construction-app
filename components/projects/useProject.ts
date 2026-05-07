@@ -6,15 +6,13 @@ import ImageResizer from 'react-native-image-resizer';
 import { Report, ReportRequest } from '../../types';
 import { useApi } from '../../services/api/useApi';
 import { navigateBack } from '../../navigation/navigate';
-import { usePhotos } from '../../context/photos/PhotosContext';
 
-export const useReport = (reportId: string) => {
+export const useReport = (projectId: string) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [report, setReport] = useState<Report>();
   const { t } = useTranslation();
   const api = useApi();
-  const { pollImageStatus } = usePhotos();
 
   const getReport = useCallback(async () => {
     setLoading(true);
@@ -89,8 +87,6 @@ export const useReport = (reportId: string) => {
 
         if (!uploadResponse.ok) throw new Error();
 
-        pollImageStatus(reportId, createResponse.id);
-
         return createResponse;
       } catch (err) {
         setError(t('upload_image_error'));
@@ -98,17 +94,12 @@ export const useReport = (reportId: string) => {
         setLoading(false);
       }
     },
-    [reportId, pollImageStatus],
+    [reportId],
   );
 
   return {
     loading,
     report,
-    getReport,
-    updateReport,
-    deleteReport,
-    uploadImage,
-    error,
-    setError,
+    getProject,
   };
 };
