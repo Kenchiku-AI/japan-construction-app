@@ -13,10 +13,9 @@ import { Label } from '../shared';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Divider } from '../shared';
-import { Project } from '../../types';
+import { UserProject } from '../../types';
 import { useAuth } from '../../context/auth/AuthContext';
 import { fontColor2 } from '../../constants';
-import { navigate } from '../../navigation/navigate';
 
 interface ProjectsListScreenProps {
   navigation: NativeStackNavigationProp<
@@ -25,7 +24,7 @@ interface ProjectsListScreenProps {
   >;
 }
 
-const ProjectsListScreen: FC<ProjectsListScreenProps> = () => {
+const ProjectsListScreen: FC<ProjectsListScreenProps> = ({ navigation }) => {
   const { t } = useTranslation();
   const { top } = useSafeAreaInsets();
   const { currentUser } = useAuth();
@@ -44,7 +43,10 @@ const ProjectsListScreen: FC<ProjectsListScreenProps> = () => {
           <ProjectsListItem
             project={item}
             onPress={() => {
-              navigate('ProjectDetailScreen', { project: item });
+              navigation.navigate('ProjectDetailScreen', {
+                projectId: item.id,
+                projectName: item.name,
+              });
             }}
           />
         )}
@@ -54,7 +56,7 @@ const ProjectsListScreen: FC<ProjectsListScreenProps> = () => {
 };
 
 interface ProjectsListItemProps {
-  project: Project;
+  project: UserProject;
   onPress: () => void;
 }
 

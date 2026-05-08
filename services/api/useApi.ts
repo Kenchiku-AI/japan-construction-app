@@ -23,6 +23,7 @@ import {
   AddTagRequest,
   ReportImagePollResponse,
   ForgotPasswordRequest,
+  Project,
 } from '../../types';
 import { baseUrl } from '../../constants';
 import { useAuth } from '../../context/auth/AuthContext';
@@ -86,6 +87,10 @@ export const useApi = () => {
     async getCurrentUser() {
       const url = '/users/me';
       return call(() => axios.get<CurrentUser>(url));
+    },
+    async getProject(projectId: string) {
+      const url = `/projects/${projectId}`;
+      return call(() => axios.get<Project>(url));
     },
     async getReports() {
       const url = `/reports`;

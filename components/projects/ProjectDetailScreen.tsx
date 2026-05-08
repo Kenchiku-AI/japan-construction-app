@@ -1,25 +1,38 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ProjectsStackNavigationParams } from '../../navigation/ProjectsStack';
 import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Loader } from '../shared/Loader';
-import { Divider, Label } from '../shared';
+import { Divider, Label, Modal } from '../shared';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ChevronLeft } from '../shared/Icons';
+import { ChevronLeft, Edit } from '../shared/Icons';
 import { buttonColor } from '../../constants';
+import { RouteProp } from '@react-navigation/native';
+import { useProject } from './useProject';
+import { CreateReportModal } from '../reports/CreateReportModal';
+import { useReports } from '../reports/useReports';
+import { useTranslation } from 'react-i18next';
 
 interface ProjectDetailScreenProps {
   navigation: NativeStackNavigationProp<
     ProjectsStackNavigationParams,
     'ProjectDetailScreen'
   >;
+  route: RouteProp<ProjectsStackNavigationParams, 'ProjectDetailScreen'>;
 }
 
 const ProjectDetailScreen: FC<ProjectDetailScreenProps> = ({
-  navigation
+  navigation,
+  route,
 }) => {
   const { top } = useSafeAreaInsets();
-  
+  const { t } = useTranslation();
+  const { projectId, projectName } = route.params;
+  const { project, error, setError } = useProject(projectId);
+  const { createReport } = useReports();
+  const [showCreateReport, setShowCreateReport] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
+
   return (
     <>
       <View
@@ -39,16 +52,22 @@ const ProjectDetailScreen: FC<ProjectDetailScreenProps> = ({
               </TouchableOpacity>
               <View style={{ flexShrink: 1 }}>
                 <Label
-                  text={reportName}
+                  text={project?.name ?? projectName}
                   style={styles.projectName}
                   numberOfLines={1}
                 />
               </View>
             </View>
+            <TouchableOpacity
+              style={styles.editButton}
+              onPress={() => setShowEdit(true)}
+            >
+              <Edit size={30} />
+            </TouchableOpacity>
           </View>
           <Divider />
         </View>
-        {isLoaded && project ? (
+        {/* {isLoaded && project ? (
           <>
             <FlatList
               data={project.reports}
@@ -90,8 +109,31 @@ const ProjectDetailScreen: FC<ProjectDetailScreenProps> = ({
           </>
         ) : (
           <Loader fullScreen={false} />
-        )}
+        )} */}
       </View>
+      <Modal
+        title={t('error')}
+        subtitle={error}
+        isOpen={!!error}
+        onClose={() => setError('')}
+      />
+      <CreateReportModal
+        isOpen={showCreateReport}
+        onClose={() => setShowCreateReport(false)}
+        forceProjectId={projectId}
+        onSubmit={async request => {
+          setShowCreateReport(false);
+
+          const report = await createReport(request);
+
+          if (report) {
+            navigation.navigate('ReportDetailScreen', {
+              reportId: report.id,
+              reportName: report.name,
+            });
+          }
+        }}
+      />
     </>
   );
 };
@@ -120,6 +162,9 @@ const styles = StyleSheet.create({
   projectName: {
     fontSize: 20,
     lineHeight: 30,
+  },
+  editButton: {
+    paddingLeft: 18,
   },
 });
 

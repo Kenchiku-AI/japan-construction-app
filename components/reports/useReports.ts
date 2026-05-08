@@ -1,9 +1,8 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useApi } from '../../services/api/useApi';
 import { CreateReportRequest, Report } from '../../types';
-import { useAuth } from '../../context/auth/AuthContext';
 
 export const useReports = () => {
   const [loading, setLoading] = useState(false);

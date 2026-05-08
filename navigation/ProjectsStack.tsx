@@ -1,16 +1,15 @@
 import { FC } from 'react';
 import { Project } from '../types';
-import {
-  createNativeStackNavigator,
-  NativeStackNavigationOptions,
-} from '@react-navigation/native-stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ProjectsListScreen from '../components/projects/ProjectsListScreen';
-import { buttonColor, fontColor1, fontFamily } from '../constants';
+import ProjectDetailScreen from '../components/projects/ProjectDetailScreen';
+import ReportsStack, { ReportsStackNavigationParams } from './ReportsStack';
 
-export type ProjectsStackNavigationParams = {
+export type ProjectsStackNavigationParams = ReportsStackNavigationParams & {
   ProjectsListScreen: undefined;
   ProjectDetailScreen: {
-    project: Project;
+    projectId: string;
+    projectName: string;
   };
 };
 
@@ -20,6 +19,11 @@ const ProjectsStack: FC = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="ProjectsListScreen" component={ProjectsListScreen} />
+      <Stack.Screen
+        name="ProjectDetailScreen"
+        component={ProjectDetailScreen}
+      />
+      <ReportsStack />
     </Stack.Navigator>
   );
 };

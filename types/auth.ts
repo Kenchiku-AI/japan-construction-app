@@ -1,4 +1,4 @@
-import { Project } from './projects';
+import { UserProject } from './projects';
 
 export type LoginRequest = {
   email: string;
@@ -45,7 +45,7 @@ export type CurrentUser = {
   email: string;
   role: UserRole;
   company?: UserCompany;
-  projects: Project[];
+  projects: UserProject[];
 };
 
 export enum UserRole {

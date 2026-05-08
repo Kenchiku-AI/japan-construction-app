@@ -1,105 +1,63 @@
-'use client';
-
-import { useCallback, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import ImageResizer from 'react-native-image-resizer';
-import { Report, ReportRequest } from '../../types';
+import { useCallback, useEffect, useState } from 'react';
+import { Project } from '../../types';
 import { useApi } from '../../services/api/useApi';
-import { navigateBack } from '../../navigation/navigate';
+import { useTranslation } from 'react-i18next';
 
-export const useReport = (projectId: string) => {
+export const useProject = (projectId: string) => {
   const [loading, setLoading] = useState(false);
+  const [project, setProject] = useState<Project>();
   const [error, setError] = useState('');
-  const [report, setReport] = useState<Report>();
   const { t } = useTranslation();
   const api = useApi();
 
-  const getReport = useCallback(async () => {
-    setLoading(true);
+  useEffect(() => {
+    getProject(projectId);
+  }, [projectId]);
 
-    try {
-      const response = await api.getReport(reportId);
-      setReport(response);
-    } catch (err) {
-      setError(t('get_report_error'));
-    }
-
-    setLoading(false);
-  }, [reportId, setReport]);
-
-  const updateReport = useCallback(
-    async (request: ReportRequest) => {
+  const getProject = useCallback(
+    async (projectId: string) => {
       setLoading(true);
 
       try {
-        const response = await api.updateReport(reportId, request);
-        setReport(response);
+        const response = await api.getProject(projectId);
+        setProject(response);
       } catch (err) {
-        setError(t('update_report_error'));
+        setError(t('get_project_error'));
       }
 
       setLoading(false);
     },
-    [setReport, reportId],
+    [api],
   );
 
-  const deleteReport = useCallback(async () => {
-    setLoading(true);
-
-    try {
-      await api.deleteReport(reportId);
-      navigateBack();
-    } catch (err) {
-      setError(t('delete_report_error'));
-    }
-
-    setLoading(false);
-  }, [setReport, reportId]);
-
-  const uploadImage = useCallback(
-    async (uri: string) => {
-      setLoading(true);
-
-      try {
-        const resized = await ImageResizer.createResizedImage(
-          uri,
-          1024,
-          1024,
-          'JPEG',
-          80,
-        );
-
-        const request = {
-          width: resized.width,
-          height: resized.height,
-        };
-
-        const createResponse = await api.createReportImage(reportId, request);
-        if (!createResponse) throw new Error();
-
-        const uploadResponse = await fetch(createResponse.upload_url, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'image/jpeg',
-          },
-          body: resized,
-        });
-
-        if (!uploadResponse.ok) throw new Error();
-
-        return createResponse;
-      } catch (err) {
-        setError(t('upload_image_error'));
-      } finally {
-        setLoading(false);
-      }
+  const updateProject = useCallback(
+    async (request: UpdateProjectRequest) => {
+      // if (!project) return;
+      // setLoading(true);
+      // try {
+      //   const response = await api.updateProject(project.id, request);
+      //   setProject(response);
+      // } catch (err) {
+      //   showModal({
+      //     title: t('error'),
+      //     subtitle: t('get_project_error_descrip'),
+      //   });
+      //   if (currentUser?.role === UserRole.Admin) {
+      //     router.replace('/projects');
+      //   } else {
+      //     router.replace('/');
+      //   }
+      // }
+      // setLoading(false);
     },
-    [reportId],
+    [project, api],
   );
 
   return {
     loading,
-    report,
-    getProject,
+    project,
+    updateProject,
+    error,
+    setError,
   };
 };
