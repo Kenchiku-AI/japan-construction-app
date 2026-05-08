@@ -77,9 +77,6 @@ export const useReport = (reportId: string) => {
         };
 
         const createResponse = await api.createReportImage(reportId, request);
-
-        console.log('image created', createResponse);
-
         if (!createResponse) throw new Error();
 
         const uploadResponse = await fetch(createResponse.upload_url, {
@@ -89,8 +86,6 @@ export const useReport = (reportId: string) => {
           },
           body: resized,
         });
-
-        console.log('uploaded...', uploadResponse);
 
         if (!uploadResponse.ok) throw new Error();
 

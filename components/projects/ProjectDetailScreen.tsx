@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
   },
   reportsHeader: {
     height: 50,
-    marginTop: 20,
+    marginTop: 40,
     alignItems: 'center',
     justifyContent: 'space-between',
     flexDirection: 'row',

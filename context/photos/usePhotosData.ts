@@ -57,8 +57,6 @@ export const usePhotosData = () => {
           const data = await api.getImageStatus(reportId, imageId);
           if (!data) return;
 
-          console.log('POLLED', data);
-
           if (
             data.status === 'completed' ||
             data.status === 'failed' ||

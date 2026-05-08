@@ -79,8 +79,6 @@ export const useReportPhotos = (reportId: string) => {
       photo.description ? `${photo.description} ` : ''
     }${description}`;
 
-    console.log('added description photo', photo);
-
     const newPhotos = [...photosRef.current];
     newPhotos[index] = photo;
     setPhotos(newPhotos);

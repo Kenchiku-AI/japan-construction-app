@@ -48,7 +48,6 @@ const Root = () => {
         updateAccessToken(accessCreds.password);
 
         try {
-          console.log('gettting user');
           const user = await api.getCurrentUser();
 
           setCurrentUser(user);

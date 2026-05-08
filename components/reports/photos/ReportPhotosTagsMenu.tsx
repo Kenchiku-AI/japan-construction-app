@@ -76,7 +76,7 @@ export const ReportPhotosTagsMenu: FC<ReportPhotosTagsMenuProps> = ({
           <Label text={t('none')} />
         </TouchableOpacity>
         {tags.map(t => (
-          <>
+          <View key={t.id}>
             <Divider light />
             <TouchableOpacity
               style={styles.button}
@@ -87,7 +87,7 @@ export const ReportPhotosTagsMenu: FC<ReportPhotosTagsMenuProps> = ({
             >
               <Label text={t.name} />
             </TouchableOpacity>
-          </>
+          </View>
         ))}
       </View>
     </Animated.View>

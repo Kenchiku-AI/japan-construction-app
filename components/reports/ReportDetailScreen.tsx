@@ -250,7 +250,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
               </TouchableOpacity>
               <View style={{ flexShrink: 1 }}>
                 <Label
-                  text={reportName}
+                  text={report?.name ?? reportName}
                   style={styles.reportName}
                   numberOfLines={1}
                 />
@@ -399,7 +399,9 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
       <ReportMenu
         isOpen={isMenuShown}
         onClose={() => setIsMenuShown(false)}
-        onChangeName={() => {}}
+        onChangeName={() => {
+          setIsNameModalShown(true);
+        }}
         onDelete={() => {
           setIsDeleteModalShown(true);
         }}
@@ -419,6 +421,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
           onClose={() => setIsNameModalShown(false)}
           onSubmit={request => {
             updateReport(request);
+            setIsNameModalShown(false);
           }}
         />
       )}

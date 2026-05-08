@@ -83,8 +83,6 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
 
   useEffect(() => {
     setOnPhotoAdded(() => async (uri: string) => {
-      console.log('PHOTO ADDED', uri);
-
       const newPhoto = await uploadImage(uri);
       if (newPhoto) {
         addPhoto(newPhoto);
@@ -108,7 +106,6 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
     });
 
     setOnDescriptionAdded(() => (imageId: string, description?: string) => {
-      console.log('added description', description);
       addDescription(imageId, description);
     });
 
