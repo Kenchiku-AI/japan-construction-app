@@ -25,6 +25,7 @@ import {
   ForgotPasswordRequest,
   Project,
   UpdateProjectRequest,
+  UpdateUserRequest,
 } from '../../types';
 import { baseUrl } from '../../constants';
 import { useAuth } from '../../context/auth/AuthContext';
@@ -88,6 +89,10 @@ export const useApi = () => {
     async getCurrentUser() {
       const url = '/users/me';
       return call(() => axios.get<CurrentUser>(url));
+    },
+    async updateUser(userId: string, request: UpdateUserRequest) {
+      const url = `/users/${userId}`;
+      return call(() => axios.patch<CurrentUser>(url, request));
     },
     async getProject(projectId: string) {
       const url = `/projects/${projectId}`;

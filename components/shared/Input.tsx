@@ -108,7 +108,11 @@ export const Input: FC<InputProps> = ({
         style={[
           styles.inputContainer,
           inputStyle,
-          { backgroundColor: error ? '#FF636326' : '#F2F2F3' },
+          {
+            backgroundColor: error
+              ? '#FF636326'
+              : `#F2F2F3${disabled ? '54' : ''}`,
+          },
           style,
         ]}
       >
@@ -124,7 +128,9 @@ export const Input: FC<InputProps> = ({
           }}
           style={{
             ...styles.input,
-            backgroundColor: error ? '#FF636326' : '#F2F2F3',
+            backgroundColor: error
+              ? '#FF636326'
+              : `#F2F2F3${disabled ? '54' : ''}`,
           }}
           autoCapitalize="none"
           autoFocus={false}

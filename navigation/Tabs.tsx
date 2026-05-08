@@ -6,7 +6,7 @@ import {
 } from '@react-navigation/bottom-tabs';
 import ProjectsStack from './ProjectsStack';
 import ReportsStack from './ReportsStack';
-import SettingsStack from './SettingsStack';
+import UserStack from './UserStack';
 import { buttonColor, fontColor2, fontFamily } from '../constants';
 import { View, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -15,8 +15,8 @@ import {
   HarhatFilled,
   Reports,
   ReportsFilled,
-  Settings,
-  SettingsFilled,
+  User,
+  UserFilled,
 } from '../components/shared/Icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
@@ -27,7 +27,7 @@ import AudioVisualizer from '../components/shared/AudioVisualizer';
 export type TabsNavigationParams = {
   ProjectsStack: undefined;
   ReportsStack: undefined;
-  SettingsStack: undefined;
+  UserStack: undefined;
 };
 
 const Tabs: FC = () => {
@@ -65,7 +65,7 @@ const Tabs: FC = () => {
       <Tabs.Screen
         name="ProjectsStack"
         options={{
-          title: t('sites'),
+          title: t('projects'),
           tabBarIcon: ({ focused }) =>
             focused ? (
               <HarhatFilled color={buttonColor} />
@@ -77,20 +77,20 @@ const Tabs: FC = () => {
         component={ProjectsStack}
       />
       <Tabs.Screen
-        name="SettingsStack"
+        name="UserStack"
         options={{
-          title: t('settings'),
+          title: t('user'),
           tabBarIcon: ({ focused }) =>
             focused ? (
-              <SettingsFilled color={buttonColor} />
+              <UserFilled size={36} color={buttonColor} />
             ) : (
               <View style={styles.unfocused}>
-                <Settings color={fontColor2} />
+                <User size={32} color={fontColor2} />
               </View>
             ),
           tabBarIconStyle: styles.icon,
         }}
-        component={SettingsStack}
+        component={UserStack}
       />
     </Tabs.Navigator>
   );

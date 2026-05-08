@@ -1,18 +1,18 @@
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Modal } from '../../shared';
+import { Button, Modal } from '../shared';
 import { StyleSheet, View } from 'react-native';
 
-interface ConfirmDeleteModalProps {
+interface ConfirmLogoutModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onDelete: () => void;
+  onConfirm: () => void;
 }
 
-export const ConfirmDeletePhotoModal: FC<ConfirmDeleteModalProps> = ({
+export const ConfirmLogoutModal: FC<ConfirmLogoutModalProps> = ({
   isOpen,
   onClose,
-  onDelete,
+  onConfirm,
 }) => {
   const { t } = useTranslation();
 
@@ -20,11 +20,11 @@ export const ConfirmDeletePhotoModal: FC<ConfirmDeleteModalProps> = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={t('confirm_delete')}
-      subtitle={t('confirm_delete_photo_description')}
+      title={t('logout')}
+      subtitle={t('confirm_logout_description')}
     >
       <View style={styles.buttons}>
-        <Button label={t('delete_photo')} onPress={onDelete} />
+        <Button label={t('logout')} onPress={onConfirm} />
         <Button variant="secondary" label={t('cancel')} onPress={onClose} />
       </View>
     </Modal>

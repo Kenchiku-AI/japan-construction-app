@@ -86,7 +86,7 @@ export const CreateReportModal: FC<CreateReportModalProps> = ({
 
   const projectOptions = useMemo(
     () =>
-      currentUser?.projects.map(p => ({
+      currentUser?.projects?.map(p => ({
         label: p.name,
         value: p.id,
       })) ?? [],

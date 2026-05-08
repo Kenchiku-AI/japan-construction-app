@@ -48,6 +48,12 @@ export type CurrentUser = {
   projects: UserProject[];
 };
 
+export type UpdateUserRequest = {
+  first_name?: string;
+  last_name?: string;
+  email?: string;
+};
+
 export enum UserRole {
   Admin = 'admin',
   Manager = 'manager',

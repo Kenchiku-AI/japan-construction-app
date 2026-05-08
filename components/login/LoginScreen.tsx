@@ -79,13 +79,6 @@ const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
                 navigation.navigate('ForgotPasswordScreen');
               }}
             />
-            {/* <Button
-              variant="tertiary"
-              label={t('sign_up')}
-              onPress={() => {
-                navigation.navigate('SignUpScreen');
-              }}
-            /> */}
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -106,14 +99,12 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     flexGrow: 1,
-    // justifyContent: 'center',
   },
   logo: {
     alignSelf: 'center',
     justifyContent: 'center',
     height: '25%',
-    // marginBottom: 60,
-    // marginTop: -160,
+    marginBottom: 20,
   },
   fields: {
     marginVertical: 20,
