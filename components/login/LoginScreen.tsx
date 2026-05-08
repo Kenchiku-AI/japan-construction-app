@@ -15,6 +15,7 @@ import { Heading, Input, Button, Modal } from '../shared';
 import { Loader } from '../shared/Loader';
 import { useSpeech } from '../../context/speech/SpeechContext';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Logo } from '../shared/Icons';
 
 interface LoginScreenProps {
   navigation: NativeStackNavigationProp<
@@ -45,6 +46,9 @@ const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={styles.container}
         >
+          <View style={styles.logo}>
+            <Logo />
+          </View>
           <Heading title={t('login')} subtitle={t('login_description')} />
           <View style={styles.fields}>
             <Input
@@ -101,8 +105,15 @@ const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    justifyContent: 'center',
     flexGrow: 1,
+    // justifyContent: 'center',
+  },
+  logo: {
+    alignSelf: 'center',
+    justifyContent: 'center',
+    height: '25%',
+    // marginBottom: 60,
+    // marginTop: -160,
   },
   fields: {
     marginVertical: 20,

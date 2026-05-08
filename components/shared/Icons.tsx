@@ -1,4 +1,4 @@
-import Svg, { Path } from 'react-native-svg';
+import Svg, { G, Path } from 'react-native-svg';
 import {
   buttonColor,
   errorColor1,
@@ -313,5 +313,22 @@ export const Edit = ({ size }: IconProps) => (
       strokeLinecap="round"
       strokeLinejoin="round"
     />
+  </Svg>
+);
+
+export const Logo = ({ size }: IconProps) => (
+  <Svg
+    height={size ?? 100}
+    width={size ?? 100}
+    viewBox="0 0 113.05766 144.49409"
+  >
+    <G transform="translate(-48.980034,-46.83656)">
+      <Path d="m 48.980034,151.83958 16.326678,11.51536 v -42.4839 l 22.767014,16.0755 0.03649,42.6884 16.701334,11.69572 0.0644,-65.54326 -39.318059,-27.632463 39.184029,-27.5 40.43992,28.2 0.0982,64.400003 16.47967,-11.61293 0.27799,-64.814271 -57.29578,-39.991179 -39.435208,27.880942 -0.25118,-27.766731 -16.075498,11.33 z" />
+      <Path d="m 119.33715,115.65494 11.34288,-7.9 -0.0934,65.8 -11.27628,7.88711 z" />
+      <Path
+        transform="matrix(0.81784145,-0.57544362,0.81784145,0.57544362,0,0)"
+        d="m -28.253254,142.33411 h 14.117453 v 14.11745 h -14.117453 z"
+      />
+    </G>
   </Svg>
 );
