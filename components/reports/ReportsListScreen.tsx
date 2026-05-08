@@ -98,7 +98,10 @@ interface ReportsListItemProps {
   onPress: () => void;
 }
 
-const ReportsListItem: FC<ReportsListItemProps> = ({ report, onPress }) => {
+export const ReportsListItem: FC<ReportsListItemProps> = ({
+  report,
+  onPress,
+}) => {
   return (
     <>
       <TouchableOpacity style={styles.report} onPress={onPress}>

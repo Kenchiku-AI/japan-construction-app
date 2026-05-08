@@ -19,3 +19,8 @@ export enum ProjectStatus {
   Completed = 'completed',
   Requested = 'request',
 }
+
+export type UpdateProjectRequest = {
+  name?: string;
+  description?: string;
+};

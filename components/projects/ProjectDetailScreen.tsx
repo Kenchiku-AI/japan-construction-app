@@ -1,17 +1,19 @@
-import { FC, useState } from 'react';
+import { FC, useCallback, useState } from 'react';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ProjectsStackNavigationParams } from '../../navigation/ProjectsStack';
 import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Loader } from '../shared/Loader';
-import { Divider, Label, Modal } from '../shared';
+import { Button, Divider, Label, Modal } from '../shared';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ChevronLeft, Edit } from '../shared/Icons';
+import { ChevronLeft, Edit, Plus } from '../shared/Icons';
 import { buttonColor } from '../../constants';
-import { RouteProp } from '@react-navigation/native';
+import { RouteProp, useFocusEffect } from '@react-navigation/native';
 import { useProject } from './useProject';
 import { CreateReportModal } from '../reports/CreateReportModal';
 import { useReports } from '../reports/useReports';
 import { useTranslation } from 'react-i18next';
+import { ReportsListItem } from '../reports/ReportsListScreen';
+import { EditProjectModal } from './EditProjectModal';
 
 interface ProjectDetailScreenProps {
   navigation: NativeStackNavigationProp<
@@ -28,10 +30,17 @@ const ProjectDetailScreen: FC<ProjectDetailScreenProps> = ({
   const { top } = useSafeAreaInsets();
   const { t } = useTranslation();
   const { projectId, projectName } = route.params;
-  const { project, error, setError } = useProject(projectId);
+  const { project, getProject, updateProject, loading, error, setError } =
+    useProject(projectId);
   const { createReport } = useReports();
   const [showCreateReport, setShowCreateReport] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      getProject();
+    }, []),
+  );
 
   return (
     <>
@@ -62,54 +71,43 @@ const ProjectDetailScreen: FC<ProjectDetailScreenProps> = ({
               style={styles.editButton}
               onPress={() => setShowEdit(true)}
             >
-              <Edit size={30} />
+              <Edit />
             </TouchableOpacity>
           </View>
           <Divider />
         </View>
-        {/* {isLoaded && project ? (
-          <>
+        {project && (
+          <View style={styles.project}>
+            <Label text={project.description} style={styles.description} />
+            <View style={styles.reportsHeader}>
+              <Label text={t('reports')} style={styles.reportsTitle} />
+              <Button
+                variant="tertiary"
+                label={t('create_report')}
+                onPress={() => {
+                  setShowCreateReport(true);
+                }}
+                iconRight={() => <Plus size={30} />}
+              />
+            </View>
+            <Divider />
             <FlatList
               data={project.reports}
               renderItem={({ item }) => (
- 
+                <ReportsListItem
+                  report={item}
+                  onPress={() => {
+                    navigation.navigate('ReportDetailScreen', {
+                      reportId: item.id,
+                      reportName: item.name,
+                    });
+                  }}
+                />
               )}
-              ListHeaderComponent={() => {
-                if (report.photo_count < 1) return null;
-
-                return (
-                  <>
-                    <TouchableOpacity
-                      style={styles.photos}
-                      onPress={() => {
-                        navigation.navigate('ReportPhotosScreen', {
-                          reportId,
-                          companyId: report.company_id,
-                        });
-                      }}
-                    >
-                      <View style={styles.photosInfo}>
-                        <Image color={fontColor1} size={26} />
-                        <Label
-                          text={t('photo_count', { count: report.photo_count })}
-                          style={styles.photosCount}
-                        />
-                      </View>
-                      <View style={styles.chevron}>
-                        <ChevronRight />
-                      </View>
-                    </TouchableOpacity>
-                    <Divider light />
-                  </>
-                );
-              }}
-              contentContainerStyle={styles.fields}
+              contentContainerStyle={styles.reports}
             />
-            <Divider style={styles.divider} light />
-          </>
-        ) : (
-          <Loader fullScreen={false} />
-        )} */}
+          </View>
+        )}
       </View>
       <Modal
         title={t('error')}
@@ -117,6 +115,17 @@ const ProjectDetailScreen: FC<ProjectDetailScreenProps> = ({
         isOpen={!!error}
         onClose={() => setError('')}
       />
+      {project && (
+        <EditProjectModal
+          project={project}
+          isOpen={showEdit}
+          onClose={() => setShowEdit(false)}
+          onSubmit={request => {
+            setShowEdit(false);
+            updateProject(request);
+          }}
+        />
+      )}
       <CreateReportModal
         isOpen={showCreateReport}
         onClose={() => setShowCreateReport(false)}
@@ -126,6 +135,8 @@ const ProjectDetailScreen: FC<ProjectDetailScreenProps> = ({
 
           const report = await createReport(request);
 
+          getProject();
+
           if (report) {
             navigation.navigate('ReportDetailScreen', {
               reportId: report.id,
@@ -134,6 +145,7 @@ const ProjectDetailScreen: FC<ProjectDetailScreenProps> = ({
           }
         }}
       />
+      {loading && <Loader />}
     </>
   );
 };
@@ -165,6 +177,29 @@ const styles = StyleSheet.create({
   },
   editButton: {
     paddingLeft: 18,
+    marginBottom: -8,
+  },
+  project: {
+    paddingHorizontal: 16,
+    flex: 1,
+  },
+  description: {
+    marginTop: 10,
+    lineHeight: 30,
+  },
+  reportsHeader: {
+    height: 50,
+    marginTop: 20,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    marginRight: -4,
+  },
+  reportsTitle: {
+    fontSize: 20,
+  },
+  reports: {
+    flex: 1,
   },
 });
 

@@ -41,6 +41,7 @@ import { ReportMenu } from './ReportMenu';
 import { DeleteReportModal } from './DeleteReportModal';
 import { useModal } from '../../context/modal/ModalContext';
 import { usePhotos } from '../../context/photos/PhotosContext';
+import { EditReportNameModal } from './EditReportNameModal';
 
 interface ReportDetailScreenProps {
   navigation: NativeStackNavigationProp<
@@ -81,6 +82,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
   const [permissionStatus, setPermissionStatus] = useState('');
   const [isUnsavedChangesShown, setIsUnsavedChangesShown] = useState(false);
   const [isDeleteModalShown, setIsDeleteModalShown] = useState(false);
+  const [isNameModalShown, setIsNameModalShown] = useState(false);
   const [isMenuShown, setIsMenuShown] = useState(false);
   const speakingFadeOpacity = useSharedValue(0);
   const updateButtonHeight = useSharedValue(0);
@@ -410,6 +412,16 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
           deleteReport();
         }}
       />
+      {report && (
+        <EditReportNameModal
+          reportName={report.name}
+          isOpen={isNameModalShown}
+          onClose={() => setIsNameModalShown(false)}
+          onSubmit={request => {
+            updateReport(request);
+          }}
+        />
+      )}
       <Modal
         title={t('error')}
         subtitle={error}

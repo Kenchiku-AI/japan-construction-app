@@ -24,6 +24,7 @@ import {
   ReportImagePollResponse,
   ForgotPasswordRequest,
   Project,
+  UpdateProjectRequest,
 } from '../../types';
 import { baseUrl } from '../../constants';
 import { useAuth } from '../../context/auth/AuthContext';
@@ -91,6 +92,10 @@ export const useApi = () => {
     async getProject(projectId: string) {
       const url = `/projects/${projectId}`;
       return call(() => axios.get<Project>(url));
+    },
+    async updateProject(projectId: string, request: UpdateProjectRequest) {
+      const url = `/projects/${projectId}`;
+      return call(() => axios.patch<Project>(url, request));
     },
     async getReports() {
       const url = `/reports`;

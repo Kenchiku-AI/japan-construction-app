@@ -49,6 +49,8 @@ export const CreateReportModal: FC<CreateReportModalProps> = ({
       hasEditedName.current = false;
     }
 
+    if (forceProjectId) return;
+
     const isProjectType = template.parent_type === ReportParentType.Project;
     setRequireProjectId(isProjectType);
     projectHeight.value = withTiming(isProjectType ? 70 : 0, { duration: 75 });
