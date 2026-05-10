@@ -7,7 +7,9 @@
     "ios": "react-native run-ios -- --simulator=\"iPhone 15 Pro\"",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "release:ios": "./scripts/release-ios.sh",
+    "release:android": "./scripts/release-android.sh"
   },
   "dependencies": {
     "@candlefinance/faster-image": "^1.7.2",
