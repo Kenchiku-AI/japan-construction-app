@@ -7,27 +7,25 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0C80B921A6F3F58F76C31292 /* libPods-JapanConstruction.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-JapanConstruction.a */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		1D527D716383EB90C96684C9 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		B53D77AD2FA6F5EE00C5D6ED /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B53D77AC2FA6F5EE00C5D6ED /* GoogleService-Info.plist */; };
 		B5DE98C82F502060009A1CEE /* ggml-base.bin in Resources */ = {isa = PBXBuildFile; fileRef = B5DE98C72F502060009A1CEE /* ggml-base.bin */; };
-		C60D996ECD34D52D85738C9D /* libPods-JapanConstruction.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CD544A903D95E1112F094026 /* libPods-JapanConstruction.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		13B07F961A680F5B00A75B9A /* Kenchiku AI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Kenchiku AI.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* JapanConstruction.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JapanConstruction.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = JapanConstruction/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = JapanConstruction/Info.plist; sourceTree = "<group>"; };
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = JapanConstruction/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		3196AF2A17F0FCBB07347C61 /* Pods-JapanConstruction.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JapanConstruction.release.xcconfig"; path = "Target Support Files/Pods-JapanConstruction/Pods-JapanConstruction.release.xcconfig"; sourceTree = "<group>"; };
-		3497561007F51AA1C0DD7EEA /* Pods-JapanConstruction.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JapanConstruction.debug.xcconfig"; path = "Target Support Files/Pods-JapanConstruction/Pods-JapanConstruction.debug.xcconfig"; sourceTree = "<group>"; };
+		3B4392A12AC88292D35C810B /* Pods-JapanConstruction.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JapanConstruction.debug.xcconfig"; path = "Target Support Files/Pods-JapanConstruction/Pods-JapanConstruction.debug.xcconfig"; sourceTree = "<group>"; };
+		5709B34CF0A7D63546082F79 /* Pods-JapanConstruction.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JapanConstruction.release.xcconfig"; path = "Target Support Files/Pods-JapanConstruction/Pods-JapanConstruction.release.xcconfig"; sourceTree = "<group>"; };
+		5DCACB8F33CDC322A6C60F78 /* libPods-JapanConstruction.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-JapanConstruction.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = JapanConstruction/AppDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = JapanConstruction/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		B53D77AC2FA6F5EE00C5D6ED /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		B5DE98C72F502060009A1CEE /* ggml-base.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; name = "ggml-base.bin"; path = "../assets/models/ggml-base.bin"; sourceTree = "<group>"; };
-		CD544A903D95E1112F094026 /* libPods-JapanConstruction.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-JapanConstruction.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -36,7 +34,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C60D996ECD34D52D85738C9D /* libPods-JapanConstruction.a in Frameworks */,
+				0C80B921A6F3F58F76C31292 /* libPods-JapanConstruction.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -52,7 +50,6 @@
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */,
 				B5DE98C72F502060009A1CEE /* ggml-base.bin */,
-				B53D77AC2FA6F5EE00C5D6ED /* GoogleService-Info.plist */,
 			);
 			name = JapanConstruction;
 			sourceTree = "<group>";
@@ -61,7 +58,7 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				CD544A903D95E1112F094026 /* libPods-JapanConstruction.a */,
+				5DCACB8F33CDC322A6C60F78 /* libPods-JapanConstruction.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -90,7 +87,7 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* Kenchiku AI.app */,
+				13B07F961A680F5B00A75B9A /* JapanConstruction.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -98,8 +95,8 @@
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				3497561007F51AA1C0DD7EEA /* Pods-JapanConstruction.debug.xcconfig */,
-				3196AF2A17F0FCBB07347C61 /* Pods-JapanConstruction.release.xcconfig */,
+				3B4392A12AC88292D35C810B /* Pods-JapanConstruction.debug.xcconfig */,
+				5709B34CF0A7D63546082F79 /* Pods-JapanConstruction.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -111,13 +108,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "JapanConstruction" */;
 			buildPhases = (
-				F060E9BA5CC654DF61558325 /* [CP] Check Pods Manifest.lock */,
+				C38B50BA6285516D6DCD4F65 /* [CP] Check Pods Manifest.lock */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				BAACC7A982B367F25CDA11C1 /* [CP] Embed Pods Frameworks */,
-				B717F1ACF537FEF4FC95E83C /* [CP] Copy Pods Resources */,
+				00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */,
+				E235C05ADACE081382539298 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -125,7 +122,7 @@
 			);
 			name = JapanConstruction;
 			productName = JapanConstruction;
-			productReference = 13B07F961A680F5B00A75B9A /* Kenchiku AI.app */;
+			productReference = 13B07F961A680F5B00A75B9A /* JapanConstruction.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -168,7 +165,6 @@
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				1D527D716383EB90C96684C9 /* PrivacyInfo.xcprivacy in Resources */,
 				B5DE98C82F502060009A1CEE /* ggml-base.bin in Resources */,
-				B53D77AD2FA6F5EE00C5D6ED /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -191,28 +187,7 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"$REACT_NATIVE_PATH/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"$REACT_NATIVE_PATH/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"\\\"$WITH_ENVIRONMENT\\\" \\\"$REACT_NATIVE_XCODE\\\"\"\n";
 		};
-		B717F1ACF537FEF4FC95E83C /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-JapanConstruction/Pods-JapanConstruction-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-JapanConstruction/Pods-JapanConstruction-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-JapanConstruction/Pods-JapanConstruction-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		BAACC7A982B367F25CDA11C1 /* [CP] Embed Pods Frameworks */ = {
+		00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -233,7 +208,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-JapanConstruction/Pods-JapanConstruction-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		F060E9BA5CC654DF61558325 /* [CP] Check Pods Manifest.lock */ = {
+		C38B50BA6285516D6DCD4F65 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -255,6 +230,27 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		E235C05ADACE081382539298 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-JapanConstruction/Pods-JapanConstruction-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-JapanConstruction/Pods-JapanConstruction-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-JapanConstruction/Pods-JapanConstruction-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -271,7 +267,7 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3497561007F51AA1C0DD7EEA /* Pods-JapanConstruction.debug.xcconfig */;
+			baseConfigurationReference = 3B4392A12AC88292D35C810B /* Pods-JapanConstruction.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -291,7 +287,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = ai.kenchiku.app;
-				PRODUCT_NAME = "Kenchiku AI";
+				PRODUCT_NAME = JapanConstruction;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -300,12 +296,10 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3196AF2A17F0FCBB07347C61 /* Pods-JapanConstruction.release.xcconfig */;
+			baseConfigurationReference = 5709B34CF0A7D63546082F79 /* Pods-JapanConstruction.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = ZCR3X4HKY6;
 				INFOPLIST_FILE = JapanConstruction/Info.plist;
@@ -321,8 +315,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = ai.kenchiku.app;
-				PRODUCT_NAME = "Kenchiku AI";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PRODUCT_NAME = JapanConstruction;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
