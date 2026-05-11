@@ -34,11 +34,11 @@ export const Plus = ({ size, color }: IconProps) => (
   </Svg>
 );
 
-export const Check = ({ size }: IconProps) => (
+export const Check = ({ size, color }: IconProps) => (
   <Svg viewBox="0 0 24 24" fill="none" width={size ?? 24} height={size ?? 24}>
     <Path
       d="M20 6L9 17L4 12"
-      stroke={buttonColor}
+      stroke={color ?? buttonColor}
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"

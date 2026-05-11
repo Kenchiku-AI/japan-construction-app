@@ -128,9 +128,9 @@ export const Input: FC<InputProps> = ({
           }}
           style={{
             ...styles.input,
-            // backgroundColor: error
-            //   ? '#FF636326'
-            //   : `#F2F2F3${disabled ? '54' : ''}`,
+            backgroundColor: error
+              ? '#FF636326'
+              : `#F2F2F3${disabled ? '54' : ''}`,
           }}
           autoCapitalize="none"
           autoFocus={false}
@@ -158,8 +158,10 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     color: fontColor1,
     fontSize: 18,
+    // textAlignVertical: 'center',
+    // lineHeight: 18,
     // lineHeight: 24,
-    height: 60,
+    // height: 60,
     // backgroundColor: 'blue',
   },
   label: {

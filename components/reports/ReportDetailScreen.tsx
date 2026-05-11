@@ -26,6 +26,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { bgColor1, buttonColor, fontColor1 } from '../../constants';
 import {
   Camera as CameraIcon,
+  Check,
   ChevronLeft,
   ChevronRight,
   Image,
@@ -341,6 +342,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
                   </View>
                 </Animated.View>
                 <Button
+                  variant={isUpdateDisabled ? 'primary' : 'secondary'}
                   style={{
                     ...styles.speakButton,
                     marginLeft: isSpeaking ? 0 : 5,
@@ -353,7 +355,11 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
                       : 'start_speaking',
                   )}
                   iconLeft={() =>
-                    isSpeaking || isProcessing ? undefined : <Microphone />
+                    isSpeaking || isProcessing ? undefined : (
+                      <Microphone
+                        color={isUpdateDisabled ? 'white' : buttonColor}
+                      />
+                    )
                   }
                   disabled={isProcessing}
                   onPress={onPressSpeech}
@@ -362,11 +368,12 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
               <Animated.View style={updateButtonStyle}>
                 <View style={styles.updateButtonContainer}>
                   <Button
-                    variant="secondary"
+                    // variant="secondary"
                     label={t('save_changes')}
                     onPress={onPressUpdate}
                     disabled={isUpdateDisabled}
                     style={styles.updateButton}
+                    iconLeft={() => <Check color="white" />}
                   />
                 </View>
               </Animated.View>
