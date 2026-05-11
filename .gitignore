@@ -79,3 +79,4 @@ yarn-error.log
 # models
 assets/models/
 android/app/src/main/assets/models/
+ios/JapanConstruction/models/
