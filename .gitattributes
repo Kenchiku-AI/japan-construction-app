@@ -1,0 +1,2 @@
+ios/JapanConstruction/models/ggml-base.bin filter=lfs diff=lfs merge=lfs -text
+*.bin filter=lfs diff=lfs merge=lfs -text

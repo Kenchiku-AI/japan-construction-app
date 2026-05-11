@@ -15,27 +15,38 @@ export const useSpeechData = () => {
   const { reportOutputLanguage } = useSettings();
   const { getRequestText } = useTranscription();
   const stopRequested = useRef(false);
+  const modelFilePath = `${RNFS.DocumentDirectoryPath}/${whisperModelFileName}`;
 
   useEffect(() => {
+    loadModel();
+
     return () => {
       releaseAllWhisper();
     };
   }, []);
 
-  const createWhisperContext = async () => {
-    const filePath = `${RNFS.DocumentDirectoryPath}/${whisperModelFileName}`;
-    const exists = await RNFS.exists(filePath);
+  const loadModel = async () => {
+    const modelExists = await RNFS.exists(modelFilePath);
+    if (modelExists) return;
 
-    if (!exists) {
+    try {
       if (Platform.OS === 'android') {
-        await RNFS.copyFileAssets(`models/${whisperModelFileName}`, filePath);
+        await RNFS.copyFileAssets(
+          `models/${whisperModelFileName}`,
+          modelFilePath,
+        );
       } else {
-        const src = `${RNFS.MainBundlePath}/models/${whisperModelFileName}`;
-        await RNFS.copyFile(src, filePath);
+        const src = `${RNFS.MainBundlePath}/${whisperModelFileName}`;
+        await RNFS.copyFile(src, modelFilePath);
       }
+    } catch (err) {
+      console.log('Error loading Whisper model:', err);
     }
+  };
 
-    return await initWhisper({ filePath });
+  const createWhisperContext = async () => {
+    await loadModel();
+    return await initWhisper({ filePath: modelFilePath });
   };
 
   const handleEvent = async (
@@ -139,5 +150,6 @@ export const useSpeechData = () => {
     startPhotoSpeech,
     stopSpeech,
     resetSpeech,
+    loadModel,
   };
 };
