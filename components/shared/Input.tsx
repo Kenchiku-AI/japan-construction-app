@@ -14,6 +14,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import {
+  bgColor1,
   buttonColor,
   errorColor1,
   fontColor1,
@@ -52,6 +53,7 @@ export const Input: FC<InputProps> = ({
   multiline,
 }) => {
   const inputRef = useRef<any>(null);
+  const [isFocused, setIsFocused] = useState(false);
   const [isEmpty, setIsEmpty] = useState(!value);
   const paddingTop = useSharedValue(
     !value ? 0 : style?.paddingTop ?? TOP_PADDING,
@@ -111,6 +113,7 @@ export const Input: FC<InputProps> = ({
             backgroundColor: error
               ? '#FF636326'
               : `#F2F2F3${disabled ? '54' : ''}`,
+            borderColor: isFocused ? 'black' : bgColor1,
           },
           style,
         ]}
@@ -136,6 +139,8 @@ export const Input: FC<InputProps> = ({
           secureTextEntry={secureTextEntry}
           editable={!disabled}
           multiline={multiline}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
         />
       </Animated.View>
     </View>
@@ -149,6 +154,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     paddingHorizontal: 16,
     borderRadius: 10,
+    borderWidth: 1,
     justifyContent: 'center',
     height: 60,
   },
