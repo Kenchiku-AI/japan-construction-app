@@ -1,38 +1,23 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ReportImage, ReportImageTag } from '../../types';
+import { ReportImage } from '../../types';
 import { useApi } from '../../services/api/useApi';
 import ImageResizer from 'react-native-image-resizer';
-
-type OnTagsAdded = (imageId: string, tags: ReportImageTag[]) => void;
-type OnCurrentImageUpdated = (
-  tags: ReportImageTag[],
-  description?: string,
-) => void;
-type OnTagRemoved = (imageId: string, linkId: string) => void;
 
 export const usePhotosData = () => {
   const [photosByReport, setPhotosByReport] = useState<
     Record<string, ReportImage[]>
   >({});
-  const [onTagsAdded, setOnTagsAdded] = useState<OnTagsAdded>();
-  const onTagsAddedRef = useRef<OnTagsAdded | undefined>(undefined);
-  const [onTagRemoved, setOnTagRemoved] = useState<OnTagRemoved>();
-  const [onCurrentImageUpdated, setOnCurrentImageUpdated] =
-    useState<OnCurrentImageUpdated>();
-  const onCurrentImageUpdatedRef = useRef<OnCurrentImageUpdated | undefined>(
-    undefined,
-  );
+  const photosByReportRef = useRef<Record<string, ReportImage[]>>({});
+  const [photoCountsByReport, setPhotoCountsByReport] = useState<
+    Record<string, number>
+  >({});
   const [loading, setLoading] = useState(false);
   const pollingRef = useRef<Record<string, number>>({});
   const api = useApi();
 
   useEffect(() => {
-    onTagsAddedRef.current = onTagsAdded;
-  }, [onTagsAdded]);
-
-  useEffect(() => {
-    onCurrentImageUpdatedRef.current = onCurrentImageUpdated;
-  }, [onCurrentImageUpdated]);
+    photosByReportRef.current = photosByReport;
+  }, [photosByReport]);
 
   const pollImageStatus = useCallback(
     (reportId: string, imageId: string) => {
@@ -53,12 +38,38 @@ export const usePhotosData = () => {
           ) {
             clearInterval(pollingRef.current[imageId]);
             delete pollingRef.current[imageId];
-          }
 
-          if (data.status === 'completed') {
-            onTagsAddedRef.current?.(imageId, data.tags);
-            onDescriptionAddedRef.current?.(imageId, data.description);
-            onCurrentImageUpdatedRef.current?.(data.tags, data.description);
+            const photos = photosByReportRef.current?.[reportId];
+            const index = photos.findIndex(i => i.id === imageId);
+
+            if (index !== -1) {
+              const newPhotos = [...photos];
+              const photo = photos[index];
+
+              if (data.status === 'completed') {
+                newPhotos[index] = {
+                  ...photo,
+                  status: 'completed',
+                  tags: [
+                    ...data.tags.filter(
+                      t => !photo.tags.some(pt => pt.tag_id === t.tag_id),
+                    ),
+                    ...photo.tags,
+                  ],
+                  description: data.description,
+                };
+              } else {
+                newPhotos[index] = {
+                  ...photo,
+                  status: 'failed',
+                };
+              }
+
+              setPhotosByReport({
+                ...photosByReportRef.current,
+                [reportId]: newPhotos,
+              });
+            }
           }
         } catch (err) {
           // console.error("Polling error:", err);
@@ -78,7 +89,6 @@ export const usePhotosData = () => {
   const addPhoto = useCallback(
     async (uri: string, reportId: string) => {
       setLoading(true);
-      let success = true;
 
       try {
         const resized = await ImageResizer.createResizedImage(
@@ -112,15 +122,18 @@ export const usePhotosData = () => {
           [reportId]: [createResponse, ...(photosByReport[reportId] ?? [])],
         });
 
+        const currentCount = photoCountsByReport[reportId] ?? 0;
+        setPhotoCountsByReport({
+          ...photoCountsByReport,
+          [reportId]: currentCount + 1,
+        });
+
         pollImageStatus(reportId, createResponse.id);
-      } catch (err) {
-        success = false;
-      }
+      } catch (err) {}
 
       setLoading(false);
-      return success;
     },
-    [photosByReport],
+    [photosByReport, photoCountsByReport],
   );
 
   const replacePhoto = useCallback(
@@ -151,23 +164,35 @@ export const usePhotosData = () => {
         ...photosByReport,
         [image.report_id]: newImages,
       });
+
+      const currentCount = photoCountsByReport[image.report_id] ?? 0;
+      setPhotoCountsByReport({
+        ...photoCountsByReport,
+        [image.report_id]: Math.max(0, currentCount - 1),
+      });
     },
     [photosByReport],
   );
 
+  const updatePhotoCount = useCallback(
+    (count: number, reportId: string) => {
+      setPhotoCountsByReport({
+        ...photoCountsByReport,
+        [reportId]: count,
+      });
+    },
+    [photoCountsByReport],
+  );
+
   return {
-    onTagsAdded,
-    setOnTagsAdded,
-    onTagRemoved,
-    setOnTagRemoved,
-    setOnCurrentImageUpdated,
     pollImageStatus,
-    // new ones
     photosByReport,
+    photoCountsByReport,
     addPhoto,
     setPhotosByReport,
     deletePhoto,
     replacePhoto,
+    updatePhotoCount,
     loading,
   };
 };

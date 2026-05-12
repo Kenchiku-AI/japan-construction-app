@@ -39,18 +39,6 @@ export const useReportPhotos = (reportId: string) => {
     setPhotos(newPhotos);
   };
 
-  const removeTag = (imageId: string, linkId: string) => {
-    const index = photosRef.current.findIndex(p => p.id === imageId);
-    if (index === -1) return;
-
-    let photo = photosRef.current[index];
-    const tags = photo.tags.filter(t => t.link_id !== linkId);
-
-    const newPhotos = [...photosRef.current];
-    newPhotos[index] = { ...photo, tags };
-    setPhotos(newPhotos);
-  };
-
   const addDescription = (imageId: string, description?: string) => {
     if (!description) return;
 
@@ -98,9 +86,7 @@ export const useReportPhotos = (reportId: string) => {
 
   return {
     getPhotos,
-    addPhoto,
     addTags,
-    removeTag,
     addDescription,
     loading,
     error,

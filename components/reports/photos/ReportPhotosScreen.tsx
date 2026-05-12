@@ -49,11 +49,9 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
   const { t } = useTranslation();
   const { reportId, companyId } = route.params;
   const { top } = useSafeAreaInsets();
-  const { photosByReport, setOnTagsAdded, setOnTagRemoved } = usePhotos();
+  const { photosByReport, loading: uploading } = usePhotos();
   const {
     getPhotos,
-    addTags,
-    removeTag,
     loading: photosLoading,
     error,
     setError,
@@ -61,24 +59,16 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
   const { loading: reportLoading } = useReport(reportId);
   const [isMenuShown, setIsMenuShown] = useState(false);
   const [selectedTag, setSelectedTag] = useState<ReportImageTagResponse>();
-  const screenWidth = Dimensions.get('window').width;
-  const loading = photosLoading || reportLoading;
+  const loading = photosLoading || reportLoading || uploading;
   const { tags: allTags } = useTags(companyId);
   const photos = photosByReport[reportId];
+  const screenWidth = Dimensions.get('window').width;
 
   const columnWidth = useMemo(() => {
     return (screenWidth - 42) / 2;
   }, [screenWidth]);
 
   useEffect(() => {
-    setOnTagsAdded(() => (imageId: string, tags: ReportImageTag[]) => {
-      addTags(imageId, tags);
-    });
-
-    setOnTagRemoved(() => (imageId: string, linkId: string) => {
-      removeTag(imageId, linkId);
-    });
-
     getPhotos();
   }, []);
 

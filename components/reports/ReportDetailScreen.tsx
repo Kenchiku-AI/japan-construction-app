@@ -17,7 +17,7 @@ import {
   PermissionsAndroid,
 } from 'react-native';
 import { check, PERMISSIONS, RESULTS } from 'react-native-permissions';
-import { RouteProp } from '@react-navigation/native';
+import { CommonActions, RouteProp } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { ReportFieldValues } from '../../types';
 import { useReport } from './useReport';
@@ -76,7 +76,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
     error,
     setError,
   } = useReport(reportId);
-  const { photosByReport, loading: photosLoading } = usePhotos();
+  const { photoCountsByReport, loading: photosLoading } = usePhotos();
   const { t } = useTranslation();
   const [fieldValues, setFieldValues] = useState<ReportFieldValues>();
   const [permissionStatus, setPermissionStatus] = useState('');
@@ -106,15 +106,41 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
     opacity: photoButtonOpacity.value,
   }));
 
-  const photoCount = useMemo(() => {
-    if (!report) return 0;
-    const photos = photosByReport[report.id];
-    if (!!photos) return photos.length;
-    return report?.photo_count ?? 0;
-  }, [report, photosByReport]);
-
   useEffect(() => {
     getReport();
+
+    const tabNav = navigation.getParent();
+    if (!tabNav) return;
+
+    const tabState = tabNav.getState();
+    const activeTabKey = tabState.routes[tabState.index].key;
+
+    tabState.routes.forEach(tabRoute => {
+      if (tabRoute.key === activeTabKey) return;
+
+      const stackState = tabRoute.state;
+      if (!stackState?.routes) return;
+
+      const reportIndex = stackState.routes.findIndex(
+        route => route.name === 'ReportDetailScreen',
+      );
+
+      if (reportIndex === -1) return;
+
+      const routesToKeep = stackState.routes.slice(0, reportIndex);
+      if (!routesToKeep.length) return;
+
+      navigation.dispatch({
+        ...CommonActions.reset({
+          index: routesToKeep.length - 1,
+          routes: routesToKeep.map(r => ({
+            name: r.name,
+            params: r.params,
+          })),
+        }),
+        target: stackState.key,
+      });
+    });
   }, []);
 
   useEffect(() => {
@@ -284,7 +310,8 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
                 />
               )}
               ListHeaderComponent={() => {
-                if (report.photo_count < 1) return null;
+                const photoCount = photoCountsByReport[reportId];
+                if (photoCount < 1) return null;
 
                 return (
                   <>
@@ -300,7 +327,9 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
                       <View style={styles.photosInfo}>
                         <Image color={fontColor1} size={26} />
                         <Label
-                          text={t('photo_count', { count: photoCount })}
+                          text={t('photo_count', {
+                            count: photoCount,
+                          })}
                           style={styles.photosCount}
                         />
                       </View>

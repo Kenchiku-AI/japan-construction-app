@@ -50,7 +50,8 @@ import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-vi
 import AudioVisualizer from '../../shared/AudioVisualizer';
 import { AddTagModal } from './AddTagModal';
 import { useTags } from './useTags';
-import { ReportImageTag } from '../../../types';
+import { ReportImage, ReportImageTag } from '../../../types';
+import { usePhotos } from '../../../context/photos/PhotosContext';
 
 interface PhotoDetailScreenProps {
   navigation: NativeStackNavigationProp<
@@ -98,11 +99,8 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
     addTag,
     removeTag,
     loading: photoLoading,
-  } = useReportPhoto(initialImage, (newDescription: string) => {
-    setDescription(prev => {
-      return `${prev ? `${prev} ` : ''}${newDescription}`;
-    });
-  });
+  } = useReportPhoto(initialImage);
+  const imageRef = useRef<ReportImage>(undefined);
   const loading = photoLoading || tagsLoading;
 
   const speakingFadeStyle = useAnimatedStyle(() => ({
@@ -133,6 +131,8 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
   }, [image?.created_at]);
 
   const isProcessingShown = useMemo(() => {
+    if (!image) return false;
+
     const statuses = ['pending', 'processing'];
 
     if (!statuses.includes(image.status)) return false;
@@ -144,10 +144,21 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
   }, [image]);
 
   const isUpdateDisabled = useMemo(() => {
-    if (isSpeaking || isProcessing || loading) return true;
+    if (isSpeaking || isProcessing || loading || !image) return true;
 
     return description === image.description;
   }, [description, image, isSpeaking, isProcessing, loading]);
+
+  useEffect(() => {
+    if (
+      image?.status === 'completed' &&
+      imageRef.current?.status !== 'completed'
+    ) {
+      setDescription(image.description);
+    }
+
+    imageRef.current = image;
+  }, [image]);
 
   useEffect(() => {
     speakingFadeOpacity.value = withTiming(isSpeaking ? 0.5 : 0, {
@@ -178,6 +189,8 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
     );
   }, [isUpdateDisabled, isSpeaking]);
 
+  useEffect(() => {}, [description]);
+
   useEffect(() => {
     zoomOpacity.value = withTiming(isZoomShown ? 1 : 0, {
       duration: 200,
@@ -186,6 +199,7 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
 
   const onPressUpdate = useCallback(async () => {
     if (!description) return;
+    Keyboard.dismiss();
     await updateImage(description);
   }, [description, updateImage]);
 
@@ -238,8 +252,8 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
   }, [isSpeaking, stopSpeech, startPhotoSpeech, description, image]);
 
   const availableTags = useMemo(() => {
-    return allTags.filter(at => !image.tags.some(t => t.tag_id === at.id));
-  }, [image.tags, allTags]);
+    return allTags.filter(at => !image?.tags.some(t => t.tag_id === at.id));
+  }, [image?.tags, allTags]);
 
   return (
     <>
@@ -299,6 +313,7 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
             onChange={d => setDescription(d)}
             onClear={() => setDescription('')}
             style={styles.description}
+            disabled={isProcessingShown}
             multiline
           />
         </View>
@@ -306,9 +321,9 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
           <>
             <Label style={styles.tagsTitle} text={t('tags')} />
             <Divider light />
-            {image.tags.length > 0 && (
+            {(image?.tags.length ?? 0) > 0 && (
               <View style={styles.tags}>
-                {image.tags.map(t => (
+                {image?.tags.map(t => (
                   <View key={t.tag_id} style={styles.tag}>
                     <Label text={t.name} />
                     <TouchableOpacity
@@ -369,7 +384,7 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
                 <Microphone color={isUpdateDisabled ? 'white' : buttonColor} />
               )
             }
-            disabled={isProcessing}
+            disabled={isProcessing || isProcessingShown}
             onPress={onPressSpeech}
           />
         </View>
