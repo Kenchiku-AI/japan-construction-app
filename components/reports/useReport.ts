@@ -58,56 +58,12 @@ export const useReport = (reportId: string) => {
     setLoading(false);
   }, [setReport, reportId]);
 
-  const uploadImage = useCallback(
-    async (uri: string) => {
-      setLoading(true);
-
-      try {
-        const resized = await ImageResizer.createResizedImage(
-          uri,
-          1024,
-          1024,
-          'JPEG',
-          80,
-        );
-
-        const request = {
-          width: resized.width,
-          height: resized.height,
-        };
-
-        const createResponse = await api.createReportImage(reportId, request);
-        if (!createResponse) throw new Error();
-
-        const uploadResponse = await fetch(createResponse.upload_url, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'image/jpeg',
-          },
-          body: resized,
-        });
-
-        if (!uploadResponse.ok) throw new Error();
-
-        pollImageStatus(reportId, createResponse.id);
-
-        return createResponse;
-      } catch (err) {
-        setError(t('upload_image_error'));
-      } finally {
-        setLoading(false);
-      }
-    },
-    [reportId, pollImageStatus],
-  );
-
   return {
     loading,
     report,
     getReport,
     updateReport,
     deleteReport,
-    uploadImage,
     error,
     setError,
   };

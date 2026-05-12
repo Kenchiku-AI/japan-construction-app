@@ -8,7 +8,6 @@ import { usePhotos } from '../../../context/photos/PhotosContext';
 
 export const useReportPhotos = (reportId: string) => {
   const { photosByReport, setPhotosByReport } = usePhotos();
-
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const photosRef = useRef<ReportImage[]>([]);
@@ -19,19 +18,6 @@ export const useReportPhotos = (reportId: string) => {
   useEffect(() => {
     photosRef.current = photosByReport[reportId];
   }, [photosByReport[reportId]]);
-
-  const addPhoto = (photo: ReportImage) => {
-    setPhotos([photo, ...photosRef.current]);
-  };
-
-  const replacePhoto = (photo: ReportImage) => {
-    const index = photosRef.current.findIndex(p => p.id === photo.id);
-    if (index === -1) return;
-
-    const newPhotos = [...photosRef.current];
-    newPhotos[index] = photo;
-    setPhotos(newPhotos);
-  };
 
   const addTags = (imageId: string, tags: ReportImageTag[]) => {
     const index = photosRef.current.findIndex(p => p.id === imageId);
@@ -113,7 +99,6 @@ export const useReportPhotos = (reportId: string) => {
   return {
     getPhotos,
     addPhoto,
-    replacePhoto,
     addTags,
     removeTag,
     addDescription,

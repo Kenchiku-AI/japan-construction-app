@@ -6,12 +6,9 @@ import { ReportImage, ReportImageTag } from '../../../types';
 import { useApi } from '../../../services/api/useApi';
 import { usePhotos } from '../../../context/photos/PhotosContext';
 
-export const useReportPhoto = (
-  initialImage: ReportImage,
-  onDescriptionUpdated: (description: string) => void,
-) => {
+export const useReportPhoto = (initialImage: ReportImage) => {
   const [image, setImage] = useState(initialImage);
-  const { photosByReport, setPhotosByReport } = usePhotos();
+  const { deletePhoto, replacePhoto } = usePhotos();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { setOnCurrentImageUpdated, onTagsAdded, onTagRemoved } = usePhotos();
@@ -46,21 +43,13 @@ export const useReportPhoto = (
 
     try {
       await api.deleteImage(image.report_id, image.id);
-
-      const newImages = photosByReport[image.report_id].filter(
-        i => i.id !== image.id,
-      );
-
-      setPhotosByReport({
-        ...photosByReport,
-        [image.report_id]: newImages,
-      });
+      deletePhoto(image);
     } catch (err) {
       setError(t('delete_photo_error'));
     }
 
     setLoading(false);
-  }, [image, photosByReport]);
+  }, [image, deletePhoto]);
 
   const updateImage = useCallback(
     async (description: string) => {
@@ -73,6 +62,7 @@ export const useReportPhoto = (
 
         if (response) {
           setImage(response);
+          replacePhoto(response);
         }
       } catch (err) {
         setError(t('update_photo_error'));
@@ -80,7 +70,7 @@ export const useReportPhoto = (
 
       setLoading(false);
     },
-    [image, photosByReport],
+    [image],
   );
 
   const addTag = useCallback(

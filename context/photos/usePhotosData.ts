@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ReportImage, ReportImageTag } from '../../types';
 import { useApi } from '../../services/api/useApi';
+import ImageResizer from 'react-native-image-resizer';
 
-type OnPhotoAdded = (uri: string) => void;
 type OnTagsAdded = (imageId: string, tags: ReportImageTag[]) => void;
-type OnDescriptionAdded = (imageId: string, description?: string) => void;
 type OnCurrentImageUpdated = (
   tags: ReportImageTag[],
   description?: string,
@@ -15,30 +14,21 @@ export const usePhotosData = () => {
   const [photosByReport, setPhotosByReport] = useState<
     Record<string, ReportImage[]>
   >({});
-  const [onPhotoAdded, setOnPhotoAdded] = useState<OnPhotoAdded>();
   const [onTagsAdded, setOnTagsAdded] = useState<OnTagsAdded>();
   const onTagsAddedRef = useRef<OnTagsAdded | undefined>(undefined);
   const [onTagRemoved, setOnTagRemoved] = useState<OnTagRemoved>();
-  const [onDescriptionAdded, setOnDescriptionAdded] =
-    useState<OnDescriptionAdded>();
-  const onDescriptionAddedRef = useRef<OnDescriptionAdded | undefined>(
-    undefined,
-  );
   const [onCurrentImageUpdated, setOnCurrentImageUpdated] =
     useState<OnCurrentImageUpdated>();
   const onCurrentImageUpdatedRef = useRef<OnCurrentImageUpdated | undefined>(
     undefined,
   );
+  const [loading, setLoading] = useState(false);
   const pollingRef = useRef<Record<string, number>>({});
   const api = useApi();
 
   useEffect(() => {
     onTagsAddedRef.current = onTagsAdded;
   }, [onTagsAdded]);
-
-  useEffect(() => {
-    onDescriptionAddedRef.current = onDescriptionAdded;
-  }, [onDescriptionAdded]);
 
   useEffect(() => {
     onCurrentImageUpdatedRef.current = onCurrentImageUpdated;
@@ -85,17 +75,99 @@ export const usePhotosData = () => {
     [api],
   );
 
+  const addPhoto = useCallback(
+    async (uri: string, reportId: string) => {
+      setLoading(true);
+      let success = true;
+
+      try {
+        const resized = await ImageResizer.createResizedImage(
+          uri,
+          1024,
+          1024,
+          'JPEG',
+          80,
+        );
+
+        const request = {
+          width: resized.width,
+          height: resized.height,
+        };
+
+        const createResponse = await api.createReportImage(reportId, request);
+        if (!createResponse) throw new Error();
+
+        const uploadResponse = await fetch(createResponse.upload_url, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'image/jpeg',
+          },
+          body: resized,
+        });
+
+        if (!uploadResponse.ok) throw new Error();
+
+        setPhotosByReport({
+          ...photosByReport,
+          [reportId]: [createResponse, ...(photosByReport[reportId] ?? [])],
+        });
+
+        pollImageStatus(reportId, createResponse.id);
+      } catch (err) {
+        success = false;
+      }
+
+      setLoading(false);
+      return success;
+    },
+    [photosByReport],
+  );
+
+  const replacePhoto = useCallback(
+    (image: ReportImage) => {
+      const index = photosByReport[image.report_id].findIndex(
+        i => i.id === image.id,
+      );
+      if (index === -1) return;
+
+      const newImages = [...photosByReport[image.report_id]];
+      newImages[index] = image;
+
+      setPhotosByReport({
+        ...photosByReport,
+        [image.report_id]: newImages,
+      });
+    },
+    [photosByReport],
+  );
+
+  const deletePhoto = useCallback(
+    (image: ReportImage) => {
+      const newImages = photosByReport[image.report_id].filter(
+        i => i.id !== image.id,
+      );
+
+      setPhotosByReport({
+        ...photosByReport,
+        [image.report_id]: newImages,
+      });
+    },
+    [photosByReport],
+  );
+
   return {
-    onPhotoAdded,
-    setOnPhotoAdded,
     onTagsAdded,
     setOnTagsAdded,
     onTagRemoved,
     setOnTagRemoved,
-    setOnDescriptionAdded,
     setOnCurrentImageUpdated,
     pollImageStatus,
+    // new ones
     photosByReport,
+    addPhoto,
     setPhotosByReport,
+    deletePhoto,
+    replacePhoto,
+    loading,
   };
 };

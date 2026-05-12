@@ -72,13 +72,11 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
     getReport,
     updateReport,
     deleteReport,
-    uploadImage,
-    loading,
+    loading: reportLoading,
     error,
     setError,
   } = useReport(reportId);
-
-  const { setOnPhotoAdded } = usePhotos();
+  const { photosByReport, loading: photosLoading } = usePhotos();
   const { t } = useTranslation();
   const [fieldValues, setFieldValues] = useState<ReportFieldValues>();
   const [permissionStatus, setPermissionStatus] = useState('');
@@ -108,13 +106,15 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
     opacity: photoButtonOpacity.value,
   }));
 
+  const photoCount = useMemo(() => {
+    if (!report) return 0;
+    const photos = photosByReport[report.id];
+    if (!!photos) return photos.length;
+    return report?.photo_count ?? 0;
+  }, [report, photosByReport]);
+
   useEffect(() => {
     getReport();
-
-    setOnPhotoAdded(() => async (uri: string) => {
-      await uploadImage(uri);
-      getReport();
-    });
   }, []);
 
   useEffect(() => {
@@ -145,11 +145,11 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
   }, [isSpeaking]);
 
   const isUpdateDisabled = useMemo(() => {
-    if (!fieldValues || !report || isSpeaking || isProcessing || loading)
+    if (!fieldValues || !report || isSpeaking || isProcessing || reportLoading)
       return true;
 
     return !report.fields.some(f => f.value !== fieldValues[f.id]);
-  }, [report, fieldValues, isSpeaking, loading]);
+  }, [report, fieldValues, isSpeaking, reportLoading]);
 
   useEffect(() => {
     updateButtonHeight.value = withTiming(isUpdateDisabled ? 0 : 70, {
@@ -300,7 +300,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
                       <View style={styles.photosInfo}>
                         <Image color={fontColor1} size={26} />
                         <Label
-                          text={t('photo_count', { count: report.photo_count })}
+                          text={t('photo_count', { count: photoCount })}
                           style={styles.photosCount}
                         />
                       </View>
@@ -381,7 +381,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
         ) : (
           <Loader fullScreen={false} />
         )}
-        {isLoaded && loading && <Loader />}
+        {isLoaded && (reportLoading || photosLoading) && <Loader />}
       </View>
       <Animated.View
         style={[styles.speakingFade, speakingFadeStyle]}

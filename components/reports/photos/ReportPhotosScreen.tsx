@@ -49,24 +49,16 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
   const { t } = useTranslation();
   const { reportId, companyId } = route.params;
   const { top } = useSafeAreaInsets();
-  const {
-    photosByReport,
-    setOnPhotoAdded,
-    setOnTagsAdded,
-    setOnTagRemoved,
-    setOnDescriptionAdded,
-  } = usePhotos();
+  const { photosByReport, setOnTagsAdded, setOnTagRemoved } = usePhotos();
   const {
     getPhotos,
-    addPhoto,
     addTags,
     removeTag,
-    addDescription,
     loading: photosLoading,
     error,
     setError,
   } = useReportPhotos(reportId);
-  const { uploadImage, loading: reportLoading } = useReport(reportId);
+  const { loading: reportLoading } = useReport(reportId);
   const [isMenuShown, setIsMenuShown] = useState(false);
   const [selectedTag, setSelectedTag] = useState<ReportImageTagResponse>();
   const screenWidth = Dimensions.get('window').width;
@@ -79,23 +71,12 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
   }, [screenWidth]);
 
   useEffect(() => {
-    setOnPhotoAdded(() => async (uri: string) => {
-      const newPhoto = await uploadImage(uri);
-      if (newPhoto) {
-        addPhoto(newPhoto);
-      }
-    });
-
     setOnTagsAdded(() => (imageId: string, tags: ReportImageTag[]) => {
       addTags(imageId, tags);
     });
 
     setOnTagRemoved(() => (imageId: string, linkId: string) => {
       removeTag(imageId, linkId);
-    });
-
-    setOnDescriptionAdded(() => (imageId: string, description?: string) => {
-      addDescription(imageId, description);
     });
 
     getPhotos();

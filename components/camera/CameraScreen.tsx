@@ -12,21 +12,25 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Close, Image } from '../shared/Icons';
 import { ConfirmPhotoModal } from './ConfirmPhotoModal';
 import { usePhotos } from '../../context/photos/PhotosContext';
+import { RouteProp } from '@react-navigation/native';
+import { RootNavigationParams } from '../../navigation/navigate';
 
 interface CameraScreenProps {
   navigation: NativeStackNavigationProp<
     RootStackNavigationParams,
     'CameraScreen'
   >;
+  route: RouteProp<RootNavigationParams, 'CameraScreen'>;
 }
 
-const CameraScreen: FC<CameraScreenProps> = ({ navigation }) => {
-  const { onPhotoAdded } = usePhotos();
+const CameraScreen: FC<CameraScreenProps> = ({ navigation, route }) => {
+  const { reportId } = route.params;
   const devices = useCameraDevices();
   const cameraRef = useRef<Camera | null>(null);
   const [photo, setPhoto] = useState<PhotoFile>();
   const [isConfirmPhotoShown, setIsConfirmPhotoShown] = useState(false);
   const { top, bottom } = useSafeAreaInsets();
+  const { addPhoto } = usePhotos();
 
   const device = useMemo(() => {
     return devices.find(d => d.position === 'back');
@@ -84,7 +88,7 @@ const CameraScreen: FC<CameraScreenProps> = ({ navigation }) => {
                 const uri = result.assets?.[0]?.uri;
                 if (!uri) return;
 
-                onPhotoAdded?.(uri);
+                addPhoto(uri, reportId);
                 navigation.goBack();
               } catch (err) {
                 console.log(err);
@@ -105,7 +109,7 @@ const CameraScreen: FC<CameraScreenProps> = ({ navigation }) => {
           setIsConfirmPhotoShown(false);
 
           if (photo) {
-            onPhotoAdded?.(`file://${photo.path}`);
+            addPhoto(`file://${photo.path}`, reportId);
           }
 
           navigation.goBack();
