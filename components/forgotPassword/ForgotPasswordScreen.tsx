@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     padding: 20,
     justifyContent: 'center',
     flexGrow: 1,
-    marginTop: -60,
+    marginTop: -30,
   },
   fields: {
     marginVertical: 20,

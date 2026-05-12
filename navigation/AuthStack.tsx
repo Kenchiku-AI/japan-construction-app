@@ -17,7 +17,6 @@ const AuthStack: FC = () => {
   const Stack = createNativeStackNavigator<AuthStackNavigationParams>();
   const screenOptions: NativeStackNavigationOptions = {
     headerShown: false,
-    presentation: 'modal',
   };
 
   return (

@@ -447,7 +447,7 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
           await addTag(tagId);
         }}
       />
-      {isZoomShown && (
+      {isZoomShown && image && (
         <Animated.View
           style={[
             zoomStyle,
