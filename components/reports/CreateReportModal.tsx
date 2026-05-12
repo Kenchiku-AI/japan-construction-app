@@ -31,13 +31,13 @@ export const CreateReportModal: FC<CreateReportModalProps> = ({
   const [templateId, setTemplateId] = useState('');
   const [projectId, setProjectId] = useState('');
   const [name, setName] = useState('');
-  const [isTemplateSelectOpen, setIsTemplateSelectOpen] = useState(false);
-  const [isProjectSelectOpen, setIsProjectSelectOpen] = useState(false);
   const [requireProjectId, setRequireProjectId] = useState(false);
   const hasEditedName = useRef(false);
   const projectHeight = useSharedValue(0);
   const projectOpacity = useSharedValue(0);
-  const [forceClose, setForceClose] = useState(false);
+  // const [forceClose, setForceClose] = useState(false);
+  // const [isTemplateSelectOpen, setIsTemplateSelectOpen] = useState(false);
+  // const [isProjectSelectOpen, setIsProjectSelectOpen] = useState(false);
 
   useEffect(() => {
     const template = reportTemplates?.find(t => t.id === templateId);
@@ -61,21 +61,23 @@ export const CreateReportModal: FC<CreateReportModalProps> = ({
     }
   }, [templateId, reportTemplates]);
 
-  useEffect(() => {
-    if (isOpen) {
-      setForceClose(true);
+  // useEffect(() => {
+  //   if (isOpen) {
+  //     setForceClose(true);
 
-      setTimeout(() => {
-        setForceClose(false);
-      }, 10);
-    }
-  }, [isOpen, forceClose]);
+  //     setTimeout(() => {
+  //       setForceClose(false);
+  //     }, 10);
+  //   }
+  // }, [isOpen, forceClose]);
 
   const reset = () => {
     setName('');
     setTemplateId('');
     setProjectId('');
     setRequireProjectId(false);
+    projectHeight.value = 0;
+    projectOpacity.value = 0;
     hasEditedName.current = false;
   };
 
@@ -120,9 +122,9 @@ export const CreateReportModal: FC<CreateReportModalProps> = ({
           options={templateOptions}
           value={templateId}
           setValue={setTemplateId}
-          onOpen={() => setIsTemplateSelectOpen(true)}
-          onClose={() => setIsTemplateSelectOpen(false)}
-          forceClose={isProjectSelectOpen || forceClose}
+          // onOpen={() => setIsTemplateSelectOpen(true)}
+          // onClose={() => setIsTemplateSelectOpen(false)}
+          // forceClose={isProjectSelectOpen || forceClose}
           placeholder={t('report_template')}
           style={styles.select}
         />
@@ -132,9 +134,9 @@ export const CreateReportModal: FC<CreateReportModalProps> = ({
             value={projectId}
             setValue={setProjectId}
             placeholder={t('project')}
-            onOpen={() => setIsProjectSelectOpen(true)}
-            onClose={() => setIsProjectSelectOpen(false)}
-            forceClose={isTemplateSelectOpen || forceClose}
+            // onOpen={() => setIsProjectSelectOpen(true)}
+            // onClose={() => setIsProjectSelectOpen(false)}
+            // forceClose={isTemplateSelectOpen || forceClose}
             style={styles.select}
           />
         </Animated.View>

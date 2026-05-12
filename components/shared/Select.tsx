@@ -104,7 +104,7 @@ export const Select: FC<SelectProps> = ({
         onOpen={onOpen}
         onClose={onClose}
         style={{
-          borderWidth: 0,
+          borderWidth: open ? 1 : 0,
           backgroundColor: bgColor2,
           paddingRight: 16,
           height: 60,
@@ -117,7 +117,6 @@ export const Select: FC<SelectProps> = ({
           paddingLeft: 10,
         }}
         dropDownContainerStyle={{
-          borderWidth: 0,
           backgroundColor: bgColor2,
           paddingLeft: 12,
           paddingRight: 6,
