@@ -43,6 +43,10 @@
 	<string>このアプリはあなたの写真へのアクセスを必要とします。</string>
 	<key>RCTNewArchEnabled</key>
 	<true/>
+	<key>UIAppFonts</key>
+	<array>
+		<string>KosugiMaru-Regular.ttf</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -52,14 +56,14 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
+		<string>UIInterfaceOrientationPortrait</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-  <key>UIAppFonts</key>
-  <array>
-    <string>KosugiMaru-Regular.ttf</string>
-  </array>
 </dict>
 </plist>

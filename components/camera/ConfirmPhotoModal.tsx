@@ -25,7 +25,12 @@ export const ConfirmPhotoModal: FC<ConfirmPhotoModalProps> = ({
   const height = useMemo(() => {
     if (!photo) return undefined;
 
+    console.log('PHOTO', photo);
+
     const isPortrait = photo.orientation.includes('portrait');
+
+    console.log('is portrait', isPortrait);
+
     const factor = isPortrait
       ? photo.width / photo.height
       : photo.height / photo.width;
