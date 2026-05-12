@@ -39,15 +39,11 @@ export const useSpeechData = () => {
           modelFilePath,
         );
       } else {
-        console.log('COPYING FILE...');
-
         const src = `${RNFS.MainBundlePath}/${whisperModelFileName}`;
         await RNFS.copyFile(src, modelFilePath);
       }
 
-      console.log('initializing whisper....');
       await initWhisper({ filePath: modelFilePath });
-      console.log('done initializing whisper...');
     } catch (err) {
       console.log('Error loading Whisper model:', err);
     }

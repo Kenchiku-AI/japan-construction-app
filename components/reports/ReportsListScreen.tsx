@@ -1,4 +1,4 @@
-import { FC, useCallback, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View, FlatList } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ReportsStackNavigationParams } from '../../navigation/ReportsStack';
@@ -12,7 +12,6 @@ import { Report } from '../../types';
 import { CreateReportModal } from './CreateReportModal';
 import { useReports } from './useReports';
 import { Loader } from '../shared/Loader';
-import { useFocusEffect } from '@react-navigation/native';
 
 interface ReportsListScreenProps {
   navigation: NativeStackNavigationProp<
@@ -27,12 +26,11 @@ const ReportsListScreen: FC<ReportsListScreenProps> = ({ navigation }) => {
   const { reports, getReports, createReport, loading, error, setError } =
     useReports();
   const [showCreateReport, setShowCreateReport] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
-  useFocusEffect(
-    useCallback(() => {
-      getReports();
-    }, []),
-  );
+  useEffect(() => {
+    getReports();
+  }, []);
 
   return (
     <>
@@ -64,6 +62,12 @@ const ReportsListScreen: FC<ReportsListScreenProps> = ({ navigation }) => {
               }}
             />
           )}
+          refreshing={refreshing}
+          onRefresh={async () => {
+            setRefreshing(true);
+            await getReports();
+            setRefreshing(false);
+          }}
         />
       </View>
       <CreateReportModal
@@ -88,7 +92,7 @@ const ReportsListScreen: FC<ReportsListScreenProps> = ({ navigation }) => {
         isOpen={!!error}
         onClose={() => setError('')}
       />
-      {loading && <Loader />}
+      {loading && !refreshing && <Loader />}
     </>
   );
 };

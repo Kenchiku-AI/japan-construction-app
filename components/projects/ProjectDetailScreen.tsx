@@ -1,4 +1,4 @@
-import { FC, useCallback, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ProjectsStackNavigationParams } from '../../navigation/ProjectsStack';
 import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -7,7 +7,7 @@ import { Button, Divider, Label, Modal } from '../shared';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ChevronLeft, Edit, Plus } from '../shared/Icons';
 import { buttonColor } from '../../constants';
-import { RouteProp, useFocusEffect } from '@react-navigation/native';
+import { RouteProp } from '@react-navigation/native';
 import { useProject } from './useProject';
 import { CreateReportModal } from '../reports/CreateReportModal';
 import { useReports } from '../reports/useReports';
@@ -36,11 +36,9 @@ const ProjectDetailScreen: FC<ProjectDetailScreenProps> = ({
   const [showCreateReport, setShowCreateReport] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
 
-  useFocusEffect(
-    useCallback(() => {
-      getProject();
-    }, []),
-  );
+  useEffect(() => {
+    getProject();
+  }, []);
 
   return (
     <>

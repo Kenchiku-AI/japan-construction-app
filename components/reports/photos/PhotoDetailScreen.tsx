@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { CachedImage } from '../../shared/CachedImage';
 import {
+  Check,
   Close,
   Microphone,
   Pinch,
@@ -23,6 +24,7 @@ import {
 import {
   bgColor1,
   bgColor2,
+  buttonColor,
   errorColor1,
   fontColor2,
 } from '../../../constants';
@@ -352,6 +354,7 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
             </View>
           </Animated.View>
           <Button
+            variant={isUpdateDisabled ? 'primary' : 'secondary'}
             style={{
               ...styles.speakButton,
               marginLeft: isSpeaking ? 0 : 5,
@@ -364,7 +367,9 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
                 : 'start_speaking',
             )}
             iconLeft={() =>
-              isSpeaking || isProcessing ? undefined : <Microphone />
+              isSpeaking || isProcessing ? undefined : (
+                <Microphone color={isUpdateDisabled ? 'white' : buttonColor} />
+              )
             }
             disabled={isProcessing}
             onPress={onPressSpeech}
@@ -375,10 +380,10 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
             <Animated.View style={updateButtonStyle}>
               {(!isUpdateDisabled || isProcessing) && (
                 <Button
-                  variant="secondary"
                   label={t('save_changes')}
                   disabled={isUpdateDisabled}
                   onPress={onPressUpdate}
+                  iconLeft={() => <Check color="white" />}
                 />
               )}
             </Animated.View>

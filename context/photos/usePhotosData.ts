@@ -67,12 +67,6 @@ export const usePhotosData = () => {
           }
 
           if (data.status === 'completed') {
-            console.log(
-              'COMPLETED!',
-              onTagsAddedRef.current,
-              onDescriptionAddedRef.current,
-              onCurrentImageUpdatedRef.current,
-            );
             onTagsAddedRef.current?.(imageId, data.tags);
             onDescriptionAddedRef.current?.(imageId, data.description);
             onCurrentImageUpdatedRef.current?.(data.tags, data.description);

@@ -17,7 +17,7 @@ import {
   PermissionsAndroid,
 } from 'react-native';
 import { check, PERMISSIONS, RESULTS } from 'react-native-permissions';
-import { RouteProp, useFocusEffect } from '@react-navigation/native';
+import { RouteProp } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { ReportFieldValues } from '../../types';
 import { useReport } from './useReport';
@@ -109,6 +109,15 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
   }));
 
   useEffect(() => {
+    getReport();
+
+    setOnPhotoAdded(() => async (uri: string) => {
+      await uploadImage(uri);
+      getReport();
+    });
+  }, []);
+
+  useEffect(() => {
     if (!report) return;
 
     const newValues: ReportFieldValues = {};
@@ -141,19 +150,6 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
 
     return !report.fields.some(f => f.value !== fieldValues[f.id]);
   }, [report, fieldValues, isSpeaking, loading]);
-
-  useFocusEffect(
-    useCallback(() => {
-      setOnPhotoAdded(() => async (uri: string) => {
-        await uploadImage(uri);
-        getReport();
-      });
-
-      if (isUpdateDisabled) {
-        getReport();
-      }
-    }, [isUpdateDisabled]),
-  );
 
   useEffect(() => {
     updateButtonHeight.value = withTiming(isUpdateDisabled ? 0 : 70, {
