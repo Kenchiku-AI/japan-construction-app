@@ -69,15 +69,13 @@ export const Input: FC<InputProps> = ({
 
   useEffect(() => {
     const showLabel = !isEmpty && placeholder;
+    const topPadding = (style?.paddingTop as number) ?? 0;
 
     if (showLabel) {
-      paddingTop.value = withTiming(TOP_PADDING, ANIMATION_CONFIG);
+      paddingTop.value = withTiming(topPadding + TOP_PADDING, ANIMATION_CONFIG);
       opacity.value = withTiming(1, ANIMATION_CONFIG);
     } else {
-      paddingTop.value = withTiming(
-        (style?.paddingTop as number) ?? 0,
-        ANIMATION_CONFIG,
-      );
+      paddingTop.value = withTiming(topPadding, ANIMATION_CONFIG);
       opacity.value = 0;
     }
   }, [isEmpty, placeholder]);
@@ -90,7 +88,7 @@ export const Input: FC<InputProps> = ({
     <View
       style={styles.container}
       onTouchStart={e => {
-        if (e.nativeEvent.locationY > 60) {
+        if (e.nativeEvent.locationY > 30) {
           inputRef.current?.focus();
         }
       }}
@@ -168,8 +166,8 @@ const styles = StyleSheet.create({
   },
   clear: {
     position: 'absolute',
-    paddingHorizontal: 12,
-    top: -4,
+    paddingRight: 8,
+    top: -6,
     height: 40,
     justifyContent: 'center',
     right: 0,

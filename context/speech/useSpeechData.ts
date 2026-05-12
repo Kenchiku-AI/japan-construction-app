@@ -10,6 +10,7 @@ import { useSettings } from '../settings/SettingsContext';
 
 export const useSpeechData = () => {
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [firstLoad, setFirstLoad] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const api = useApi();
   const { reportOutputLanguage } = useSettings();
@@ -29,6 +30,8 @@ export const useSpeechData = () => {
     const modelExists = await RNFS.exists(modelFilePath);
     if (modelExists) return;
 
+    setFirstLoad(true);
+
     try {
       if (Platform.OS === 'android') {
         await RNFS.copyFileAssets(
@@ -36,12 +39,21 @@ export const useSpeechData = () => {
           modelFilePath,
         );
       } else {
+        console.log('COPYING FILE...');
+
         const src = `${RNFS.MainBundlePath}/${whisperModelFileName}`;
         await RNFS.copyFile(src, modelFilePath);
       }
+
+      console.log('initializing whisper....');
+      await initWhisper({ filePath: modelFilePath });
+      console.log('done initializing whisper...');
     } catch (err) {
       console.log('Error loading Whisper model:', err);
     }
+
+    releaseAllWhisper();
+    setFirstLoad(false);
   };
 
   const createWhisperContext = async () => {
@@ -151,5 +163,6 @@ export const useSpeechData = () => {
     stopSpeech,
     resetSpeech,
     loadModel,
+    firstLoad,
   };
 };

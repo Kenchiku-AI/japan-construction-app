@@ -63,6 +63,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
     startReportSpeech,
     stopSpeech,
     resetSpeech,
+    firstLoad,
   } = useSpeech();
   const { fadeOpacity } = useModal();
   const { top } = useSafeAreaInsets();
@@ -363,7 +364,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
                       />
                     )
                   }
-                  disabled={isProcessing}
+                  disabled={isProcessing || firstLoad}
                   onPress={onPressSpeech}
                 />
               </View>
