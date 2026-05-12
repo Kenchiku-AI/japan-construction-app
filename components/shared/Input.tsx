@@ -1,5 +1,6 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import {
+  Platform,
   StyleSheet,
   Text,
   TextInput,
@@ -158,16 +159,11 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     color: fontColor1,
     fontSize: 18,
-    // textAlignVertical: 'center',
-    // lineHeight: 18,
-    // lineHeight: 24,
-    // height: 60,
-    // backgroundColor: 'blue',
   },
   label: {
     position: 'absolute',
     top: 8,
-    left: 20,
+    left: Platform.OS === 'android' ? 20 : 16,
     zIndex: 1,
   },
   clear: {

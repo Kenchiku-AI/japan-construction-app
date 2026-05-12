@@ -107,17 +107,6 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
     opacity: photoButtonOpacity.value,
   }));
 
-  useFocusEffect(
-    useCallback(() => {
-      setOnPhotoAdded(() => async (uri: string) => {
-        await uploadImage(uri);
-        getReport();
-      });
-
-      getReport();
-    }, []),
-  );
-
   useEffect(() => {
     if (!report) return;
 
@@ -151,6 +140,19 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
 
     return !report.fields.some(f => f.value !== fieldValues[f.id]);
   }, [report, fieldValues, isSpeaking, loading]);
+
+  useFocusEffect(
+    useCallback(() => {
+      setOnPhotoAdded(() => async (uri: string) => {
+        await uploadImage(uri);
+        getReport();
+      });
+
+      if (!isUpdateDisabled) {
+        getReport();
+      }
+    }, [isUpdateDisabled]),
+  );
 
   useEffect(() => {
     updateButtonHeight.value = withTiming(isUpdateDisabled ? 0 : 70, {
