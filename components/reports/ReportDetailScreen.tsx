@@ -148,7 +148,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
         getReport();
       });
 
-      if (!isUpdateDisabled) {
+      if (isUpdateDisabled) {
         getReport();
       }
     }, [isUpdateDisabled]),
