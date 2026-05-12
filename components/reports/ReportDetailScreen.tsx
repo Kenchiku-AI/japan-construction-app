@@ -76,7 +76,12 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
     error,
     setError,
   } = useReport(reportId);
-  const { photoCountsByReport, loading: photosLoading } = usePhotos();
+  const {
+    photoCountsByReport,
+    loading: photosLoading,
+    error: uploadError,
+    setError: setUploadError,
+  } = usePhotos();
   const { t } = useTranslation();
   const [fieldValues, setFieldValues] = useState<ReportFieldValues>();
   const [permissionStatus, setPermissionStatus] = useState('');
@@ -396,7 +401,6 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
               <Animated.View style={updateButtonStyle}>
                 <View style={styles.updateButtonContainer}>
                   <Button
-                    // variant="secondary"
                     label={t('save_changes')}
                     onPress={onPressUpdate}
                     disabled={isUpdateDisabled}
@@ -470,6 +474,12 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
         subtitle={error}
         isOpen={!!error}
         onClose={() => setError('')}
+      />
+      <Modal
+        title={t('error')}
+        subtitle={uploadError}
+        isOpen={!!uploadError}
+        onClose={() => setUploadError('')}
       />
     </>
   );

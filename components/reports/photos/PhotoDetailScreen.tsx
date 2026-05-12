@@ -46,12 +46,12 @@ import PermissionModal from '../PermissionModal';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Loader } from '../../shared/Loader';
 import { RootNavigationParams } from '../../../navigation/navigate';
-import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
 import AudioVisualizer from '../../shared/AudioVisualizer';
 import { AddTagModal } from './AddTagModal';
 import { useTags } from './useTags';
 import { ReportImage, ReportImageTag } from '../../../types';
-import { usePhotos } from '../../../context/photos/PhotosContext';
+import { ImageZoom } from '@likashefqet/react-native-image-zoom';
+import { useImageCache } from '../../../services/storage/useImageCache';
 
 interface PhotoDetailScreenProps {
   navigation: NativeStackNavigationProp<
@@ -66,14 +66,16 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
   route,
 }) => {
   const { image: initialImage, companyId } = route.params;
+  const { cacheImage } = useImageCache();
   const { tags: allTags, loading: tagsLoading } = useTags(companyId);
   const { t } = useTranslation();
-  const { width, height } = useWindowDimensions();
+  const { width } = useWindowDimensions();
   const { top, bottom } = useSafeAreaInsets();
   const { formatDate } = useDate();
   const [isConfirmDeleteShown, setIsConfirmDeleteShown] = useState(false);
   const [deleteTag, setDeleteTag] = useState<ReportImageTag>();
   const [isAddTagModalShown, setIsAddTagModalShown] = useState(false);
+  const [zoomUrl, setZoomUrl] = useState('');
   const [isZoomShown, setIsZoomShown] = useState(false);
   const [permissionStatus, setPermissionStatus] = useState('');
   const [description, setDescription] = useState(initialImage.description);
@@ -84,6 +86,7 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
     startPhotoSpeech,
     stopSpeech,
     resetSpeech,
+    firstLoad,
   } = useSpeech();
   const { fadeOpacity } = useModal();
   const speakingFadeOpacity = useSharedValue(0);
@@ -158,6 +161,13 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
     }
 
     imageRef.current = image;
+
+    if (!zoomUrl && image) {
+      (async () => {
+        const cacheUrl = await cacheImage(image.download_url, image.id);
+        setZoomUrl(cacheUrl);
+      })();
+    }
   }, [image]);
 
   useEffect(() => {
@@ -384,7 +394,7 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
                 <Microphone color={isUpdateDisabled ? 'white' : buttonColor} />
               )
             }
-            disabled={isProcessing || isProcessingShown}
+            disabled={isProcessing || isProcessingShown || firstLoad}
             onPress={onPressSpeech}
           />
         </View>
@@ -464,16 +474,7 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
           >
             <Close color="black" />
           </TouchableOpacity>
-          <ReactNativeZoomableView
-            maxZoom={5}
-            visualTouchFeedbackEnabled={false}
-          >
-            <CachedImage
-              image={image}
-              width={width}
-              maxHeight={height - top - bottom - 10}
-            />
-          </ReactNativeZoomableView>
+          <ImageZoom uri={zoomUrl} />
           <View style={{ ...styles.pinch, bottom }}>
             <Pinch />
             <Label style={styles.pinchText} text={t('pinch_to_zoom')} />

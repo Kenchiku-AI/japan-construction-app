@@ -16,22 +16,13 @@ import { useReportPhotos } from './useReportPhotos';
 import { Loader } from '../../shared/Loader';
 import { FlashList } from '@shopify/flash-list';
 import { RouteProp } from '@react-navigation/native';
-import {
-  ChevronLeft,
-  Menu,
-  Camera as CameraIcon,
-  Tag,
-} from '../../shared/Icons';
+import { ChevronLeft, Camera as CameraIcon, Tag } from '../../shared/Icons';
 import { buttonColor } from '../../../constants';
 import { ReportPhotosTagsMenu } from './ReportPhotosTagsMenu';
 import { CachedImage } from '../../shared/CachedImage';
 import { useReport } from '../useReport';
 import { usePhotos } from '../../../context/photos/PhotosContext';
-import {
-  ReportImage,
-  ReportImageTag,
-  ReportImageTagResponse,
-} from '../../../types';
+import { ReportImageTagResponse } from '../../../types';
 import { useTags } from './useTags';
 
 interface ReportPhotosScreenProps {
@@ -49,7 +40,12 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
   const { t } = useTranslation();
   const { reportId, companyId } = route.params;
   const { top } = useSafeAreaInsets();
-  const { photosByReport, loading: uploading } = usePhotos();
+  const {
+    photosByReport,
+    loading: uploading,
+    error: uploadError,
+    setError: setUploadError,
+  } = usePhotos();
   const {
     getPhotos,
     loading: photosLoading,
@@ -168,6 +164,12 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
         subtitle={error}
         isOpen={!!error}
         onClose={() => setError('')}
+      />
+      <Modal
+        title={t('error')}
+        subtitle={uploadError}
+        isOpen={!!uploadError}
+        onClose={() => setUploadError('')}
       />
       {loading && <Loader />}
     </>

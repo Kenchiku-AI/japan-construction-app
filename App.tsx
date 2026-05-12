@@ -13,17 +13,20 @@ import * as Keychain from 'react-native-keychain';
 import { Loader } from './components/shared/Loader';
 import { accessTokenStorageKey, refreshTokenStorageKey } from './constants';
 import { useApi } from './services/api/useApi';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const App = () => {
   return (
-    <RootProvider>
-      <SafeAreaProvider>
-        <StatusBar barStyle="dark-content" />
-        <NavigationContainer theme={theme} ref={ref}>
-          <Root />
-        </NavigationContainer>
-      </SafeAreaProvider>
-    </RootProvider>
+    <GestureHandlerRootView>
+      <RootProvider>
+        <SafeAreaProvider>
+          <StatusBar barStyle="dark-content" />
+          <NavigationContainer theme={theme} ref={ref}>
+            <Root />
+          </NavigationContainer>
+        </SafeAreaProvider>
+      </RootProvider>
+    </GestureHandlerRootView>
   );
 };
 

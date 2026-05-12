@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { ReportImage } from '../../types';
 import { useApi } from '../../services/api/useApi';
 import ImageResizer from 'react-native-image-resizer';
+import { useTranslation } from 'react-i18next';
 
 export const usePhotosData = () => {
   const [photosByReport, setPhotosByReport] = useState<
@@ -12,8 +13,10 @@ export const usePhotosData = () => {
     Record<string, number>
   >({});
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const pollingRef = useRef<Record<string, number>>({});
   const api = useApi();
+  const { t } = useTranslation();
 
   useEffect(() => {
     photosByReportRef.current = photosByReport;
@@ -129,7 +132,9 @@ export const usePhotosData = () => {
         });
 
         pollImageStatus(reportId, createResponse.id);
-      } catch (err) {}
+      } catch (err) {
+        setError(t('upload_image_error'));
+      }
 
       setLoading(false);
     },
@@ -194,5 +199,7 @@ export const usePhotosData = () => {
     replacePhoto,
     updatePhotoCount,
     loading,
+    error,
+    setError,
   };
 };
