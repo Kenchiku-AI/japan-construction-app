@@ -50,19 +50,15 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
   const { reportId, companyId } = route.params;
   const { top } = useSafeAreaInsets();
   const {
+    photosByReport,
     setOnPhotoAdded,
-    setOnPhotoDeleted,
-    setOnPhotoUpdated,
     setOnTagsAdded,
     setOnTagRemoved,
     setOnDescriptionAdded,
   } = usePhotos();
   const {
-    photos,
     getPhotos,
     addPhoto,
-    removePhoto,
-    replacePhoto,
     addTags,
     removeTag,
     addDescription,
@@ -76,6 +72,7 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
   const screenWidth = Dimensions.get('window').width;
   const loading = photosLoading || reportLoading;
   const { tags: allTags } = useTags(companyId);
+  const photos = photosByReport[reportId];
 
   const columnWidth = useMemo(() => {
     return (screenWidth - 42) / 2;
@@ -87,14 +84,6 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
       if (newPhoto) {
         addPhoto(newPhoto);
       }
-    });
-
-    setOnPhotoDeleted(() => async (imageId: string) => {
-      removePhoto(imageId);
-    });
-
-    setOnPhotoUpdated(() => async (photo: ReportImage) => {
-      replacePhoto(photo);
     });
 
     setOnTagsAdded(() => (imageId: string, tags: ReportImageTag[]) => {

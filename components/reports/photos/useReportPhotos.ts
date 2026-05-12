@@ -7,24 +7,21 @@ import { useApi } from '../../../services/api/useApi';
 import { usePhotos } from '../../../context/photos/PhotosContext';
 
 export const useReportPhotos = (reportId: string) => {
+  const { photosByReport, setPhotosByReport } = usePhotos();
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [photos, setPhotos] = useState<ReportImage[]>([]);
   const photosRef = useRef<ReportImage[]>([]);
   const { t } = useTranslation();
   const api = useApi();
   const { pollImageStatus } = usePhotos();
 
   useEffect(() => {
-    photosRef.current = photos;
-  }, [photos]);
+    photosRef.current = photosByReport[reportId];
+  }, [photosByReport[reportId]]);
 
   const addPhoto = (photo: ReportImage) => {
     setPhotos([photo, ...photosRef.current]);
-  };
-
-  const removePhoto = (id: string) => {
-    setPhotos(photosRef.current.filter(p => p.id !== id));
   };
 
   const replacePhoto = (photo: ReportImage) => {
@@ -89,13 +86,17 @@ export const useReportPhotos = (reportId: string) => {
 
     try {
       const response = await api.getReportImages(reportId);
+      if (!response) return;
 
       const sortedPhotos = [...(response ?? [])].sort(
         (a, b) =>
           new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
       );
 
-      setPhotos(sortedPhotos);
+      setPhotosByReport({
+        ...photosByReport,
+        [reportId]: sortedPhotos,
+      });
 
       (response ?? []).forEach((img: ReportImage) => {
         if (img.status === 'pending' || img.status === 'processing') {
@@ -107,18 +108,16 @@ export const useReportPhotos = (reportId: string) => {
     }
 
     setLoading(false);
-  }, [reportId, pollImageStatus]);
+  }, [reportId, pollImageStatus, photosByReport]);
 
   return {
     getPhotos,
     addPhoto,
-    removePhoto,
     replacePhoto,
     addTags,
     removeTag,
     addDescription,
     loading,
-    photos,
     error,
     setError,
   };

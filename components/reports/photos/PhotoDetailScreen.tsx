@@ -47,7 +47,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Loader } from '../../shared/Loader';
 import { RootNavigationParams } from '../../../navigation/navigate';
 import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
-import { usePhotos } from '../../../context/photos/PhotosContext';
 import AudioVisualizer from '../../shared/AudioVisualizer';
 import { AddTagModal } from './AddTagModal';
 import { useTags } from './useTags';
@@ -86,7 +85,6 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
     resetSpeech,
   } = useSpeech();
   const { fadeOpacity } = useModal();
-  const { onPhotoDeleted } = usePhotos();
   const speakingFadeOpacity = useSharedValue(0);
   const bottomButtonsHeight = useSharedValue(0);
   const updateButtonOpacity = useSharedValue(0);
@@ -405,7 +403,6 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
         onDelete={async () => {
           setIsConfirmDeleteShown(false);
           await deleteImage();
-          onPhotoDeleted?.(image.id);
           resetSpeech();
           navigation.goBack();
         }}

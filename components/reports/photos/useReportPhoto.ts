@@ -11,14 +11,10 @@ export const useReportPhoto = (
   onDescriptionUpdated: (description: string) => void,
 ) => {
   const [image, setImage] = useState(initialImage);
+  const { photosByReport, setPhotosByReport } = usePhotos();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const {
-    setOnCurrentImageUpdated,
-    onPhotoUpdated,
-    onTagsAdded,
-    onTagRemoved,
-  } = usePhotos();
+  const { setOnCurrentImageUpdated, onTagsAdded, onTagRemoved } = usePhotos();
   const { t } = useTranslation();
   const api = useApi();
 
@@ -50,12 +46,21 @@ export const useReportPhoto = (
 
     try {
       await api.deleteImage(image.report_id, image.id);
+
+      const newImages = photosByReport[image.report_id].filter(
+        i => i.id !== image.id,
+      );
+
+      setPhotosByReport({
+        ...photosByReport,
+        [image.report_id]: newImages,
+      });
     } catch (err) {
       setError(t('delete_photo_error'));
     }
 
     setLoading(false);
-  }, [image]);
+  }, [image, photosByReport]);
 
   const updateImage = useCallback(
     async (description: string) => {
@@ -68,7 +73,6 @@ export const useReportPhoto = (
 
         if (response) {
           setImage(response);
-          onPhotoUpdated?.(response);
         }
       } catch (err) {
         setError(t('update_photo_error'));
@@ -76,7 +80,7 @@ export const useReportPhoto = (
 
       setLoading(false);
     },
-    [image],
+    [image, photosByReport],
   );
 
   const addTag = useCallback(

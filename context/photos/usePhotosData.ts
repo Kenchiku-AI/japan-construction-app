@@ -3,8 +3,6 @@ import { ReportImage, ReportImageTag } from '../../types';
 import { useApi } from '../../services/api/useApi';
 
 type OnPhotoAdded = (uri: string) => void;
-type OnPhotoDeleted = (imageId: string) => void;
-type OnPhotoUpdated = (photo: ReportImage) => void;
 type OnTagsAdded = (imageId: string, tags: ReportImageTag[]) => void;
 type OnDescriptionAdded = (imageId: string, description?: string) => void;
 type OnCurrentImageUpdated = (
@@ -14,9 +12,10 @@ type OnCurrentImageUpdated = (
 type OnTagRemoved = (imageId: string, linkId: string) => void;
 
 export const usePhotosData = () => {
+  const [photosByReport, setPhotosByReport] = useState<
+    Record<string, ReportImage[]>
+  >({});
   const [onPhotoAdded, setOnPhotoAdded] = useState<OnPhotoAdded>();
-  const [onPhotoDeleted, setOnPhotoDeleted] = useState<OnPhotoDeleted>();
-  const [onPhotoUpdated, setOnPhotoUpdated] = useState<OnPhotoUpdated>();
   const [onTagsAdded, setOnTagsAdded] = useState<OnTagsAdded>();
   const onTagsAddedRef = useRef<OnTagsAdded | undefined>(undefined);
   const [onTagRemoved, setOnTagRemoved] = useState<OnTagRemoved>();
@@ -89,10 +88,6 @@ export const usePhotosData = () => {
   return {
     onPhotoAdded,
     setOnPhotoAdded,
-    onPhotoDeleted,
-    setOnPhotoDeleted,
-    onPhotoUpdated,
-    setOnPhotoUpdated,
     onTagsAdded,
     setOnTagsAdded,
     onTagRemoved,
@@ -100,5 +95,7 @@ export const usePhotosData = () => {
     setOnDescriptionAdded,
     setOnCurrentImageUpdated,
     pollImageStatus,
+    photosByReport,
+    setPhotosByReport,
   };
 };

@@ -1,7 +1,13 @@
 import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Modal } from '../shared';
-import { Image, StyleSheet, useWindowDimensions, View } from 'react-native';
+import {
+  Image,
+  Platform,
+  StyleSheet,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import { PhotoFile } from 'react-native-vision-camera';
 import { useModal } from '../../context/modal/ModalContext';
 
@@ -25,11 +31,8 @@ export const ConfirmPhotoModal: FC<ConfirmPhotoModalProps> = ({
   const height = useMemo(() => {
     if (!photo) return undefined;
 
-    console.log('PHOTO', photo);
-
-    const isPortrait = photo.orientation.includes('portrait');
-
-    console.log('is portrait', isPortrait);
+    const rawIsPortrait = photo.orientation.includes('portrait');
+    const isPortrait = Platform.OS === 'ios' ? !rawIsPortrait : rawIsPortrait;
 
     const factor = isPortrait
       ? photo.width / photo.height
