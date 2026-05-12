@@ -7,6 +7,9 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated';
 import { addAudioLevelListener } from 'whisper.rn/src/index';
+import { Label } from './Label';
+import { useTranslation } from 'react-i18next';
+import { useSpeech } from '../../context/speech/SpeechContext';
 
 const MIN_HEIGHT = 10;
 const MAX_HEIGHT = 70;
@@ -16,6 +19,9 @@ const ANIMATION_CONFIG = {
 };
 
 const AudioVisualizer = () => {
+  const { t } = useTranslation();
+  const { showContextLoading } = useSpeech();
+
   const barsRef = useRef(
     Array.from({ length: 9 }, () => ({
       sv: useSharedValue(0),
@@ -45,6 +51,14 @@ const AudioVisualizer = () => {
 
     return () => sub?.remove();
   }, []);
+
+  if (showContextLoading) {
+    return (
+      <View style={styles.container}>
+        <Label text={t('loading')} style={{ color: 'white' }} />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>

@@ -16,6 +16,7 @@ export const useSpeechData = () => {
   const { reportOutputLanguage } = useSettings();
   const { getRequestText } = useTranscription();
   const stopRequested = useRef(false);
+  const [showContextLoading, setShowContextLoading] = useState(false);
   const modelFilePath = `${RNFS.DocumentDirectoryPath}/${whisperModelFileName}`;
 
   useEffect(() => {
@@ -53,8 +54,20 @@ export const useSpeechData = () => {
   };
 
   const createWhisperContext = async () => {
-    await loadModel();
-    return await initWhisper({ filePath: modelFilePath });
+    const loadingTimer = setTimeout(() => {
+      setShowContextLoading(true);
+    }, 1000);
+
+    try {
+      await loadModel();
+
+      return await initWhisper({
+        filePath: modelFilePath,
+      });
+    } finally {
+      clearTimeout(loadingTimer);
+      setShowContextLoading(false);
+    }
   };
 
   const handleEvent = async (
@@ -160,5 +173,6 @@ export const useSpeechData = () => {
     resetSpeech,
     loadModel,
     firstLoad,
+    showContextLoading,
   };
 };
