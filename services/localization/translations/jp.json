@@ -6,6 +6,7 @@
   "add_photo": "写真を追加",
   "add_tag": "タグを追加",
   "add_tag_description": "以下のリストからタグを選択して、写真に追加してください。",
+  "admin_error": "管理者はこのアプリを使用できません。",
   "boolean": "オン／オフ",
   "cancel": "キャンセル",
   "change_report_name": "報告書名を変更",

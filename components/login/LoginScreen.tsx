@@ -28,7 +28,7 @@ const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { resetSpeech } = useSpeech();
-  const { loading, login, showError, setShowError } = useLogin();
+  const { loading, login, error, setError } = useLogin();
   const { t } = useTranslation();
   const { top } = useSafeAreaInsets();
 
@@ -85,10 +85,10 @@ const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
       {loading && <Loader />}
       <Modal
         title={t('error')}
-        subtitle={t('login_error')}
-        isOpen={showError}
+        subtitle={error}
+        isOpen={!!error}
         onClose={() => {
-          setShowError(false);
+          setError('');
         }}
       />
     </>
