@@ -36,10 +36,6 @@ const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
     resetSpeech();
   }, []);
 
-  useEffect(() => {
-    console.log('password changed', password);
-  }, [password]);
-
   return (
     <>
       <KeyboardAvoidingView
