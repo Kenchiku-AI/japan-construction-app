@@ -1,6 +1,7 @@
-import { ActivityIndicator, View, StyleSheet } from 'react-native';
-import { bgColor1, fontColor1 } from '../../constants';
+import { View, StyleSheet } from 'react-native';
+import { bgColor1, fontColor2 } from '../../constants';
 import { FC } from 'react';
+import { MaterialIndicator } from 'react-native-indicators';
 
 interface LoaderProps {
   fullScreen?: boolean;
@@ -11,7 +12,7 @@ export const Loader: FC<LoaderProps> = ({ fullScreen = true, color }) => (
   <View
     style={fullScreen ? styles.fullScreenContainer : styles.inlineContainer}
   >
-    <ActivityIndicator size="large" color={color ?? fontColor1} />
+    <MaterialIndicator color={color ?? fontColor2} />
   </View>
 );
 
