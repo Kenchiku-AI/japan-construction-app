@@ -23,6 +23,7 @@ import {
 } from '../../constants';
 import { Label } from './Label';
 import { useTranslation } from 'react-i18next';
+import { Eye, EyeOff } from './Icons';
 
 const TOP_PADDING = 18;
 const ANIMATION_CONFIG = { duration: 75 };
@@ -55,6 +56,7 @@ export const Input: FC<InputProps> = ({
   const inputRef = useRef<any>(null);
   const [isFocused, setIsFocused] = useState(false);
   const [isEmpty, setIsEmpty] = useState(!value);
+  const [showText, setShowText] = useState(false);
   const paddingTop = useSharedValue(
     !value ? 0 : style?.paddingTop ?? TOP_PADDING,
   );
@@ -133,16 +135,27 @@ export const Input: FC<InputProps> = ({
             backgroundColor: error
               ? '#FF636326'
               : `#F2F2F3${disabled ? '54' : ''}`,
+            marginRight: secureTextEntry ? 30 : 0,
           }}
           autoCapitalize="none"
           autoFocus={false}
-          secureTextEntry={secureTextEntry}
+          secureTextEntry={secureTextEntry && !showText}
           editable={!disabled}
           multiline={multiline}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
         />
       </Animated.View>
+      {secureTextEntry && (
+        <TouchableOpacity
+          onPress={() => {
+            setShowText(prev => !prev);
+          }}
+          style={styles.showPasswordButton}
+        >
+          {showText ? <Eye /> : <EyeOff />}
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -163,6 +176,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     color: fontColor1,
     fontSize: 18,
+    overflow: 'visible',
   },
   label: {
     position: 'absolute',
@@ -182,5 +196,13 @@ const styles = StyleSheet.create({
   clearText: {
     color: errorColor1,
     fontFamily,
+  },
+  showPasswordButton: {
+    position: 'absolute',
+    right: 0,
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 50,
   },
 });
