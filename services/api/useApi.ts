@@ -31,8 +31,7 @@ import { baseUrl } from '../../constants';
 import { useAuth } from '../../context/auth/AuthContext';
 
 export const useApi = () => {
-  const { refreshToken, updateAccessToken, updateRefreshToken, logout } =
-    useAuth();
+  const { refreshTokenRef, updateAccessToken, logout } = useAuth();
 
   useEffect(() => {
     axios.defaults.baseURL = baseUrl;
@@ -61,7 +60,7 @@ export const useApi = () => {
     async <T>(callback: () => Promise<AxiosResponse<T>>) => {
       try {
         const url = '/auth/refresh';
-        const request = { refresh_token: refreshToken };
+        const request = { refresh_token: refreshTokenRef.current };
         const { data } = await axios.post<RefreshResponse>(url, request);
         await updateAccessToken(data.access_token);
 
@@ -70,7 +69,7 @@ export const useApi = () => {
         await logout();
       }
     },
-    [refreshToken, updateAccessToken, updateRefreshToken, logout],
+    [refreshTokenRef, updateAccessToken, logout],
   );
 
   return {

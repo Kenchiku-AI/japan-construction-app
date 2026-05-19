@@ -4,6 +4,9 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
+  withRepeat,
+  interpolate,
+  Extrapolate,
 } from 'react-native-reanimated';
 import { Camera } from 'react-native-vision-camera';
 import { ReportsStackNavigationParams } from '../../navigation/ReportsStack';
@@ -18,12 +21,13 @@ import {
 } from 'react-native';
 import { check, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import { CommonActions, RouteProp } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
 import { ReportFieldValues } from '../../types';
 import { useReport } from './useReport';
 import { Button, Divider, Input, Label } from '../shared';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { bgColor1, buttonColor, fontColor1 } from '../../constants';
+import { bgColor1, buttonColor, fontColor1, micUsedKey } from '../../constants';
 import {
   Camera as CameraIcon,
   Check,
@@ -89,12 +93,14 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
   const [isDeleteModalShown, setIsDeleteModalShown] = useState(false);
   const [isNameModalShown, setIsNameModalShown] = useState(false);
   const [isMenuShown, setIsMenuShown] = useState(false);
+  const [enableMicPulse, setEnableMicPulse] = useState(false);
   const speakingFadeOpacity = useSharedValue(0);
   const updateButtonHeight = useSharedValue(0);
   const updateButtonOpacity = useSharedValue(0);
   const photoButtonWidth = useSharedValue(0.5);
   const photoButtonOpacity = useSharedValue(1);
   const isLoaded = fieldValues !== undefined;
+  const micPulse = useSharedValue(1);
 
   const speakingFadeStyle = useAnimatedStyle(() => ({
     opacity: speakingFadeOpacity.value,
@@ -111,8 +117,34 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
     opacity: photoButtonOpacity.value,
   }));
 
+  const micPulseStyle = useAnimatedStyle(() => {
+    if (!enableMicPulse) {
+      return {
+        zIndex: 300,
+        flex: 1,
+      };
+    }
+
+    return {
+      transform: [{ scale: micPulse.value }],
+      opacity: interpolate(
+        micPulse.value,
+        [1, 1.08],
+        [0.7, 1],
+        Extrapolate.CLAMP,
+      ),
+      zIndex: 300,
+      flex: 1,
+    };
+  }, [enableMicPulse]);
+
   useEffect(() => {
     getReport();
+
+    (async () => {
+      const hasUsedMic = await AsyncStorage.getItem(micUsedKey);
+      setEnableMicPulse(!hasUsedMic);
+    })();
 
     const tabNav = navigation.getParent();
     if (!tabNav) return;
@@ -161,6 +193,18 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
   }, [report]);
 
   useEffect(() => {
+    if (!isSpeaking && !isProcessing && !firstLoad) {
+      micPulse.value = withRepeat(
+        withTiming(1.08, { duration: 600 }),
+        -1,
+        true,
+      );
+    } else {
+      micPulse.value = withTiming(1, { duration: 200 });
+    }
+  }, [isSpeaking, isProcessing, firstLoad]);
+
+  useEffect(() => {
     speakingFadeOpacity.value = withTiming(isSpeaking ? 0.5 : 0, {
       duration: 200,
     });
@@ -204,6 +248,9 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
     if (!hasPermission) {
       return;
     }
+
+    setEnableMicPulse(false);
+    AsyncStorage.setItem(micUsedKey, 'true');
 
     if (isSpeaking) {
       stopSpeech();
@@ -298,56 +345,59 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
         </View>
         {isLoaded && report ? (
           <>
-            <FlatList
-              data={report.fields}
-              renderItem={({ item }) => (
-                <Input
-                  key={item.id}
-                  placeholder={item.name}
-                  value={fieldValues?.[item.id]}
-                  onChange={value => {
-                    setFieldValues(prev => {
-                      const newValues = { ...prev };
-                      newValues[item.id] = value;
-                      return newValues;
-                    });
-                  }}
-                />
-              )}
-              ListHeaderComponent={() => {
-                const photoCount = photoCountsByReport[reportId];
-                if (photoCount < 1) return null;
+            <View style={{ flex: 1 }}>
+              <FlatList
+                data={report.fields}
+                renderItem={({ item }) => (
+                  <Input
+                    key={item.id}
+                    placeholder={item.name}
+                    value={fieldValues?.[item.id]}
+                    onChange={value => {
+                      setFieldValues(prev => {
+                        const newValues = { ...prev };
+                        newValues[item.id] = value;
+                        return newValues;
+                      });
+                    }}
+                  />
+                )}
+                ListHeaderComponent={() => {
+                  const photoCount = photoCountsByReport[reportId];
+                  if (photoCount < 1) return null;
 
-                return (
-                  <>
-                    <TouchableOpacity
-                      style={styles.photos}
-                      onPress={() => {
-                        navigation.navigate('ReportPhotosScreen', {
-                          reportId,
-                          companyId: report.company_id,
-                        });
-                      }}
-                    >
-                      <View style={styles.photosInfo}>
-                        <Image color={fontColor1} size={26} />
-                        <Label
-                          text={t('photo_count', {
-                            count: photoCount,
-                          })}
-                          style={styles.photosCount}
-                        />
-                      </View>
-                      <View style={styles.chevron}>
-                        <ChevronRight />
-                      </View>
-                    </TouchableOpacity>
-                    <Divider light />
-                  </>
-                );
-              }}
-              contentContainerStyle={styles.fields}
-            />
+                  return (
+                    <>
+                      <TouchableOpacity
+                        style={styles.photos}
+                        onPress={() => {
+                          navigation.navigate('ReportPhotosScreen', {
+                            reportId,
+                            companyId: report.company_id,
+                          });
+                        }}
+                      >
+                        <View style={styles.photosInfo}>
+                          <Image color={fontColor1} size={26} />
+                          <Label
+                            text={t('photo_count', {
+                              count: photoCount,
+                            })}
+                            style={styles.photosCount}
+                          />
+                        </View>
+                        <View style={styles.chevron}>
+                          <ChevronRight />
+                        </View>
+                      </TouchableOpacity>
+                      <Divider light />
+                    </>
+                  );
+                }}
+                contentContainerStyle={styles.fields}
+              />
+              {isProcessing && <Loader />}
+            </View>
             <Divider style={styles.divider} light />
             <View style={styles.buttonsOuter}>
               <View style={styles.buttonsInner}>
@@ -374,29 +424,31 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
                     />
                   </View>
                 </Animated.View>
-                <Button
-                  variant={isUpdateDisabled ? 'primary' : 'secondary'}
-                  style={{
-                    ...styles.speakButton,
-                    marginLeft: isSpeaking ? 0 : 5,
-                  }}
-                  label={t(
-                    isSpeaking
-                      ? 'done'
-                      : isProcessing
-                      ? 'processing'
-                      : 'start_speaking',
-                  )}
-                  iconLeft={() =>
-                    isSpeaking || isProcessing ? undefined : (
-                      <Microphone
-                        color={isUpdateDisabled ? 'white' : buttonColor}
-                      />
-                    )
-                  }
-                  disabled={isProcessing || firstLoad}
-                  onPress={onPressSpeech}
-                />
+                <Animated.View style={micPulseStyle}>
+                  <Button
+                    variant={isUpdateDisabled ? 'primary' : 'secondary'}
+                    style={{
+                      ...styles.speakButton,
+                      marginLeft: isSpeaking ? 0 : 5,
+                    }}
+                    label={t(
+                      isSpeaking
+                        ? 'done'
+                        : isProcessing
+                        ? 'processing'
+                        : 'start_speaking',
+                    )}
+                    iconLeft={() =>
+                      isSpeaking || isProcessing ? undefined : (
+                        <Microphone
+                          color={isUpdateDisabled ? 'white' : buttonColor}
+                        />
+                      )
+                    }
+                    disabled={isProcessing || firstLoad}
+                    onPress={onPressSpeech}
+                  />
+                </Animated.View>
               </View>
               <Animated.View style={updateButtonStyle}>
                 <View style={styles.updateButtonContainer}>
@@ -539,8 +591,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   speakButton: {
-    zIndex: 300,
-    flex: 1,
+    // zIndex: 300,
+    // flex: 1,
   },
   updateButtonContainer: {
     paddingTop: 10,

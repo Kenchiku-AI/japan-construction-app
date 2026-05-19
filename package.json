@@ -15,6 +15,7 @@
     "@candlefinance/faster-image": "^1.7.2",
     "@fugood/react-native-audio-pcm-stream": "^1.1.4",
     "@likashefqet/react-native-image-zoom": "^4.3.0",
+    "@react-native-async-storage/async-storage": "^3.0.2",
     "@react-navigation/bottom-tabs": "^7.9.1",
     "@react-navigation/native": "^7.1.27",
     "@react-navigation/native-stack": "^7.9.1",

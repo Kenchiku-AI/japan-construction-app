@@ -1,57 +1,60 @@
 import { useRef } from 'react';
 
 // prettier-ignore
-const CLOSERS = new Set([ '」', '』', '】', '〗',  '〙', '〛', '"', "'", '）', ')', ']',]);
 const END_CHARS = new Set(['。', '！', '？', '.', '!', '?', '…']);
 
 export const useTranscription = () => {
-  const lastTranscription = useRef('');
+  const committedTextRef = useRef('');
+  const chunkCountsRef = useRef<Map<string, number>>(new Map());
+  const committedChunkSetRef = useRef<Set<string>>(new Set());
 
   const getRequestText = (transcription: string) => {
-    const newTranscription = transcription.replaceAll('[BLANK_AUDIO]', '');
-    const oldChars = [...lastTranscription.current];
-    const newChars = [...newTranscription];
-    lastTranscription.current = newTranscription;
+    const cleaned = transcription
+      .replaceAll('[BLANK_AUDIO]', '')
+      .replace(/\s+/g, ' ')
+      .trim();
 
-    const minLen = Math.min(oldChars.length, newChars.length);
-    let diffIndex = -1;
+    const chunks: string[] = [];
+    let current = '';
 
-    for (let i = 0; i < minLen; i++) {
-      if (oldChars[i] !== newChars[i]) {
-        diffIndex = i;
-        break;
+    for (const char of cleaned) {
+      current += char;
+      if (END_CHARS.has(char)) {
+        chunks.push(current.trim());
+        current = '';
       }
     }
 
-    if (diffIndex === -1) {
-      if (oldChars.length === newChars.length) return '';
-      diffIndex = minLen;
+    if (chunks.length === 0) return '';
+
+    const lastChunk = chunks[chunks.length - 1];
+
+    if (committedChunkSetRef.current.has(lastChunk)) return '';
+
+    const counts = chunkCountsRef.current;
+    const newCount = (counts.get(lastChunk) ?? 0) + 1;
+    counts.set(lastChunk, newCount);
+
+    if (newCount >= 3) {
+      const fullStableText = chunks.join(' ');
+      committedTextRef.current = fullStableText;
+      committedChunkSetRef.current.add(lastChunk);
+      counts.delete(lastChunk);
+
+      return fullStableText;
     }
 
-    let start = diffIndex;
-    while (start > 0 && !END_CHARS.has(newChars[start - 1])) {
-      start--;
-    }
+    return '';
+  };
 
-    while (newChars[start] === ' ') start++;
-
-    let end = diffIndex;
-    while (end < newChars.length && !END_CHARS.has(newChars[end])) {
-      end++;
-    }
-
-    if (end >= newChars.length) return '';
-
-    end++;
-
-    while (end < newChars.length && CLOSERS.has(newChars[end])) {
-      end++;
-    }
-
-    return newChars.slice(start, end).join('').trim();
+  const clearTranscription = () => {
+    committedTextRef.current = '';
+    chunkCountsRef.current = new Map();
+    committedChunkSetRef.current = new Set();
   };
 
   return {
     getRequestText,
+    clearTranscription,
   };
 };

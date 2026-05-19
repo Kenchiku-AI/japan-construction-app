@@ -45,6 +45,8 @@ const Root = () => {
         service: accessTokenStorageKey,
       });
 
+      console.log('refresh creds', refreshCreds);
+
       if (refreshCreds) updateRefreshToken(refreshCreds.password);
 
       if (accessCreds) {
