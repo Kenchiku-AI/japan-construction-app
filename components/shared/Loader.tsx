@@ -1,5 +1,5 @@
 import { View, StyleSheet } from 'react-native';
-import { bgColor1, fontColor2 } from '../../constants';
+import { fontColor2 } from '../../constants';
 import { FC } from 'react';
 import { MaterialIndicator } from 'react-native-indicators';
 
@@ -24,13 +24,12 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     justifyContent: 'center',
-    backgroundColor: bgColor1,
-    opacity: 0.75,
+    backgroundColor: '#FDFDFDB3',
     zIndex: 10000,
   },
   inlineContainer: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: bgColor1,
+    backgroundColor: '#FDFDFDB3',
   },
 });

@@ -52,6 +52,7 @@ import { useTags } from './useTags';
 import { ReportImage, ReportImageTag } from '../../../types';
 import { ImageZoom } from '@likashefqet/react-native-image-zoom';
 import { useImageCache } from '../../../services/storage/useImageCache';
+import { useKeyboard } from '../../../services/keyboard/useKeyboard';
 
 interface PhotoDetailScreenProps {
   navigation: NativeStackNavigationProp<
@@ -69,6 +70,7 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
   const { cacheImage } = useImageCache();
   const { tags: allTags, loading: tagsLoading } = useTags(companyId);
   const { t } = useTranslation();
+  const { isKeyboardVisible, keyboardHeight } = useKeyboard();
   const { width } = useWindowDimensions();
   const { top, bottom } = useSafeAreaInsets();
   const { formatDate } = useDate();
@@ -296,7 +298,12 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
         </View>
         <Divider />
       </View>
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView
+        contentContainerStyle={{
+          ...styles.container,
+          paddingBottom: isKeyboardVisible ? keyboardHeight - 80 : 16,
+        }}
+      >
         {image && (
           <TouchableOpacity
             onPress={() => {

@@ -47,6 +47,7 @@ import { DeleteReportModal } from './DeleteReportModal';
 import { useModal } from '../../context/modal/ModalContext';
 import { usePhotos } from '../../context/photos/PhotosContext';
 import { EditReportNameModal } from './EditReportNameModal';
+import { useKeyboard } from '../../services/keyboard/useKeyboard';
 
 interface ReportDetailScreenProps {
   navigation: NativeStackNavigationProp<
@@ -71,6 +72,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
   } = useSpeech();
   const { fadeOpacity } = useModal();
   const { top } = useSafeAreaInsets();
+  const { isKeyboardVisible, keyboardHeight } = useKeyboard();
   const {
     report,
     getReport,
@@ -394,7 +396,10 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
                     </>
                   );
                 }}
-                contentContainerStyle={styles.fields}
+                contentContainerStyle={{
+                  ...styles.fields,
+                  paddingBottom: isKeyboardVisible ? keyboardHeight - 80 : 10,
+                }}
               />
               {isProcessing && <Loader />}
             </View>
@@ -570,7 +575,6 @@ const styles = StyleSheet.create({
   },
   fields: {
     gap: 10,
-    paddingBottom: 10,
     paddingHorizontal: 16,
     flex: 1,
   },
