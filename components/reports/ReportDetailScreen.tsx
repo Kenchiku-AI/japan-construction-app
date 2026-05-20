@@ -120,6 +120,8 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
   const micPulseStyle = useAnimatedStyle(() => {
     if (!enableMicPulse) {
       return {
+        opacity: 1,
+        scale: 1,
         zIndex: 300,
         flex: 1,
       };
@@ -142,8 +144,9 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
     getReport();
 
     (async () => {
-      const hasUsedMic = await AsyncStorage.getItem(micUsedKey);
-      setEnableMicPulse(!hasUsedMic);
+      const usedMicCount = await AsyncStorage.getItem(micUsedKey);
+      const countNumber = Number(usedMicCount ?? '0');
+      setEnableMicPulse(countNumber < 3);
     })();
 
     const tabNav = navigation.getParent();
@@ -250,7 +253,10 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
     }
 
     setEnableMicPulse(false);
-    AsyncStorage.setItem(micUsedKey, 'true');
+
+    const usedMicCount = await AsyncStorage.getItem(micUsedKey);
+    const countNumber = Number(usedMicCount ?? '0');
+    AsyncStorage.setItem(micUsedKey, `${countNumber + 1}`);
 
     if (isSpeaking) {
       stopSpeech();

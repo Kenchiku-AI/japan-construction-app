@@ -1,7 +1,7 @@
 import { View, StyleSheet } from 'react-native';
 import { bgColor1, fontColor2 } from '../../constants';
+import { M3eLoader } from 'material-loader-react-native';
 import { FC } from 'react';
-import { MaterialIndicator } from 'react-native-indicators';
 
 interface LoaderProps {
   fullScreen?: boolean;
@@ -12,7 +12,14 @@ export const Loader: FC<LoaderProps> = ({ fullScreen = true, color }) => (
   <View
     style={fullScreen ? styles.fullScreenContainer : styles.inlineContainer}
   >
-    <MaterialIndicator color={color ?? fontColor2} />
+    <M3eLoader
+      size={80}
+      color={fontColor2}
+      duration={3000}
+      shapeInterval={1000}
+      backgroundColor="#E0F7FA"
+      variant="contained"
+    />
   </View>
 );
 
