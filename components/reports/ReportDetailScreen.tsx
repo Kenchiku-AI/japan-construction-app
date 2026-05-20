@@ -117,28 +117,17 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
     opacity: photoButtonOpacity.value,
   }));
 
-  const micPulseStyle = useAnimatedStyle(() => {
-    if (!enableMicPulse) {
-      return {
-        opacity: 1,
-        scale: 1,
-        zIndex: 300,
-        flex: 1,
-      };
-    }
-
-    return {
-      transform: [{ scale: micPulse.value }],
-      opacity: interpolate(
-        micPulse.value,
-        [1, 1.08],
-        [0.7, 1],
-        Extrapolate.CLAMP,
-      ),
-      zIndex: 300,
-      flex: 1,
-    };
-  }, [enableMicPulse]);
+  const micPulseStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: micPulse.value }],
+    opacity: interpolate(
+      micPulse.value,
+      [1, 1.08],
+      [1, 0.8],
+      Extrapolate.CLAMP,
+    ),
+    zIndex: 300,
+    flex: 1,
+  }));
 
   useEffect(() => {
     getReport();
@@ -196,6 +185,11 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
   }, [report]);
 
   useEffect(() => {
+    if (!enableMicPulse) {
+      micPulse.value = withTiming(1, { duration: 200 });
+      return;
+    }
+
     if (!isSpeaking && !isProcessing && !firstLoad) {
       micPulse.value = withRepeat(
         withTiming(1.08, { duration: 600 }),
@@ -205,7 +199,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
     } else {
       micPulse.value = withTiming(1, { duration: 200 });
     }
-  }, [isSpeaking, isProcessing, firstLoad]);
+  }, [isSpeaking, isProcessing, firstLoad, enableMicPulse]);
 
   useEffect(() => {
     speakingFadeOpacity.value = withTiming(isSpeaking ? 0.5 : 0, {
