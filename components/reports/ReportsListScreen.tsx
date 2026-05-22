@@ -47,28 +47,30 @@ const ReportsListScreen: FC<ReportsListScreenProps> = ({ navigation }) => {
           />
         </View>
         <Divider />
-        <FlatList
-          style={styles.reports}
-          data={reports}
-          renderItem={({ item }) => (
-            <ReportsListItem
-              key={item.id}
-              report={item}
-              onPress={() => {
-                navigation.navigate('ReportDetailScreen', {
-                  reportId: item.id,
-                  reportName: item.name,
-                });
-              }}
-            />
-          )}
-          refreshing={refreshing}
-          onRefresh={async () => {
-            setRefreshing(true);
-            await getReports();
-            setRefreshing(false);
-          }}
-        />
+        <View style={{ flex: 1 }}>
+          <FlatList
+            style={styles.reports}
+            data={reports}
+            renderItem={({ item }) => (
+              <ReportsListItem
+                key={item.id}
+                report={item}
+                onPress={() => {
+                  navigation.navigate('ReportDetailScreen', {
+                    reportId: item.id,
+                    reportName: item.name,
+                  });
+                }}
+              />
+            )}
+            refreshing={refreshing}
+            onRefresh={async () => {
+              setRefreshing(true);
+              await getReports();
+              setRefreshing(false);
+            }}
+          />
+        </View>
       </View>
       <CreateReportModal
         isOpen={showCreateReport}

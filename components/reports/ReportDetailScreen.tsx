@@ -398,7 +398,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
                 }}
                 contentContainerStyle={{
                   ...styles.fields,
-                  paddingBottom: isKeyboardVisible ? keyboardHeight - 80 : 10,
+                  paddingBottom: isKeyboardVisible ? keyboardHeight - 180 : 10,
                 }}
               />
               {isProcessing && <Loader />}
@@ -576,7 +576,7 @@ const styles = StyleSheet.create({
   fields: {
     gap: 10,
     paddingHorizontal: 16,
-    flex: 1,
+    // flex: 1,
   },
   buttonsOuter: {
     paddingVertical: 10,

@@ -35,22 +35,23 @@ const ProjectsListScreen: FC<ProjectsListScreenProps> = ({ navigation }) => {
         <Label text={t('sites')} size={24} />
       </View>
       <Divider />
-      <FlatList
-        style={styles.projects}
-        contentContainerStyle={styles.content}
-        data={currentUser?.projects}
-        renderItem={({ item }) => (
-          <ProjectsListItem
-            project={item}
-            onPress={() => {
-              navigation.navigate('ProjectDetailScreen', {
-                projectId: item.id,
-                projectName: item.name,
-              });
-            }}
-          />
-        )}
-      />
+      <View style={{ flex: 1 }}>
+        <FlatList
+          style={styles.projects}
+          data={currentUser?.projects}
+          renderItem={({ item }) => (
+            <ProjectsListItem
+              project={item}
+              onPress={() => {
+                navigation.navigate('ProjectDetailScreen', {
+                  projectId: item.id,
+                  projectName: item.name,
+                });
+              }}
+            />
+          )}
+        />
+      </View>
     </View>
   );
 };
@@ -92,9 +93,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
   createButton: {
-    flex: 1,
-  },
-  content: {
     flex: 1,
   },
   icon: {

@@ -89,21 +89,22 @@ const ProjectDetailScreen: FC<ProjectDetailScreenProps> = ({
               />
             </View>
             <Divider />
-            <FlatList
-              data={project.reports}
-              renderItem={({ item }) => (
-                <ReportsListItem
-                  report={item}
-                  onPress={() => {
-                    navigation.navigate('ReportDetailScreen', {
-                      reportId: item.id,
-                      reportName: item.name,
-                    });
-                  }}
-                />
-              )}
-              contentContainerStyle={styles.reports}
-            />
+            <View style={{ flex: 1 }}>
+              <FlatList
+                data={project.reports}
+                renderItem={({ item }) => (
+                  <ReportsListItem
+                    report={item}
+                    onPress={() => {
+                      navigation.navigate('ReportDetailScreen', {
+                        reportId: item.id,
+                        reportName: item.name,
+                      });
+                    }}
+                  />
+                )}
+              />
+            </View>
           </View>
         )}
       </View>
@@ -195,9 +196,6 @@ const styles = StyleSheet.create({
   },
   reportsTitle: {
     fontSize: 20,
-  },
-  reports: {
-    flex: 1,
   },
 });
 
