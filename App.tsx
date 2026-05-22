@@ -14,6 +14,7 @@ import { Loader } from './components/shared/Loader';
 import { accessTokenStorageKey, refreshTokenStorageKey } from './constants';
 import { useApi } from './services/api/useApi';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import Orientation from 'react-native-orientation-locker';
 
 const App = () => {
   return (
@@ -37,6 +38,8 @@ const Root = () => {
   const api = useApi();
 
   useEffect(() => {
+    Orientation.lockToPortrait();
+
     (async () => {
       const refreshCreds = await Keychain.getGenericPassword({
         service: refreshTokenStorageKey,
@@ -61,6 +64,10 @@ const Root = () => {
 
       setIsLoading(false);
     })();
+
+    return () => {
+      Orientation.unlockAllOrientations();
+    };
   }, []);
 
   if (isLoading) {
