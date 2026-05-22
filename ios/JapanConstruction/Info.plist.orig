@@ -55,14 +55,14 @@
 	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-	</array>
-	<key>UISupportedInterfaceOrientations~ipad</key>
-	<array>
+<<<<<<< HEAD
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+=======
+		<string>UIInterfaceOrientationPortrait</string>
+>>>>>>> parent of cc9a80f (lock orientation)
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
