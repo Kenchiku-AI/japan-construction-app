@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View, FlatList } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ReportsStackNavigationParams } from '../../navigation/ReportsStack';
@@ -8,10 +8,12 @@ import { useTranslation } from 'react-i18next';
 import { Button, Divider } from '../shared';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { fontColor2 } from '../../constants';
-import { Report } from '../../types';
+import { ProjectStatus, Report } from '../../types';
 import { CreateReportModal } from './CreateReportModal';
 import { useReports } from './useReports';
 import { Loader } from '../shared/Loader';
+import { useApi } from '../../services/api/useApi';
+import { useAuth } from '../../context/auth/AuthContext';
 
 interface ReportsListScreenProps {
   navigation: NativeStackNavigationProp<
@@ -23,28 +25,31 @@ interface ReportsListScreenProps {
 const ReportsListScreen: FC<ReportsListScreenProps> = ({ navigation }) => {
   const { t } = useTranslation();
   const { top } = useSafeAreaInsets();
+  const { currentUser } = useAuth();
   const { reports, getReports, createReport, loading, error, setError } =
     useReports();
   const [showCreateReport, setShowCreateReport] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(() => {
-    getReports();
-  }, []);
+  const enableCreate = useMemo(() => {
+    return currentUser?.projects.some(p => p.status === ProjectStatus.Active);
+  }, [currentUser?.projects]);
 
   return (
     <>
       <View style={{ paddingTop: top, ...styles.container }}>
         <View style={styles.nav}>
           <Label text={t('reports')} size={24} numberOfLines={1} />
-          <Button
-            variant="tertiary"
-            label={t('create_report')}
-            onPress={() => {
-              setShowCreateReport(true);
-            }}
-            iconRight={() => <Plus size={30} />}
-          />
+          {enableCreate && (
+            <Button
+              variant="tertiary"
+              label={t('create_report')}
+              onPress={() => {
+                setShowCreateReport(true);
+              }}
+              iconRight={() => <Plus size={30} />}
+            />
+          )}
         </View>
         <Divider />
         <View style={{ flex: 1 }}>

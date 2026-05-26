@@ -9,6 +9,7 @@ export type Report = {
   photo_count: number;
   created_at: string;
   updated_at: string;
+  disabled?: boolean;
 };
 
 export type ReportField = {

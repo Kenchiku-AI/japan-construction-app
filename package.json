@@ -15,7 +15,7 @@
     "@candlefinance/faster-image": "^1.7.2",
     "@fugood/react-native-audio-pcm-stream": "^1.1.4",
     "@likashefqet/react-native-image-zoom": "^4.3.0",
-    "@react-native-async-storage/async-storage": "^3.0.2",
+    "@react-native-async-storage/async-storage": "^3.1.0",
     "@react-navigation/bottom-tabs": "^7.9.1",
     "@react-navigation/native": "^7.1.27",
     "@react-navigation/native-stack": "^7.9.1",
@@ -43,7 +43,7 @@
     "react-native-svg": "^15.15.3",
     "react-native-vision-camera": "^4.7.3",
     "react-native-worklets": "^0.8.3",
-    "whisper.rn": "github:0xarowana/whisper.rn#main"
+    "whisper.rn": "github:Kenchiku-AI/whisper.rn#main"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

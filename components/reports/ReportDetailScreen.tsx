@@ -336,12 +336,14 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
                 />
               </View>
             </View>
-            <TouchableOpacity
-              style={styles.menuButton}
-              onPress={() => setIsMenuShown(true)}
-            >
-              <Menu size={30} />
-            </TouchableOpacity>
+            {!report?.disabled && (
+              <TouchableOpacity
+                style={styles.menuButton}
+                onPress={() => setIsMenuShown(true)}
+              >
+                <Menu size={30} />
+              </TouchableOpacity>
+            )}
           </View>
           <Divider />
         </View>
@@ -362,6 +364,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
                         return newValues;
                       });
                     }}
+                    disabled={report?.disabled}
                   />
                 )}
                 ListHeaderComponent={() => {
@@ -403,70 +406,75 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
               />
               {isProcessing && <Loader />}
             </View>
-            <Divider style={styles.divider} light />
-            <View style={styles.buttonsOuter}>
-              <View style={styles.buttonsInner}>
-                <Animated.View style={photoButtonStyle}>
-                  <View style={styles.photoButtonContainer}>
-                    <Button
-                      style={styles.photoButton}
-                      variant="secondary"
-                      label={t('add_photo')}
-                      iconLeft={() => (
-                        <View style={{ marginRight: 8 }}>
-                          <CameraIcon />
-                        </View>
-                      )}
-                      onPress={async () => {
-                        const status = await Camera.requestCameraPermission();
+            {!report.disabled && (
+              <>
+                <Divider style={styles.divider} light />
+                <View style={styles.buttonsOuter}>
+                  <View style={styles.buttonsInner}>
+                    <Animated.View style={photoButtonStyle}>
+                      <View style={styles.photoButtonContainer}>
+                        <Button
+                          style={styles.photoButton}
+                          variant="secondary"
+                          label={t('add_photo')}
+                          iconLeft={() => (
+                            <View style={{ marginRight: 8 }}>
+                              <CameraIcon />
+                            </View>
+                          )}
+                          onPress={async () => {
+                            const status =
+                              await Camera.requestCameraPermission();
 
-                        if (status === 'granted') {
-                          navigation
-                            .getParent()
-                            ?.navigate('CameraScreen', { reportId });
-                        }
-                      }}
-                    />
-                  </View>
-                </Animated.View>
-                <Animated.View style={micPulseStyle}>
-                  <Button
-                    variant={isUpdateDisabled ? 'primary' : 'secondary'}
-                    style={{
-                      ...styles.speakButton,
-                      marginLeft: isSpeaking ? 0 : 5,
-                    }}
-                    label={t(
-                      isSpeaking
-                        ? 'done'
-                        : isProcessing
-                        ? 'processing'
-                        : 'start_speaking',
-                    )}
-                    iconLeft={() =>
-                      isSpeaking || isProcessing ? undefined : (
-                        <Microphone
-                          color={isUpdateDisabled ? 'white' : buttonColor}
+                            if (status === 'granted') {
+                              navigation
+                                .getParent()
+                                ?.navigate('CameraScreen', { reportId });
+                            }
+                          }}
                         />
-                      )
-                    }
-                    disabled={isProcessing || firstLoad}
-                    onPress={onPressSpeech}
-                  />
-                </Animated.View>
-              </View>
-              <Animated.View style={updateButtonStyle}>
-                <View style={styles.updateButtonContainer}>
-                  <Button
-                    label={t('save_changes')}
-                    onPress={onPressUpdate}
-                    disabled={isUpdateDisabled}
-                    style={styles.updateButton}
-                    iconLeft={() => <Check color="white" />}
-                  />
+                      </View>
+                    </Animated.View>
+                    <Animated.View style={micPulseStyle}>
+                      <Button
+                        variant={isUpdateDisabled ? 'primary' : 'secondary'}
+                        style={{
+                          ...styles.speakButton,
+                          marginLeft: isSpeaking ? 0 : 5,
+                        }}
+                        label={t(
+                          isSpeaking
+                            ? 'done'
+                            : isProcessing
+                            ? 'processing'
+                            : 'start_speaking',
+                        )}
+                        iconLeft={() =>
+                          isSpeaking || isProcessing ? undefined : (
+                            <Microphone
+                              color={isUpdateDisabled ? 'white' : buttonColor}
+                            />
+                          )
+                        }
+                        disabled={isProcessing || firstLoad}
+                        onPress={onPressSpeech}
+                      />
+                    </Animated.View>
+                  </View>
+                  <Animated.View style={updateButtonStyle}>
+                    <View style={styles.updateButtonContainer}>
+                      <Button
+                        label={t('save_changes')}
+                        onPress={onPressUpdate}
+                        disabled={isUpdateDisabled}
+                        style={styles.updateButton}
+                        iconLeft={() => <Check color="white" />}
+                      />
+                    </View>
+                  </Animated.View>
                 </View>
-              </Animated.View>
-            </View>
+              </>
+            )}
           </>
         ) : (
           <Loader fullScreen={false} />

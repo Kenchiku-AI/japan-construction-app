@@ -4,6 +4,7 @@ export type UserProject = {
   id: string;
   name: string;
   description: string;
+  status: ProjectStatus;
 };
 
 export type Project = {

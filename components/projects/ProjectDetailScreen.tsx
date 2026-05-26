@@ -14,6 +14,7 @@ import { useReports } from '../reports/useReports';
 import { useTranslation } from 'react-i18next';
 import { ReportsListItem } from '../reports/ReportsListScreen';
 import { EditProjectModal } from './EditProjectModal';
+import { ProjectStatus } from '../../types';
 
 interface ProjectDetailScreenProps {
   navigation: NativeStackNavigationProp<
@@ -65,12 +66,14 @@ const ProjectDetailScreen: FC<ProjectDetailScreenProps> = ({
                 />
               </View>
             </View>
-            <TouchableOpacity
-              style={styles.editButton}
-              onPress={() => setShowEdit(true)}
-            >
-              <Edit />
-            </TouchableOpacity>
+            {project?.status === ProjectStatus.Active && (
+              <TouchableOpacity
+                style={styles.editButton}
+                onPress={() => setShowEdit(true)}
+              >
+                <Edit />
+              </TouchableOpacity>
+            )}
           </View>
           <Divider />
         </View>
@@ -79,14 +82,16 @@ const ProjectDetailScreen: FC<ProjectDetailScreenProps> = ({
             <Label text={project.description} style={styles.description} />
             <View style={styles.reportsHeader}>
               <Label text={t('reports')} style={styles.reportsTitle} />
-              <Button
-                variant="tertiary"
-                label={t('create_report')}
-                onPress={() => {
-                  setShowCreateReport(true);
-                }}
-                iconRight={() => <Plus size={30} />}
-              />
+              {project.status === ProjectStatus.Active && (
+                <Button
+                  variant="tertiary"
+                  label={t('create_report')}
+                  onPress={() => {
+                    setShowCreateReport(true);
+                  }}
+                  iconRight={() => <Plus size={30} />}
+                />
+              )}
             </View>
             <Divider />
             <View style={{ flex: 1 }}>

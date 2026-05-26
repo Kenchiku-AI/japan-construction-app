@@ -35,7 +35,7 @@ const PermissionModal: FC<PermissionModalProps> = ({
         <Microphone size={80} color={fontColor2} />
       </View>
       <Button
-        label={isBlocked ? t('OK') : t('grant_permission')}
+        label={isBlocked ? t('OK') : t('continue')}
         onPress={async () => {
           if (isBlocked) {
             onClose();
