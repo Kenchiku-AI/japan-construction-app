@@ -5,6 +5,8 @@ export type Report = {
   parent_type: ReportParentType;
   parent_id: string;
   company_id?: string;
+  company_name?: string;
+  project_name?: string;
   fields: ReportField[];
   photo_count: number;
   created_at: string;

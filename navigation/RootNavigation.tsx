@@ -13,6 +13,7 @@ export type RootStackNavigationParams = {
   PhotoDetailScreen: {
     image: ReportImage;
     companyId: string;
+    disabled?: boolean;
   };
 };
 

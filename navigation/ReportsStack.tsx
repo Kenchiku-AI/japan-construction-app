@@ -13,6 +13,7 @@ export type ReportsStackNavigationParams = {
   ReportPhotosScreen: {
     reportId: string;
     companyId?: string;
+    disabled?: boolean;
   };
 };
 

@@ -37,6 +37,7 @@
   "create_report_template": "テンプレートを作成",
   "create_report_template_description": "テンプレートを作成するには、以下の項目を入力してください。各項目に入力した説明は、このテンプレートから新しい報告書を作成する際に自動入力を補助するために使用されます。",
   "create_template": "テンプレート作成",
+  "created": "{{date}}作成",
   "date": "日付",
   "day": "日",
   "delete": "削除",

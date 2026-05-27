@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useMemo, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View, FlatList } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ReportsStackNavigationParams } from '../../navigation/ReportsStack';
@@ -12,8 +12,9 @@ import { ProjectStatus, Report } from '../../types';
 import { CreateReportModal } from './CreateReportModal';
 import { useReports } from './useReports';
 import { Loader } from '../shared/Loader';
-import { useApi } from '../../services/api/useApi';
 import { useAuth } from '../../context/auth/AuthContext';
+import { useFocusEffect } from '@react-navigation/native';
+import { useDate } from '../../services/localization/useDate';
 
 interface ReportsListScreenProps {
   navigation: NativeStackNavigationProp<
@@ -30,6 +31,12 @@ const ReportsListScreen: FC<ReportsListScreenProps> = ({ navigation }) => {
     useReports();
   const [showCreateReport, setShowCreateReport] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      getReports();
+    }, []),
+  );
 
   const enableCreate = useMemo(() => {
     return currentUser?.projects.some(p => p.status === ProjectStatus.Active);
@@ -113,18 +120,40 @@ export const ReportsListItem: FC<ReportsListItemProps> = ({
   report,
   onPress,
 }) => {
+  const { formatDate } = useDate();
+  const { t } = useTranslation();
+
+  const subtitle = useMemo(() => {
+    const parts = [];
+
+    if (report.project_name) {
+      parts.push(report.project_name);
+    }
+
+    const date = formatDate(report.created_at);
+    parts.push(t('created', { date }));
+
+    return parts.join(' • ');
+  }, [report.project_name, report.created_at]);
+
   return (
     <>
       <TouchableOpacity style={styles.report} onPress={onPress}>
         <View style={styles.reportInfo}>
-          <View style={styles.icon}>
-            <Reports size={26} />
+          <Reports size={26} />
+          <View style={styles.labels}>
+            <Label
+              text={report.name}
+              style={styles.reportName}
+              numberOfLines={1}
+            />
+            <Label
+              text={subtitle}
+              style={styles.subtitle}
+              numberOfLines={1}
+              light
+            />
           </View>
-          <Label
-            text={report.name}
-            style={styles.reportName}
-            numberOfLines={1}
-          />
         </View>
         <View style={styles.chevron}>
           <ChevronRight />
@@ -159,9 +188,6 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
-  icon: {
-    marginLeft: -2,
-  },
   reports: {
     flex: 1,
     marginHorizontal: -16,
@@ -172,16 +198,22 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
-    paddingLeft: 16,
+    paddingLeft: 8,
   },
   reportInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: 8,
     flexShrink: 1,
+  },
+  labels: {
+    gap: 6,
   },
   reportName: {
     flexShrink: 1,
+  },
+  subtitle: {
+    fontSize: 12,
   },
   reportDivider: {
     backgroundColor: fontColor2,

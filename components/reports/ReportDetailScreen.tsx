@@ -379,6 +379,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
                           navigation.navigate('ReportPhotosScreen', {
                             reportId,
                             companyId: report.company_id,
+                            disabled: report.disabled,
                           });
                         }}
                       >

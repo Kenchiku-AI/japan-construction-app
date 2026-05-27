@@ -66,7 +66,7 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
   navigation,
   route,
 }) => {
-  const { image: initialImage, companyId } = route.params;
+  const { image: initialImage, companyId, disabled } = route.params;
   const { cacheImage } = useImageCache();
   const { tags: allTags, loading: tagsLoading } = useTags(companyId);
   const { t } = useTranslation();
@@ -328,9 +328,9 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
             placeholder={t('description')}
             value={description}
             onChange={d => setDescription(d)}
-            onClear={() => setDescription('')}
+            onClear={disabled ? undefined : () => setDescription('')}
             style={styles.description}
-            disabled={isProcessingShown}
+            disabled={isProcessingShown || disabled}
             multiline
           />
         </View>
@@ -341,20 +341,25 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
             {(image?.tags.length ?? 0) > 0 && (
               <View style={styles.tags}>
                 {image?.tags.map(t => (
-                  <View key={t.tag_id} style={styles.tag}>
+                  <View
+                    key={t.tag_id}
+                    style={{ ...styles.tag, paddingRight: disabled ? 25 : 15 }}
+                  >
                     <Label text={t.name} />
-                    <TouchableOpacity
-                      onPress={() => {
-                        setDeleteTag(t);
-                      }}
-                    >
-                      <Close size={24} color={errorColor1} />
-                    </TouchableOpacity>
+                    {!disabled && (
+                      <TouchableOpacity
+                        onPress={() => {
+                          setDeleteTag(t);
+                        }}
+                      >
+                        <Close size={24} color={errorColor1} />
+                      </TouchableOpacity>
+                    )}
                   </View>
                 ))}
               </View>
             )}
-            {availableTags.length > 0 && (
+            {availableTags.length > 0 && !disabled && (
               <Button
                 variant="tertiary"
                 label={t('add_tag')}
@@ -368,63 +373,69 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
           </>
         )}
       </ScrollView>
-      <Divider style={styles.divider} light />
-      <View style={{ paddingBottom: bottom + 20, ...styles.buttonsOuter }}>
-        <View style={styles.buttonsInner}>
-          <Animated.View style={deleteButtonStyle}>
-            <View style={styles.deleteButtonContainer}>
+      {!disabled && (
+        <>
+          <Divider style={styles.divider} light />
+          <View style={{ paddingBottom: bottom + 20, ...styles.buttonsOuter }}>
+            <View style={styles.buttonsInner}>
+              <Animated.View style={deleteButtonStyle}>
+                <View style={styles.deleteButtonContainer}>
+                  <Button
+                    style={styles.deleteButton}
+                    textStyle={styles.deleteButtonText}
+                    variant="secondary"
+                    label={t('delete')}
+                    iconLeft={() => <Trash color={errorColor1} />}
+                    onPress={() => setIsConfirmDeleteShown(true)}
+                  />
+                </View>
+              </Animated.View>
               <Button
-                style={styles.deleteButton}
-                textStyle={styles.deleteButtonText}
-                variant="secondary"
-                label={t('delete')}
-                iconLeft={() => <Trash color={errorColor1} />}
-                onPress={() => setIsConfirmDeleteShown(true)}
+                variant={isUpdateDisabled ? 'primary' : 'secondary'}
+                style={{
+                  ...styles.speakButton,
+                  marginLeft: isSpeaking ? 0 : 5,
+                }}
+                label={t(
+                  isSpeaking
+                    ? 'done'
+                    : isProcessing
+                    ? 'processing'
+                    : 'start_speaking',
+                )}
+                iconLeft={() =>
+                  isSpeaking || isProcessing ? undefined : (
+                    <Microphone
+                      color={isUpdateDisabled ? 'white' : buttonColor}
+                    />
+                  )
+                }
+                disabled={isProcessing || isProcessingShown || firstLoad}
+                onPress={onPressSpeech}
               />
             </View>
-          </Animated.View>
-          <Button
-            variant={isUpdateDisabled ? 'primary' : 'secondary'}
-            style={{
-              ...styles.speakButton,
-              marginLeft: isSpeaking ? 0 : 5,
-            }}
-            label={t(
-              isSpeaking
-                ? 'done'
-                : isProcessing
-                ? 'processing'
-                : 'start_speaking',
-            )}
-            iconLeft={() =>
-              isSpeaking || isProcessing ? undefined : (
-                <Microphone color={isUpdateDisabled ? 'white' : buttonColor} />
-              )
-            }
-            disabled={isProcessing || isProcessingShown || firstLoad}
-            onPress={onPressSpeech}
-          />
-        </View>
-        <Animated.View style={bottomButtonsStyle}>
-          <View style={styles.updateButtonContainer}>
-            <Animated.View style={updateButtonStyle}>
-              {(!isUpdateDisabled || isProcessing) && (
-                <Button
-                  label={t('save_changes')}
-                  disabled={isUpdateDisabled}
-                  onPress={onPressUpdate}
-                  iconLeft={() => <Check color="white" />}
-                />
-              )}
+            <Animated.View style={bottomButtonsStyle}>
+              <View style={styles.updateButtonContainer}>
+                <Animated.View style={updateButtonStyle}>
+                  {(!isUpdateDisabled || isProcessing) && (
+                    <Button
+                      label={t('save_changes')}
+                      disabled={isUpdateDisabled}
+                      onPress={onPressUpdate}
+                      iconLeft={() => <Check color="white" />}
+                    />
+                  )}
+                </Animated.View>
+              </View>
             </Animated.View>
+            {isSpeaking && (
+              <View style={styles.audioVisualizer}>
+                <AudioVisualizer />
+              </View>
+            )}
           </View>
-        </Animated.View>
-        {isSpeaking && (
-          <View style={styles.audioVisualizer}>
-            <AudioVisualizer />
-          </View>
-        )}
-      </View>
+        </>
+      )}
       <Animated.View
         style={[styles.speakingFade, speakingFadeStyle]}
         pointerEvents={isSpeaking ? undefined : 'none'}
@@ -556,7 +567,6 @@ const styles = StyleSheet.create({
     backgroundColor: bgColor2,
     height: 50,
     paddingLeft: 25,
-    paddingRight: 15,
     borderRadius: 25,
     gap: 10,
     alignItems: 'center',

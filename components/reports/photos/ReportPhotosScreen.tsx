@@ -38,7 +38,7 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
   route,
 }) => {
   const { t } = useTranslation();
-  const { reportId, companyId } = route.params;
+  const { reportId, companyId, disabled } = route.params;
   const { top } = useSafeAreaInsets();
   const {
     photosByReport,
@@ -124,7 +124,11 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
               onPress={() =>
                 navigation
                   .getParent()
-                  ?.navigate('PhotoDetailScreen', { image: item, companyId })
+                  ?.navigate('PhotoDetailScreen', {
+                    image: item,
+                    companyId,
+                    disabled,
+                  })
               }
             >
               <CachedImage image={item} width={columnWidth} />
@@ -133,26 +137,28 @@ const ReportPhotosScreen: FC<ReportPhotosScreenProps> = ({
         }}
         contentContainerStyle={styles.images}
       />
-      <View style={styles.buttons}>
-        <Divider light />
-        <Button
-          style={styles.button}
-          variant="secondary"
-          label={t('add_photo')}
-          iconLeft={() => (
-            <View style={{ marginRight: 8 }}>
-              <CameraIcon />
-            </View>
-          )}
-          onPress={async () => {
-            const status = await Camera.requestCameraPermission();
+      {!disabled && (
+        <View style={styles.buttons}>
+          <Divider light />
+          <Button
+            style={styles.button}
+            variant="secondary"
+            label={t('add_photo')}
+            iconLeft={() => (
+              <View style={{ marginRight: 8 }}>
+                <CameraIcon />
+              </View>
+            )}
+            onPress={async () => {
+              const status = await Camera.requestCameraPermission();
 
-            if (status === 'granted') {
-              navigation.getParent()?.navigate('CameraScreen', { reportId });
-            }
-          }}
-        />
-      </View>
+              if (status === 'granted') {
+                navigation.getParent()?.navigate('CameraScreen', { reportId });
+              }
+            }}
+          />
+        </View>
+      )}
       <ReportPhotosTagsMenu
         isOpen={isMenuShown}
         onClose={() => setIsMenuShown(false)}
