@@ -4,6 +4,7 @@ import Tabs from './Tabs';
 import CameraScreen from '../components/camera/CameraScreen';
 import { PhotoDetailScreen } from '../components/reports/photos/PhotoDetailScreen';
 import { ReportImage } from '../types';
+import AIPolicyScreen from '../components/aiPolicy/AIPolicyScreen';
 
 export type RootStackNavigationParams = {
   Tabs: undefined;
@@ -15,6 +16,7 @@ export type RootStackNavigationParams = {
     companyId: string;
     disabled?: boolean;
   };
+  AIPolicyScreen: undefined;
 };
 
 export const RootStack: FC = () => {
@@ -31,6 +33,13 @@ export const RootStack: FC = () => {
       <Stack.Screen name="Tabs" component={Tabs} />
       <Stack.Screen name="CameraScreen" component={CameraScreen} />
       <Stack.Screen name="PhotoDetailScreen" component={PhotoDetailScreen} />
+      <Stack.Screen
+        name="AIPolicyScreen"
+        component={AIPolicyScreen}
+        options={{
+          gestureEnabled: false,
+        }}
+      />
     </Stack.Navigator>
   );
 };

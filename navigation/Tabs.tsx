@@ -4,10 +4,16 @@ import {
   BottomTabBar,
   BottomTabBarProps,
 } from '@react-navigation/bottom-tabs';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import ProjectsStack from './ProjectsStack';
 import ReportsStack from './ReportsStack';
 import UserStack from './UserStack';
-import { buttonColor, fontColor2, fontFamily } from '../constants';
+import {
+  aiPolicyShownKey,
+  buttonColor,
+  fontColor2,
+  fontFamily,
+} from '../constants';
 import { View, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import {
@@ -23,6 +29,8 @@ import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { useSpeech } from '../context/speech/SpeechContext';
 import { useModal } from '../context/modal/ModalContext';
 import AudioVisualizer from '../components/shared/AudioVisualizer';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootNavigationParams } from './navigate';
 
 export type TabsNavigationParams = {
   ProjectsStack: undefined;
@@ -30,10 +38,27 @@ export type TabsNavigationParams = {
   UserStack: undefined;
 };
 
-const Tabs: FC = () => {
+interface TabsProps {
+  navigation: NativeStackNavigationProp<RootNavigationParams, 'Tabs'>;
+}
+
+const Tabs: FC<TabsProps> = ({ navigation }) => {
   const Tabs = createBottomTabNavigator<TabsNavigationParams>();
   const { t } = useTranslation();
   const { bottom } = useSafeAreaInsets();
+
+  useEffect(() => {
+    (async () => {
+      const aiPolicyShown = await AsyncStorage.getItem(aiPolicyShownKey);
+      if (aiPolicyShown) return;
+
+      AsyncStorage.setItem(aiPolicyShownKey, 'true');
+
+      setTimeout(() => {
+        navigation.navigate('AIPolicyScreen');
+      }, 500);
+    })();
+  }, []);
 
   return (
     <Tabs.Navigator
