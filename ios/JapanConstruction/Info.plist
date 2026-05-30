@@ -34,13 +34,11 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>このアプリは写真を撮るためにカメラへのアクセスが必要です。</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>このアプリは、レポート作成のために写真を撮影する目的でカメラを使用します。撮影された画像は安全なクラウドストレージにアップロードされ、AIによって説明やタグが生成され、記録および進捗管理に使用されます。</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>このアプリは、音声を書き起こすために音声を録音します。</string>
+	<string>このアプリは、音声を書き起こしてレポートを作成するために音声を録音する目的でマイクを使用します。録音された音声はテキスト化され、記録および進捗管理に使用されます。</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>このアプリはあなたの写真へのアクセスを必要とします。</string>
+	<string>このアプリは、レポート作成のために写真ライブラリから画像を選択する目的で写真へのアクセスを使用します。選択された画像は安全なクラウドストレージにアップロードされ、AIによって説明やタグが生成され、記録および進捗管理に使用されます。</string>
 	<key>RCTNewArchEnabled</key>
 	<true/>
 	<key>UIAppFonts</key>
