@@ -26,6 +26,7 @@ import {
   Project,
   UpdateProjectRequest,
   UpdateUserRequest,
+  UserRole,
 } from '../../types';
 import { baseUrl } from '../../constants';
 import { useAuth } from '../../context/auth/AuthContext';

@@ -1,5 +1,5 @@
-const host = 'api.kenchiku.ai';
-// const host = 'dev.api.kenchiku.ai';
+// const host = 'api.kenchiku.ai';
+const host = 'dev.api.kenchiku.ai';
 // real device (if LAN IP address changes, run ifconfig and look for inet 192.168.x.x value)
 // const host = '10.0.2.2:8000'; // simulator
 

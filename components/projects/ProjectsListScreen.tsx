@@ -1,21 +1,17 @@
-import { FC } from 'react';
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  FlatList,
-} from 'react-native';
+import { FC, useCallback } from 'react';
+import { StyleSheet, TouchableOpacity, View, FlatList } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ProjectsStackNavigationParams } from '../../navigation/ProjectsStack';
 import { ChevronRight, Hardhat } from '../shared/Icons';
 import { Label } from '../shared';
+import { useFocusEffect } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Divider } from '../shared';
 import { UserProject } from '../../types';
 import { useAuth } from '../../context/auth/AuthContext';
 import { fontColor2 } from '../../constants';
+import { useApi } from '../../services/api/useApi';
 
 interface ProjectsListScreenProps {
   navigation: NativeStackNavigationProp<
@@ -27,7 +23,21 @@ interface ProjectsListScreenProps {
 const ProjectsListScreen: FC<ProjectsListScreenProps> = ({ navigation }) => {
   const { t } = useTranslation();
   const { top } = useSafeAreaInsets();
-  const { currentUser } = useAuth();
+  const api = useApi();
+  const { currentUser, setCurrentUser } = useAuth();
+
+  useFocusEffect(
+    useCallback(() => {
+      (async () => {
+        try {
+          const user = await api.getCurrentUser();
+          setCurrentUser(user);
+        } catch (err) {
+          console.log('sign up error', err);
+        }
+      })();
+    }, []),
+  );
 
   return (
     <View style={{ paddingTop: top, ...styles.container }}>

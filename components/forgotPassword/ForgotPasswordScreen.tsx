@@ -30,8 +30,7 @@ const ForgotPasswordScreen: FC<ForgotPasswordScreenProps> = ({
   const [email, setEmail] = useState('');
   const { t } = useTranslation();
   const { top } = useSafeAreaInsets();
-  const { forgotPassword, modalContent, setModalContent, loading } =
-    useForgotPassword();
+  const { forgotPassword, loading } = useForgotPassword();
 
   return (
     <>
