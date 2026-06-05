@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     padding: 20,
     justifyContent: 'center',
     flexGrow: 1,
-    marginTop: -30,
+    marginBottom: 90,
   },
   fields: {
     marginVertical: 20,
