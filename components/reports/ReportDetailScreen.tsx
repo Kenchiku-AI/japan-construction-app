@@ -400,6 +400,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
                     </>
                   );
                 }}
+                keyboardDismissMode="interactive"
                 contentContainerStyle={{
                   ...styles.fields,
                   paddingBottom: isKeyboardVisible ? keyboardHeight - 180 : 10,
