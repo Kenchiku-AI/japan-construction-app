@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Project, UpdateProjectRequest } from '../../types';
 import { useApi } from '../../services/api/useApi';
 import { useTranslation } from 'react-i18next';

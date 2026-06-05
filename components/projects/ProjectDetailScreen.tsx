@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ProjectsStackNavigationParams } from '../../navigation/ProjectsStack';
 import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { ReportsListItem } from '../reports/ReportsListScreen';
 import { EditProjectModal } from './EditProjectModal';
 import { ProjectStatus } from '../../types';
+import { useAuth } from '../../context/auth/AuthContext';
 
 interface ProjectDetailScreenProps {
   navigation: NativeStackNavigationProp<
@@ -29,6 +30,7 @@ const ProjectDetailScreen: FC<ProjectDetailScreenProps> = ({
   route,
 }) => {
   const { top } = useSafeAreaInsets();
+  const { currentUser } = useAuth();
   const { t } = useTranslation();
   const { projectId, projectName } = route.params;
   const { project, getProject, updateProject, loading, error, setError } =
@@ -36,6 +38,9 @@ const ProjectDetailScreen: FC<ProjectDetailScreenProps> = ({
   const { createReport } = useReports();
   const [showCreateReport, setShowCreateReport] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
+  const canEditName =
+    currentUser?.company?.id === project?.company_id &&
+    currentUser?.role === 'manager';
 
   useEffect(() => {
     getProject();
@@ -66,7 +71,7 @@ const ProjectDetailScreen: FC<ProjectDetailScreenProps> = ({
                 />
               </View>
             </View>
-            {project?.status === ProjectStatus.Active && (
+            {canEditName && (
               <TouchableOpacity
                 style={styles.editButton}
                 onPress={() => setShowEdit(true)}

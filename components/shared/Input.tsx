@@ -132,9 +132,7 @@ export const Input: FC<InputProps> = ({
           }}
           style={{
             ...styles.input,
-            backgroundColor: error
-              ? '#FF636326'
-              : `#F2F2F3${disabled ? '54' : ''}`,
+            backgroundColor: error ? '#FF636326' : undefined,
             marginRight: secureTextEntry ? 30 : 0,
           }}
           autoCapitalize="none"
