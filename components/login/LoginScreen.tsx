@@ -44,6 +44,7 @@ const LoginScreen: FC<LoginScreenProps> = ({ navigation }) => {
       >
         <ScrollView
           keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="interactive"
           contentContainerStyle={styles.container}
         >
           <View style={styles.logo}>

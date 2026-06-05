@@ -65,6 +65,7 @@ const SignUpScreen: FC<SignUpScreenProps> = ({ navigation }) => {
         >
           <ScrollView
             keyboardShouldPersistTaps="handled"
+            keyboardDismissMode="interactive"
             contentContainerStyle={{
               ...styles.content,
               paddingBottom: top + 20,

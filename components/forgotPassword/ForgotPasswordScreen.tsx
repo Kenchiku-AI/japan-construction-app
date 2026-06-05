@@ -62,6 +62,7 @@ const ForgotPasswordScreen: FC<ForgotPasswordScreenProps> = ({
         >
           <ScrollView
             keyboardShouldPersistTaps="handled"
+            keyboardDismissMode="interactive"
             contentContainerStyle={{
               ...styles.content,
               paddingBottom: top + 20,

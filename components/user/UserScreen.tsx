@@ -51,7 +51,7 @@ const UserScreen: FC<UserScreenProps> = () => {
           />
         </View>
         <Divider />
-        <ScrollView>
+        <ScrollView keyboardDismissMode="interactive">
           <View style={styles.fields}>
             <Input
               placeholder={t('first_name')}

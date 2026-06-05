@@ -299,6 +299,7 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
         <Divider />
       </View>
       <ScrollView
+        keyboardDismissMode="interactive"
         contentContainerStyle={{
           ...styles.container,
           paddingBottom: isKeyboardVisible ? keyboardHeight - 80 : 16,
