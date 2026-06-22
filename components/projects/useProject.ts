@@ -37,9 +37,9 @@ export const useProject = (projectId: string) => {
       } catch (err) {
         const reason = getBillingErrorReason(err);
         if (reason) {
-          setError(`${reason}_description`);
+          setError(t(`${reason}_description`));
         } else {
-          setError('update_project_error');
+          setError(t('update_project_error'));
         }
       }
       setLoading(false);

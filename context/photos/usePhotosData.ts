@@ -137,7 +137,7 @@ export const usePhotosData = () => {
       } catch (err) {
         const reason = getBillingErrorReason(err);
         if (reason) {
-          setError(`${reason}_description`);
+          setError(t(`${reason}_description`));
         } else {
           setError(t('upload_image_error'));
         }

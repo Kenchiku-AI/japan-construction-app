@@ -48,7 +48,7 @@ export const useReport = (reportId: string) => {
       } catch (err) {
         const reason = getBillingErrorReason(err);
         if (reason) {
-          setError(`${reason}_description`);
+          setError(t(`${reason}_description`));
         } else {
           setError(t('update_report_error'));
         }
@@ -68,7 +68,7 @@ export const useReport = (reportId: string) => {
     } catch (err) {
       const reason = getBillingErrorReason(err);
       if (reason) {
-        setError(`${reason}_description`);
+        setError(t(`${reason}_description`));
       } else {
         setError(t('delete_report_error'));
       }

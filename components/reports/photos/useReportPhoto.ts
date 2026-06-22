@@ -30,7 +30,7 @@ export const useReportPhoto = (initialImage: ReportImage) => {
     } catch (err) {
       const reason = getBillingErrorReason(err);
       if (reason) {
-        setError(`${reason}_description`);
+        setError(t(`${reason}_description`));
       } else {
         setError(t('delete_photo_error'));
       }
@@ -58,7 +58,7 @@ export const useReportPhoto = (initialImage: ReportImage) => {
       } catch (err) {
         const reason = getBillingErrorReason(err);
         if (reason) {
-          setError(`${reason}_description`);
+          setError(t(`${reason}_description`));
         } else {
           setError(t('update_photo_error'));
         }

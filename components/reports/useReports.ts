@@ -4,12 +4,14 @@ import { useCallback, useState } from 'react';
 import { useApi } from '../../services/api/useApi';
 import { CreateReportRequest, Report } from '../../types';
 import { useBilling } from '../../services/billing/useBilling';
+import { useTranslation } from 'react-i18next';
 
 export const useReports = () => {
   const [loading, setLoading] = useState(false);
   const [reports, setReports] = useState<Report[]>();
   const [error, setError] = useState('');
   const { getBillingErrorReason } = useBilling();
+  const { t } = useTranslation();
   const api = useApi();
 
   const getReports = useCallback(async () => {
@@ -37,9 +39,9 @@ export const useReports = () => {
       } catch (err) {
         const reason = getBillingErrorReason(err);
         if (reason) {
-          setError(`${reason}_description`);
+          setError(t(`${reason}_description`));
         } else {
-          setError('create_report_error');
+          setError(t('create_report_error'));
         }
       } finally {
         setLoading(false);
