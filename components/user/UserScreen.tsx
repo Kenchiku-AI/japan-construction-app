@@ -9,6 +9,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ConfirmLogoutModal } from './ConfirmLogoutModal';
 import { useUser } from './useUser';
 import { Loader } from '../shared/Loader';
+import LineLinkCodeButton from './LineLinkCodeButton';
 
 interface UserScreenProps {
   navigation: NativeStackNavigationProp<
@@ -37,6 +38,8 @@ const UserScreen: FC<UserScreenProps> = () => {
     );
   }, [firstName, lastName, email, currentUser]);
 
+  console.log("current User", currentUser);
+
   return (
     <>
       <View style={{ paddingTop: top, ...styles.container }}>
@@ -51,6 +54,14 @@ const UserScreen: FC<UserScreenProps> = () => {
           />
         </View>
         <Divider />
+        {!!currentUser?.line_link_code && (
+          <>
+            <View style={styles.lineLinkCode}>
+              <LineLinkCodeButton code={currentUser.line_link_code} />
+            </View>
+            <Divider light />
+          </>
+        )}
         <ScrollView keyboardDismissMode="interactive">
           <View style={styles.fields}>
             <Input
@@ -128,6 +139,11 @@ const styles = StyleSheet.create({
   button: {
     marginVertical: 10,
   },
+  lineLinkCode: {
+    height: 60,
+    justifyContent: "center",
+    alignItems: "flex-start"
+  }
 });
 
 export default UserScreen;
