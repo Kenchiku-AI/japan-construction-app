@@ -31,6 +31,15 @@ import {
 import { baseUrl } from '../../constants';
 import { useAuth } from '../../context/auth/AuthContext';
 
+let isRefreshing = false;
+
+type QueueItem = {
+  resolve: () => void;
+  reject: (err: any) => void;
+};
+
+let requestQueue: QueueItem[] = [];
+
 export const useApi = () => {
   const { refreshTokenRef, updateAccessToken, logout } = useAuth();
 
@@ -42,11 +51,13 @@ export const useApi = () => {
     try {
       return await handleResponse(callback);
     } catch (err) {
-      if ((err as AxiosError).status === 401) {
+      const axiosErr = err as AxiosError;
+
+      if (axiosErr.status === 401 || axiosErr.response?.status === 401) {
         return await refresh(callback);
-      } else {
-        throw err;
       }
+
+      throw err;
     }
   };
 
@@ -60,14 +71,42 @@ export const useApi = () => {
   const refresh = useCallback(
     async <T>(callback: () => Promise<AxiosResponse<T>>) => {
       try {
+        if (isRefreshing) {
+          return new Promise<T>((resolve, reject) => {
+            requestQueue.push({
+              resolve: async () => {
+                try {
+                  const res = await handleResponse(callback);
+                  resolve(res);
+                } catch (err) {
+                  reject(err);
+                }
+              },
+              reject,
+            });
+          });
+        }
+
+        isRefreshing = true;
+
         const url = '/auth/refresh';
         const request = { refresh_token: refreshTokenRef.current };
         const { data } = await axios.post<RefreshResponse>(url, request);
         await updateAccessToken(data.access_token);
 
+        const queue = [...requestQueue];
+        requestQueue = [];
+        queue.forEach((item) => item.resolve());
+
         return await handleResponse(callback);
       } catch (err) {
+        const queue = [...requestQueue];
+        requestQueue = [];
+
+        queue.forEach((item) => item.reject(err));
         await logout();
+      } finally {
+        isRefreshing = false;
       }
     },
     [refreshTokenRef, updateAccessToken, logout],
