@@ -19,42 +19,6 @@ export const useReportPhotos = (reportId: string) => {
     photosRef.current = photosByReport[reportId];
   }, [photosByReport[reportId]]);
 
-  const addTags = (imageId: string, tags: ReportImageTag[]) => {
-    const index = photosRef.current.findIndex(p => p.id === imageId);
-    if (index === -1) return;
-
-    let photo = { ...photosRef.current[index] };
-    photo.status = 'completed';
-
-    tags.forEach(tag => {
-      const hasTag = photo.tags.some(t => t.tag_id === tag.tag_id);
-
-      if (!hasTag) {
-        photo.tags.push(tag);
-      }
-    });
-
-    const newPhotos = [...photosRef.current];
-    newPhotos[index] = photo;
-    setPhotos(newPhotos);
-  };
-
-  const addDescription = (imageId: string, description?: string) => {
-    if (!description) return;
-
-    const index = photosRef.current.findIndex(p => p.id === imageId);
-    if (index === -1) return;
-
-    let photo = { ...photosRef.current[index] };
-    photo.description = `${
-      photo.description ? `${photo.description} ` : ''
-    }${description}`;
-
-    const newPhotos = [...photosRef.current];
-    newPhotos[index] = photo;
-    setPhotos(newPhotos);
-  };
-
   const getPhotos = useCallback(async () => {
     setLoading(true);
 
@@ -86,8 +50,6 @@ export const useReportPhotos = (reportId: string) => {
 
   return {
     getPhotos,
-    addTags,
-    addDescription,
     loading,
     error,
     setError,

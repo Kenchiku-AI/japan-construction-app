@@ -3,6 +3,7 @@ import { ReportImage } from '../../types';
 import { useApi } from '../../services/api/useApi';
 import ImageResizer from 'react-native-image-resizer';
 import { useTranslation } from 'react-i18next';
+import { useBilling } from '../../services/billing/useBilling';
 
 export const usePhotosData = () => {
   const [photosByReport, setPhotosByReport] = useState<
@@ -15,6 +16,7 @@ export const usePhotosData = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const pollingRef = useRef<Record<string, number>>({});
+  const { getBillingErrorReason } = useBilling();
   const api = useApi();
   const { t } = useTranslation();
 
@@ -133,7 +135,12 @@ export const usePhotosData = () => {
 
         pollImageStatus(reportId, createResponse.id);
       } catch (err) {
-        setError(t('upload_image_error'));
+        const reason = getBillingErrorReason(err);
+        if (reason) {
+          setError(`${reason}_description`);
+        } else {
+          setError(t('upload_image_error'));
+        }
       }
 
       setLoading(false);

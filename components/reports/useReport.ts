@@ -6,6 +6,7 @@ import { Report, ReportRequest } from '../../types';
 import { useApi } from '../../services/api/useApi';
 import { navigateBack } from '../../navigation/navigate';
 import { usePhotos } from '../../context/photos/PhotosContext';
+import { useBilling } from '../../services/billing/useBilling';
 
 export const useReport = (reportId: string) => {
   const [loading, setLoading] = useState(false);
@@ -13,6 +14,7 @@ export const useReport = (reportId: string) => {
   const [error, setError] = useState('');
   const [report, setReport] = useState<Report>();
   const { t } = useTranslation();
+  const { getBillingErrorReason } = useBilling();
   const api = useApi();
 
   const getReport = useCallback(async () => {
@@ -44,7 +46,12 @@ export const useReport = (reportId: string) => {
           updatePhotoCount(response.photo_count, reportId);
         }
       } catch (err) {
-        setError(t('update_report_error'));
+        const reason = getBillingErrorReason(err);
+        if (reason) {
+          setError(`${reason}_description`);
+        } else {
+          setError(t('update_report_error'));
+        }
       }
 
       setLoading(false);

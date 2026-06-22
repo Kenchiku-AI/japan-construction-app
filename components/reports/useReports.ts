@@ -3,11 +3,13 @@
 import { useCallback, useState } from 'react';
 import { useApi } from '../../services/api/useApi';
 import { CreateReportRequest, Report } from '../../types';
+import { useBilling } from '../../services/billing/useBilling';
 
 export const useReports = () => {
   const [loading, setLoading] = useState(false);
   const [reports, setReports] = useState<Report[]>();
   const [error, setError] = useState('');
+  const { getBillingErrorReason } = useBilling();
   const api = useApi();
 
   const getReports = useCallback(async () => {
@@ -33,7 +35,12 @@ export const useReports = () => {
 
         return response;
       } catch (err) {
-        setError('create_report_error');
+        const reason = getBillingErrorReason(err);
+        if (reason) {
+          setError(`${reason}_description`);
+        } else {
+          setError('create_report_error');
+        }
       } finally {
         setLoading(false);
       }

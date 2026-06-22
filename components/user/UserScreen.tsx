@@ -38,8 +38,6 @@ const UserScreen: FC<UserScreenProps> = () => {
     );
   }, [firstName, lastName, email, currentUser]);
 
-  console.log("current User", currentUser);
-
   return (
     <>
       <View style={{ paddingTop: top, ...styles.container }}>

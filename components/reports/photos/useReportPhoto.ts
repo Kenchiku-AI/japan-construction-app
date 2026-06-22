@@ -5,12 +5,14 @@ import { useTranslation } from 'react-i18next';
 import { ReportImage } from '../../../types';
 import { useApi } from '../../../services/api/useApi';
 import { usePhotos } from '../../../context/photos/PhotosContext';
+import { useBilling } from '../../../services/billing/useBilling';
 
 export const useReportPhoto = (initialImage: ReportImage) => {
   const { photosByReport, deletePhoto, replacePhoto } = usePhotos();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { t } = useTranslation();
+  const { getBillingErrorReason } = useBilling();
   const api = useApi();
 
   const image = useMemo(() => {
@@ -26,7 +28,12 @@ export const useReportPhoto = (initialImage: ReportImage) => {
       await api.deleteImage(initialImage.report_id, initialImage.id);
       deletePhoto(initialImage);
     } catch (err) {
-      setError(t('delete_photo_error'));
+      const reason = getBillingErrorReason(err);
+      if (reason) {
+        setError(`${reason}_description`);
+      } else {
+        setError(t('delete_photo_error'));
+      }
     }
 
     setLoading(false);
@@ -49,7 +56,12 @@ export const useReportPhoto = (initialImage: ReportImage) => {
           replacePhoto(response);
         }
       } catch (err) {
-        setError(t('update_photo_error'));
+        const reason = getBillingErrorReason(err);
+        if (reason) {
+          setError(`${reason}_description`);
+        } else {
+          setError(t('update_photo_error'));
+        }
       }
 
       setLoading(false);
