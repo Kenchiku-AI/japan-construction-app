@@ -2,12 +2,14 @@ import { useCallback, useState } from 'react';
 import { Project, UpdateProjectRequest } from '../../types';
 import { useApi } from '../../services/api/useApi';
 import { useTranslation } from 'react-i18next';
+import { useBilling } from '../../services/billing/useBilling';
 
 export const useProject = (projectId: string) => {
   const [loading, setLoading] = useState(true);
   const [project, setProject] = useState<Project>();
   const [error, setError] = useState('');
   const { t } = useTranslation();
+  const { getBillingErrorReason } = useBilling();
   const api = useApi();
 
   const getProject = useCallback(async () => {
@@ -33,7 +35,12 @@ export const useProject = (projectId: string) => {
         const response = await api.updateProject(project.id, request);
         setProject(response);
       } catch (err) {
-        setError('update_project_error');
+        const reason = getBillingErrorReason(err);
+        if (reason) {
+          setError(`${reason}_description`);
+        } else {
+          setError('update_project_error');
+        }
       }
       setLoading(false);
     },

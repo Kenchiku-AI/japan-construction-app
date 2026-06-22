@@ -66,7 +66,12 @@ export const useReport = (reportId: string) => {
       await api.deleteReport(reportId);
       navigateBack();
     } catch (err) {
-      setError(t('delete_report_error'));
+      const reason = getBillingErrorReason(err);
+      if (reason) {
+        setError(`${reason}_description`);
+      } else {
+        setError(t('delete_report_error'));
+      }
     }
 
     setLoading(false);
