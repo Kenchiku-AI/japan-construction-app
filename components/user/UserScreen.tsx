@@ -47,7 +47,7 @@ const UserScreen: FC<UserScreenProps> = () => {
           <Button
             variant="tertiary"
             label={t('logout')}
-            iconLeft={() => <Logout />}
+            iconRight={() => <Logout />}
             onPress={() => {
               setShowConfirmLogout(true);
             }}
