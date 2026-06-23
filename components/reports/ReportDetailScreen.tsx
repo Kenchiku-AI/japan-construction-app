@@ -23,7 +23,7 @@ import { check, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import { CommonActions, RouteProp } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
-import { ReportFieldValues } from '../../types';
+import { ReportFieldValues, ReportStatus } from '../../types';
 import { useReport } from './useReport';
 import { Button, Divider, Input, Label } from '../shared';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -34,8 +34,10 @@ import {
   ChevronLeft,
   ChevronRight,
   Image,
+  Lock,
   Menu,
   Microphone,
+  Unlock,
 } from '../shared/Icons';
 import { useSpeech } from '../../context/speech/SpeechContext';
 import PermissionModal from './PermissionModal';
@@ -48,6 +50,7 @@ import { useModal } from '../../context/modal/ModalContext';
 import { usePhotos } from '../../context/photos/PhotosContext';
 import { EditReportNameModal } from './EditReportNameModal';
 import { useKeyboard } from '../../services/keyboard/useKeyboard';
+import ConfirmStatusModal from './ConfirmStatusModal';
 
 interface ReportDetailScreenProps {
   navigation: NativeStackNavigationProp<
@@ -96,6 +99,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
   const [isNameModalShown, setIsNameModalShown] = useState(false);
   const [isMenuShown, setIsMenuShown] = useState(false);
   const [enableMicPulse, setEnableMicPulse] = useState(false);
+  const [isStatusModalShown, setIsStatusModalShown] = useState(false);
   const speakingFadeOpacity = useSharedValue(0);
   const updateButtonHeight = useSharedValue(0);
   const updateButtonOpacity = useSharedValue(0);
@@ -103,6 +107,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
   const photoButtonOpacity = useSharedValue(1);
   const isLoaded = fieldValues !== undefined;
   const micPulse = useSharedValue(1);
+  const isReportEditable = !report?.disabled && report?.status !== ReportStatus.Closed
 
   const speakingFadeStyle = useAnimatedStyle(() => ({
     opacity: speakingFadeOpacity.value,
@@ -336,7 +341,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
                 />
               </View>
             </View>
-            {!report?.disabled && (
+            {isReportEditable && (
               <TouchableOpacity
                 style={styles.menuButton}
                 onPress={() => setIsMenuShown(true)}
@@ -364,7 +369,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
                         return newValues;
                       });
                     }}
-                    disabled={report?.disabled}
+                    disabled={!isReportEditable}
                   />
                 )}
                 ListHeaderComponent={() => {
@@ -373,13 +378,29 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
 
                   return (
                     <>
+                      <View style={styles.statusRow}>
+                        <View style={styles.statusLabels}>
+                          <Label text={`${t('status')}:`} light />
+                          <Label text={t(report.status)} />
+                        </View>
+                        {!report.disabled && (
+                          <Button
+                            variant="tertiary"
+                            label={report.status === "open" ? t("close") : t("open")}
+                            iconLeft={() => (report.status === "open" ? <Lock /> : <Unlock />)}
+                            onPress={() => setIsStatusModalShown(true)}
+                            style={{ height: "auto" }}
+                          />
+                        )}
+                      </View>
+                      <Divider light />
                       <TouchableOpacity
                         style={styles.photos}
                         onPress={() => {
                           navigation.navigate('ReportPhotosScreen', {
                             reportId,
                             companyId: report.company_id,
-                            disabled: report.disabled,
+                            disabled: !isReportEditable,
                           });
                         }}
                       >
@@ -392,7 +413,8 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
                             style={styles.photosCount}
                           />
                         </View>
-                        <View style={styles.chevron}>
+                        <View style={styles.viewAllPhotos}>
+                          <Label text={t('view_all')} size={12} light />
                           <ChevronRight />
                         </View>
                       </TouchableOpacity>
@@ -408,7 +430,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
               />
               {isProcessing && <Loader />}
             </View>
-            {!report.disabled && (
+            {isReportEditable && (
               <>
                 <Divider style={styles.divider} light />
                 <View style={styles.buttonsOuter}>
@@ -448,8 +470,8 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
                           isSpeaking
                             ? 'done'
                             : isProcessing
-                            ? 'processing'
-                            : 'start_speaking',
+                              ? 'processing'
+                              : 'start_speaking',
                         )}
                         iconLeft={() =>
                           isSpeaking || isProcessing ? undefined : (
@@ -548,6 +570,16 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
         isOpen={!!uploadError}
         onClose={() => setUploadError('')}
       />
+      <ConfirmStatusModal
+        currentStatus={report?.status ?? ReportStatus.Open}
+        isOpen={isStatusModalShown}
+        onClose={() => setIsStatusModalShown(false)}
+        onConfirm={() => {
+          setIsStatusModalShown(false);
+          const status = report?.status === ReportStatus.Open ? ReportStatus.Closed : ReportStatus.Open;
+          updateReport({ status });
+        }}
+      />
     </>
   );
 };
@@ -626,7 +658,7 @@ const styles = StyleSheet.create({
     zIndex: 200,
   },
   photos: {
-    height: 70,
+    height: 60,
     justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
@@ -641,12 +673,27 @@ const styles = StyleSheet.create({
   photosCount: {
     flexShrink: 1,
   },
-  chevron: {
+  viewAllPhotos: {
+    flexDirection: "row",
     marginHorizontal: 12,
+    alignItems: "center",
+    gap: 12
   },
   divider: {
     marginHorizontal: 16,
   },
+  statusRow: {
+    height: 60,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexDirection: 'row',
+    paddingHorizontal: 16
+  },
+  statusLabels: {
+    flexDirection: "row",
+    alignItems: 'center',
+    gap: 8
+  }
 });
 
 export default ReportDetailScreen;

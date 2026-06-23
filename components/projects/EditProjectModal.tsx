@@ -45,7 +45,7 @@ export const EditProjectModal: FC<EditProjectModalProps> = ({
           }}
         />
         <Input
-          placeholder={t('name')}
+          placeholder={t('description')}
           value={description}
           onChange={d => {
             setDescription(d);

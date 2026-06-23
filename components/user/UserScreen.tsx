@@ -10,6 +10,7 @@ import { ConfirmLogoutModal } from './ConfirmLogoutModal';
 import { useUser } from './useUser';
 import { Loader } from '../shared/Loader';
 import LineLinkCodeButton from './LineLinkCodeButton';
+import { Logout } from '../shared/Icons';
 
 interface UserScreenProps {
   navigation: NativeStackNavigationProp<
@@ -46,6 +47,7 @@ const UserScreen: FC<UserScreenProps> = () => {
           <Button
             variant="tertiary"
             label={t('logout')}
+            iconLeft={() => <Logout />}
             onPress={() => {
               setShowConfirmLogout(true);
             }}

@@ -84,7 +84,10 @@ const ProjectDetailScreen: FC<ProjectDetailScreenProps> = ({
         </View>
         {project && (
           <View style={styles.project}>
-            <Label text={project.description} style={styles.description} />
+            <View style={styles.descriptionContainer}>
+              <Label text={project.description} light size={16} style={styles.description} />
+            </View>
+            <Divider light />
             <View style={styles.reportsHeader}>
               <Label text={t('reports')} style={styles.reportsTitle} />
               {project.status === ProjectStatus.Active && (
@@ -192,9 +195,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     flex: 1,
   },
+  descriptionContainer: {
+    minHeight: 60,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    justifyContent: "center"
+  },
   description: {
-    marginTop: 10,
-    lineHeight: 30,
+    lineHeight: 24,
   },
   reportsHeader: {
     height: 50,
