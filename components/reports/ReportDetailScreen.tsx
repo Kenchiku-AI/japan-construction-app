@@ -51,6 +51,7 @@ import { usePhotos } from '../../context/photos/PhotosContext';
 import { EditReportNameModal } from './EditReportNameModal';
 import { useKeyboard } from '../../services/keyboard/useKeyboard';
 import ConfirmStatusModal from './ConfirmStatusModal';
+import { useAuth } from '../../context/auth/AuthContext';
 
 interface ReportDetailScreenProps {
   navigation: NativeStackNavigationProp<
@@ -92,6 +93,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
     setError: setUploadError,
   } = usePhotos();
   const { t } = useTranslation();
+  const { currentUser } = useAuth();
   const [fieldValues, setFieldValues] = useState<ReportFieldValues>();
   const [permissionStatus, setPermissionStatus] = useState('');
   const [isUnsavedChangesShown, setIsUnsavedChangesShown] = useState(false);
@@ -383,7 +385,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
                           <Label text={`${t('status')}:`} light />
                           <Label text={t(report.status)} />
                         </View>
-                        {!report.disabled && (
+                        {(!report.disabled && currentUser?.role === "manager") && (
                           <Button
                             variant="tertiary"
                             label={report.status === "open" ? t("close") : t("open")}
