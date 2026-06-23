@@ -81,7 +81,7 @@ const ProjectsListItem: FC<ProjectsListItemProps> = ({ project, onPress }) => {
           </View>
           <Label text={project.name} />
         </View>
-        <ChevronRight />
+        <ChevronRight size={18} />
       </TouchableOpacity>
       <Divider light />
     </>

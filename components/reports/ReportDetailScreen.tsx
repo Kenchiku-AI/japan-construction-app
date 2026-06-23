@@ -27,14 +27,14 @@ import { ReportFieldValues, ReportStatus } from '../../types';
 import { useReport } from './useReport';
 import { Button, Divider, Input, Label } from '../shared';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { bgColor1, buttonColor, fontColor1, micUsedKey } from '../../constants';
+import { bgColor1, buttonColor, fontColor1, fontColor2, micUsedKey } from '../../constants';
 import {
   Camera as CameraIcon,
   Check,
   ChevronLeft,
   ChevronRight,
+  Close,
   Image,
-  Lock,
   Menu,
   Microphone,
   Unlock,
@@ -381,22 +381,26 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
 
                   return (
                     <>
-                      <View style={styles.statusRow}>
-                        <View style={styles.statusLabels}>
-                          <Label text={`${t('status')}:`} light />
-                          <Label text={t(report.status)} />
-                        </View>
-                        {(!report.disabled && currentUser?.role === "manager") && (
-                          <Button
-                            variant="tertiary"
-                            label={report.status === "open" ? t("close") : t("open")}
-                            iconLeft={() => (report.status === "open" ? <Lock /> : <Unlock />)}
-                            onPress={() => setIsStatusModalShown(true)}
-                            style={{ height: "auto" }}
-                          />
-                        )}
-                      </View>
-                      <Divider light />
+                      {report.status === ReportStatus.Closed && (
+                        <>
+                          <View style={styles.statusRow}>
+                            <View style={styles.statusLabel}>
+                              <Close color={fontColor2} size={24} />
+                              <Label text={t('report_closed')} size={14} light />
+                            </View>
+                            {(!report.disabled && currentUser?.role === "manager") && (
+                              <Button
+                                variant="tertiary"
+                                label={t("close")}
+                                iconLeft={() => <Unlock />}
+                                onPress={() => setIsStatusModalShown(true)}
+                                style={{ height: "auto" }}
+                              />
+                            )}
+                          </View>
+                          <Divider light />
+                        </>
+                      )}
                       <TouchableOpacity
                         style={styles.photos}
                         onPress={() => {
@@ -417,8 +421,8 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
                           />
                         </View>
                         <View style={styles.viewAllPhotos}>
-                          <Label text={t('view_all')} size={12} light />
-                          <ChevronRight />
+                          <Label text={t('view_all')} size={14} light />
+                          <ChevronRight size={18} />
                         </View>
                       </TouchableOpacity>
                       <Divider light />
@@ -537,6 +541,9 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
         onClose={() => setIsMenuShown(false)}
         onChangeName={() => {
           setIsNameModalShown(true);
+        }}
+        onCloseReport={() => {
+          setIsStatusModalShown(true);
         }}
         onDelete={() => {
           setIsDeleteModalShown(true);
@@ -680,7 +687,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginHorizontal: 12,
     alignItems: "center",
-    gap: 12
+    gap: 8
   },
   divider: {
     marginHorizontal: 16,
@@ -690,12 +697,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
-    paddingHorizontal: 16
+    paddingLeft: 12,
+    paddingRight: 16
   },
-  statusLabels: {
+  statusLabel: {
     flexDirection: "row",
     alignItems: 'center',
-    gap: 8
+    gap: 2
   }
 });
 

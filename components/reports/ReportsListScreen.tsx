@@ -156,7 +156,7 @@ export const ReportsListItem: FC<ReportsListItemProps> = ({
           </View>
         </View>
         <View style={styles.chevron}>
-          <ChevronRight />
+          <ChevronRight size={18} />
         </View>
       </TouchableOpacity>
       <Divider light />

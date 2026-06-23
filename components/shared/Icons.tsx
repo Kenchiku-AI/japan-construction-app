@@ -46,8 +46,8 @@ export const Check = ({ size, color }: IconProps) => (
   </Svg>
 );
 
-export const ChevronRight = ({ color }: IconProps) => (
-  <Svg width="8" height="14" viewBox="0 0 8 14" fill="none">
+export const ChevronRight = ({ color, size }: IconProps) => (
+  <Svg width={size ?? 8} height={size ?? 14} viewBox="0 0 8 14" fill="none">
     <Path
       d="M1 13L7 7L1 1"
       stroke={color ?? fontColor2}

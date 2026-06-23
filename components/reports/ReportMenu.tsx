@@ -10,13 +10,14 @@ import Animated, {
 import { bgColor1, buttonColor, errorColor1, fontColor1 } from '../../constants';
 import { Divider, Label } from '../shared';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Edit, Trash } from '../shared/Icons';
+import { Edit, Lock, Trash } from '../shared/Icons';
 
 interface ReportMenuProps {
   isOpen: boolean;
   onClose: () => void;
   onDelete: () => void;
   onChangeName: () => void;
+  onCloseReport: () => void;
 }
 
 export const ReportMenu: FC<ReportMenuProps> = ({
@@ -24,6 +25,7 @@ export const ReportMenu: FC<ReportMenuProps> = ({
   onClose,
   onDelete,
   onChangeName,
+  onCloseReport,
 }) => {
   const opacity = useSharedValue(0);
   const { setIsModalShown, fadeOpacity } = useModal();
@@ -69,6 +71,11 @@ export const ReportMenu: FC<ReportMenuProps> = ({
         <TouchableOpacity style={styles.button} onPress={onChangeName}>
           <Edit color={fontColor1} />
           <Label text={t('change_report_name')} style={{ color: buttonColor, marginLeft: 4 }} />
+        </TouchableOpacity>
+        <Divider light />
+        <TouchableOpacity style={styles.button} onPress={onCloseReport}>
+          <Lock />
+          <Label text={t('close_report')} style={{ color: buttonColor, marginLeft: 4 }} />
         </TouchableOpacity>
         <Divider light />
         <TouchableOpacity style={styles.button} onPress={onDelete}>
