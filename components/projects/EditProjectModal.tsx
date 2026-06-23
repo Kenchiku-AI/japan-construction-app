@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Input, Modal } from '../shared';
 import { StyleSheet, View } from 'react-native';
 import { UpdateProjectRequest, Project } from '../../types';
+import { ScrollView } from 'react-native-gesture-handler';
 
 interface EditProjectModalProps {
   project: Project;
@@ -36,38 +37,40 @@ export const EditProjectModal: FC<EditProjectModalProps> = ({
         onClose();
       }}
     >
-      <View style={styles.fields}>
-        <Input
-          placeholder={t('name')}
-          value={name}
-          onChange={n => {
-            setName(n);
+      <ScrollView keyboardDismissMode="interactive">
+        <View style={styles.fields}>
+          <Input
+            placeholder={t('name')}
+            value={name}
+            onChange={n => {
+              setName(n);
+            }}
+          />
+          <Input
+            placeholder={t('description')}
+            value={description}
+            onChange={d => {
+              setDescription(d);
+            }}
+            style={styles.description}
+            multiline
+          />
+        </View>
+        <Button
+          label={t('update')}
+          onPress={() => {
+            onSubmit({
+              name,
+              description,
+            });
           }}
+          disabled={
+            !name ||
+            !description ||
+            (name === project.name && description === project.description)
+          }
         />
-        <Input
-          placeholder={t('description')}
-          value={description}
-          onChange={d => {
-            setDescription(d);
-          }}
-          style={styles.description}
-          multiline
-        />
-      </View>
-      <Button
-        label={t('update')}
-        onPress={() => {
-          onSubmit({
-            name,
-            description,
-          });
-        }}
-        disabled={
-          !name ||
-          !description ||
-          (name === project.name && description === project.description)
-        }
-      />
+      </ScrollView>
     </Modal>
   );
 };
@@ -81,6 +84,6 @@ const styles = StyleSheet.create({
   description: {
     height: 120,
     justifyContent: 'flex-start',
-    paddingTop: 8,
+    paddingTop: 12,
   },
 });
