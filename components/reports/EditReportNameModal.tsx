@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Input, Modal } from '../shared';
-import { StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { UpdateProjectRequest } from '../../types';
 
 interface EditReportNameModalProps {
@@ -34,24 +34,26 @@ export const EditReportNameModal: FC<EditReportNameModalProps> = ({
         onClose();
       }}
     >
-      <View style={styles.fields}>
-        <Input
-          placeholder={t('name')}
-          value={name}
-          onChange={n => {
-            setName(n);
+      <ScrollView keyboardDismissMode="interactive">
+        <View style={styles.fields}>
+          <Input
+            placeholder={t('name')}
+            value={name}
+            onChange={n => {
+              setName(n);
+            }}
+          />
+        </View>
+        <Button
+          label={t('update')}
+          onPress={() => {
+            onSubmit({
+              name,
+            });
           }}
+          disabled={!name || name === reportName}
         />
-      </View>
-      <Button
-        label={t('update')}
-        onPress={() => {
-          onSubmit({
-            name,
-          });
-        }}
-        disabled={!name || name === reportName}
-      />
+      </ScrollView>
     </Modal>
   );
 };

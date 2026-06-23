@@ -1,7 +1,7 @@
 import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Input, Modal } from '../shared';
-import { StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { useReportTemplates } from './useReportTemplates';
 import { Select } from '../shared/Select';
 import { CreateReportRequest, ReportParentType } from '../../types';
@@ -104,46 +104,48 @@ export const CreateReportModal: FC<CreateReportModalProps> = ({
         onClose();
       }}
     >
-      <View style={styles.fields}>
-        <Select
-          options={templateOptions}
-          value={templateId}
-          setValue={setTemplateId}
-          placeholder={t('report_template')}
-          style={styles.select}
-        />
-        <Animated.View style={[projectStyle]}>
+      <ScrollView keyboardDismissMode="interactive">
+        <View style={styles.fields}>
           <Select
-            options={projectOptions}
-            value={projectId}
-            setValue={setProjectId}
-            placeholder={t('project')}
+            options={templateOptions}
+            value={templateId}
+            setValue={setTemplateId}
+            placeholder={t('report_template')}
             style={styles.select}
-            disabled={!projectOptions.length}
           />
-        </Animated.View>
-        <Input
-          placeholder={t('name')}
-          value={name}
-          onChange={n => {
-            setName(n);
-            hasEditedName.current = true;
-          }}
-        />
-      </View>
-      <Button
-        label={t('create')}
-        onPress={() => {
-          onSubmit({
-            template_id: templateId,
-            parent_id: parentId!,
-            name,
-          });
+          <Animated.View style={[projectStyle]}>
+            <Select
+              options={projectOptions}
+              value={projectId}
+              setValue={setProjectId}
+              placeholder={t('project')}
+              style={styles.select}
+              disabled={!projectOptions.length}
+            />
+          </Animated.View>
+          <Input
+            placeholder={t('name')}
+            value={name}
+            onChange={n => {
+              setName(n);
+              hasEditedName.current = true;
+            }}
+          />
+        </View>
+        <Button
+          label={t('create')}
+          onPress={() => {
+            onSubmit({
+              template_id: templateId,
+              parent_id: parentId!,
+              name,
+            });
 
-          reset();
-        }}
-        disabled={!templateId || !parentId || !name}
-      />
+            reset();
+          }}
+          disabled={!templateId || !parentId || !name}
+        />
+      </ScrollView>
     </Modal>
   );
 };
