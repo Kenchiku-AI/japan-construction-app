@@ -84,10 +84,14 @@ const ProjectDetailScreen: FC<ProjectDetailScreenProps> = ({
         </View>
         {project && (
           <View style={styles.project}>
-            <View style={styles.descriptionContainer}>
-              <Label text={project.description} light size={16} style={styles.description} />
-            </View>
-            <Divider light />
+            {!!project.description && (
+              <>
+                <View style={styles.descriptionContainer}>
+                  <Label text={project.description} light size={16} style={styles.description} />
+                </View>
+                <Divider light />
+              </>
+            )}
             <View style={styles.reportsHeader}>
               <Label text={t('reports')} style={styles.reportsTitle} />
               {project.status === ProjectStatus.Active && (
