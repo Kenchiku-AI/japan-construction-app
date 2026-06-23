@@ -1,4 +1,4 @@
-import { FC, RefObject, useCallback, useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import {
   Platform,
   StyleSheet,
