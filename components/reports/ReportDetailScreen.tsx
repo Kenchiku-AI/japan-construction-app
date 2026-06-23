@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Animated, {
   useSharedValue,
@@ -109,7 +109,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
   const photoButtonOpacity = useSharedValue(1);
   const isLoaded = fieldValues !== undefined;
   const micPulse = useSharedValue(1);
-  const isReportEditable = !report?.disabled && report?.status !== ReportStatus.Closed
+  const isReportEditable = !report?.disabled && report?.status !== ReportStatus.Closed;
 
   const speakingFadeStyle = useAnimatedStyle(() => ({
     opacity: speakingFadeOpacity.value,
@@ -359,6 +359,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
             <View style={{ flex: 1 }}>
               <FlatList
                 data={report.fields}
+                keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
                   <Input
                     key={item.id}

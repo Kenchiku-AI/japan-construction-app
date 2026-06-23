@@ -201,7 +201,7 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
     );
   }, [isUpdateDisabled, isSpeaking]);
 
-  useEffect(() => {}, [description]);
+  useEffect(() => { }, [description]);
 
   useEffect(() => {
     zoomOpacity.value = withTiming(isZoomShown ? 1 : 0, {
@@ -401,8 +401,8 @@ export const PhotoDetailScreen: FC<PhotoDetailScreenProps> = ({
                   isSpeaking
                     ? 'done'
                     : isProcessing
-                    ? 'processing'
-                    : 'start_speaking',
+                      ? 'processing'
+                      : 'start_speaking',
                 )}
                 iconLeft={() =>
                   isSpeaking || isProcessing ? undefined : (
@@ -609,7 +609,7 @@ const styles = StyleSheet.create({
   description: {
     height: 120,
     justifyContent: 'flex-start',
-    paddingTop: 8,
+    paddingTop: 16,
   },
   buttonsOuter: {
     paddingVertical: 10,

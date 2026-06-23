@@ -7,9 +7,10 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { bgColor1, errorColor1 } from '../../constants';
+import { bgColor1, buttonColor, errorColor1, fontColor1 } from '../../constants';
 import { Divider, Label } from '../shared';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Edit, Trash } from '../shared/Icons';
 
 interface ReportMenuProps {
   isOpen: boolean;
@@ -66,10 +67,12 @@ export const ReportMenu: FC<ReportMenuProps> = ({
       <View style={{ ...styles.triangle, marginTop: top + 36 }} />
       <View style={styles.content}>
         <TouchableOpacity style={styles.button} onPress={onChangeName}>
-          <Label text={t('change_report_name')} />
+          <Edit color={fontColor1} />
+          <Label text={t('change_report_name')} style={{ color: buttonColor, marginLeft: 4 }} />
         </TouchableOpacity>
         <Divider light />
         <TouchableOpacity style={styles.button} onPress={onDelete}>
+          <Trash />
           <Label text={t('delete_report')} style={{ color: errorColor1 }} />
         </TouchableOpacity>
       </View>
@@ -109,8 +112,11 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
   },
   button: {
+    flexDirection: "row",
+    width: "100%",
     height: 70,
+    gap: 10,
     paddingHorizontal: 16,
-    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

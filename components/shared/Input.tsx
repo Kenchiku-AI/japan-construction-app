@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from 'react';
+import { FC, RefObject, useCallback, useEffect, useRef, useState } from 'react';
 import {
   Platform,
   StyleSheet,
@@ -91,11 +91,6 @@ export const Input: FC<InputProps> = ({
   return (
     <View
       style={styles.container}
-      onTouchStart={e => {
-        if (e.nativeEvent.locationY > 30) {
-          inputRef.current?.focus();
-        }
-      }}
     >
       {placeholder && (
         <Animated.View style={[styles.label, labelStyle]}>
@@ -133,6 +128,9 @@ export const Input: FC<InputProps> = ({
           style={{
             ...styles.input,
             backgroundColor: error ? '#FF636326' : undefined,
+            height: style?.height ?? 60,
+            paddingTop: 18,
+            marginTop: -18,
             marginRight: secureTextEntry ? 30 : 0,
           }}
           autoCapitalize="none"
