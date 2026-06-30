@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
   labels: {
-    gap: 6,
+    gap: 2,
   },
   reportName: {
     flexShrink: 1,
