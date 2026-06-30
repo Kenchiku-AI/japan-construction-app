@@ -14,6 +14,7 @@ export type Project = {
   reports?: Report[];
   status: ProjectStatus;
   company_id: string;
+  line_link_code: string;
 };
 
 export enum ProjectStatus {

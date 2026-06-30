@@ -16,6 +16,7 @@ import { ReportsListItem } from '../reports/ReportsListScreen';
 import { EditProjectModal } from './EditProjectModal';
 import { ProjectStatus } from '../../types';
 import { useAuth } from '../../context/auth/AuthContext';
+import LineLinkCodeButton from '../user/LineLinkCodeButton';
 
 interface ProjectDetailScreenProps {
   navigation: NativeStackNavigationProp<
@@ -92,6 +93,10 @@ const ProjectDetailScreen: FC<ProjectDetailScreenProps> = ({
                 <Divider light />
               </>
             )}
+            <View style={styles.lineLinkCode}>
+              <LineLinkCodeButton code={project.line_link_code} />
+            </View>
+            <Divider light />
             <View style={styles.reportsHeader}>
               <Label text={t('reports')} style={styles.reportsTitle} />
               {project.status === ProjectStatus.Active && (
@@ -199,10 +204,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     flex: 1,
   },
+  lineLinkCode: {
+    height: 60,
+    justifyContent: "center",
+    alignItems: "flex-start"
+  },
   descriptionContainer: {
     minHeight: 60,
     paddingVertical: 14,
-    paddingHorizontal: 16,
+    // paddingHorizontal: 16,
     justifyContent: "center"
   },
   description: {
