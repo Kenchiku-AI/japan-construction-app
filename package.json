@@ -9,7 +9,8 @@
     "start": "react-native start",
     "test": "jest",
     "release:ios": "./scripts/release-ios.sh",
-    "release:android": "./scripts/release-android.sh"
+    "release:android": "./scripts/release-android.sh",
+    "postinstall": "bash scripts/precompile-metal.sh"
   },
   "dependencies": {
     "@candlefinance/faster-image": "^1.7.2",
