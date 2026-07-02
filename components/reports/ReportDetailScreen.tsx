@@ -27,7 +27,7 @@ import { ReportFieldValues, ReportStatus } from '../../types';
 import { useReport } from './useReport';
 import { Button, Divider, Input, Label } from '../shared';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { bgColor1, buttonColor, fontColor1, fontColor2, micUsedKey } from '../../constants';
+import { bgColor1, buttonColor, errorColor1, fontColor1, fontColor2, micUsedKey } from '../../constants';
 import {
   Camera as CameraIcon,
   Check,
@@ -52,6 +52,7 @@ import { EditReportNameModal } from './EditReportNameModal';
 import { useKeyboard } from '../../services/keyboard/useKeyboard';
 import ConfirmStatusModal from './ConfirmStatusModal';
 import { useAuth } from '../../context/auth/AuthContext';
+import { Text } from 'react-native-svg';
 
 interface ReportDetailScreenProps {
   navigation: NativeStackNavigationProp<
@@ -471,6 +472,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
                         variant={isUpdateDisabled ? 'primary' : 'secondary'}
                         style={{
                           ...styles.speakButton,
+                          backgroundColor: isSpeaking ? errorColor1 : (isUpdateDisabled ? buttonColor : "white"),
                           marginLeft: isSpeaking ? 0 : 5,
                         }}
                         label={t(
@@ -516,6 +518,11 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
         style={[styles.speakingFade, speakingFadeStyle]}
         pointerEvents={isSpeaking ? undefined : 'none'}
       />
+      {isSpeaking && (
+        <View style={styles.speechDescriptionContainer}>
+          <Label text={t("speech_description")} style={styles.speechDescription} />
+        </View>
+      )}
       <PermissionModal
         isOpen={!!permissionStatus}
         onClose={() => setPermissionStatus('')}
@@ -704,6 +711,23 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: 'center',
     gap: 2
+  },
+  speechDescriptionContainer: {
+    position: 'absolute',
+    right: 16,
+    left: 16,
+    bottom: 90,
+    zIndex: 300,
+    backgroundColor: "#00000080",
+    borderRadius: 30,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    elevation: 5,
+  },
+  speechDescription: {
+    color: "white",
   }
 });
 
