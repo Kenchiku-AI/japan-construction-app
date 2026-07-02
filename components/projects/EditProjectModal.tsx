@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Input, Modal } from '../shared';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import { UpdateProjectRequest, Project } from '../../types';
 import { ScrollView } from 'react-native-gesture-handler';
 
@@ -84,6 +84,6 @@ const styles = StyleSheet.create({
   description: {
     height: 120,
     justifyContent: 'flex-start',
-    paddingTop: 12,
+    paddingTop: Platform.OS === "android" ? 0 : 12,
   },
 });
