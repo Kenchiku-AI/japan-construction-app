@@ -27,6 +27,7 @@ import { Eye, EyeOff } from './Icons';
 
 const TOP_PADDING = 18;
 const ANIMATION_CONFIG = { duration: 75 };
+const isAndroid = Platform.OS === 'android';
 
 interface InputProps {
   value?: string;
@@ -129,9 +130,11 @@ export const Input: FC<InputProps> = ({
             ...styles.input,
             backgroundColor: error ? '#FF636326' : undefined,
             height: style?.height ?? 60,
-            paddingTop: 18,
-            marginTop: -18,
+            paddingTop: isAndroid ? undefined : 18,
+            marginTop: isAndroid ? undefined : -18,
             marginRight: secureTextEntry ? 30 : 0,
+            includeFontPadding: false,
+            verticalAlign: isAndroid && multiline ? "top" : undefined
           }}
           autoCapitalize="none"
           autoFocus={false}
@@ -176,8 +179,8 @@ const styles = StyleSheet.create({
   },
   label: {
     position: 'absolute',
-    top: 8,
-    left: Platform.OS === 'android' ? 20 : 16,
+    top: isAndroid ? -2 : 8,
+    left: isAndroid ? 20 : 16,
     zIndex: 1,
   },
   clear: {

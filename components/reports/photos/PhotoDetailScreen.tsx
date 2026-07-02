@@ -609,7 +609,7 @@ const styles = StyleSheet.create({
   description: {
     height: 120,
     justifyContent: 'flex-start',
-    paddingTop: 12,
+    paddingTop: Platform.OS === "android" ? 0 : 12,
   },
   buttonsOuter: {
     paddingVertical: 10,
