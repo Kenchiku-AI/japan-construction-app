@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { StyleSheet, Text, View, ViewStyle } from 'react-native';
-import { fontColor1, fontColor2, fontFamily } from '../../constants';
+import { fontColor1, fontColor2, fontColor3, fontFamily } from '../../constants';
 
 interface HeadingProps {
   title: string;
@@ -20,14 +20,14 @@ export const Heading: FC<HeadingProps> = ({ title, subtitle, style }) => {
 const styles = StyleSheet.create({
   title: {
     fontFamily,
-    fontSize: 32,
+    fontSize: 28,
     color: fontColor1,
-    marginBottom: 10,
+    marginBottom: 6,
   },
   subtitle: {
     fontFamily,
-    fontSize: 14,
-    color: fontColor2,
-    lineHeight: 20,
+    fontSize: 18,
+    color: fontColor3,
+    lineHeight: 24,
   },
 });

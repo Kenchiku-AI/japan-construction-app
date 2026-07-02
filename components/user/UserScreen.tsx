@@ -142,7 +142,8 @@ const styles = StyleSheet.create({
   lineLinkCode: {
     height: 60,
     justifyContent: "center",
-    alignItems: "flex-start"
+    alignItems: "flex-start",
+    paddingHorizontal: 10
   }
 });
 

@@ -6,7 +6,7 @@ import { Loader } from '../shared/Loader';
 import { Button, Divider, Label, Modal } from '../shared';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ChevronLeft, Edit, Plus } from '../shared/Icons';
-import { buttonColor } from '../../constants';
+import { buttonColor, fontColor3 } from '../../constants';
 import { RouteProp } from '@react-navigation/native';
 import { useProject } from './useProject';
 import { CreateReportModal } from '../reports/CreateReportModal';
@@ -88,7 +88,7 @@ const ProjectDetailScreen: FC<ProjectDetailScreenProps> = ({
             {!!project.description && (
               <>
                 <View style={styles.descriptionContainer}>
-                  <Label text={project.description} light size={16} style={styles.description} />
+                  <Label text={project.description} size={16} style={styles.description} />
                 </View>
                 <Divider light />
               </>
@@ -208,16 +208,17 @@ const styles = StyleSheet.create({
     height: 60,
     justifyContent: "center",
     alignItems: "flex-start",
-    // paddingHorizontal: 16,
+    paddingHorizontal: 10,
   },
   descriptionContainer: {
     minHeight: 60,
-    paddingVertical: 14,
+    padding: 10,
     // paddingHorizontal: 16,
     justifyContent: "center"
   },
   description: {
     lineHeight: 24,
+    color: fontColor3
   },
   reportsHeader: {
     height: 50,

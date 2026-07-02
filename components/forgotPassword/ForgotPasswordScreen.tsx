@@ -49,7 +49,9 @@ const ForgotPasswordScreen: FC<ForgotPasswordScreenProps> = ({
                   navigation.goBack();
                 }}
               >
-                <ChevronLeft color={buttonColor} size={20} />
+                <View style={{ paddingTop: 4 }}>
+                  <ChevronLeft color={buttonColor} size={20} />
+                </View>
                 <Label text={t('login')} style={{ color: buttonColor }} />
               </TouchableOpacity>
             </View>
@@ -118,6 +120,7 @@ const styles = StyleSheet.create({
     paddingRight: 18,
     flexDirection: 'row',
     gap: 10,
+    alignItems: "center"
   },
   content: {
     padding: 20,
