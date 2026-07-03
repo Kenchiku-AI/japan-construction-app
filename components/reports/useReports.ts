@@ -21,7 +21,7 @@ export const useReports = () => {
       const response = await api.getReports();
       setReports(response);
     } catch (err) {
-      setError('get_reports_error');
+      setError(t('get_reports_error'));
     }
 
     setLoading(false);
