@@ -23,11 +23,13 @@ const styles = StyleSheet.create({
     fontSize: 28,
     color: fontColor1,
     marginBottom: 6,
+    includeFontPadding: false
   },
   subtitle: {
     fontFamily,
     fontSize: 18,
     color: fontColor3,
     lineHeight: 24,
+    includeFontPadding: false
   },
 });

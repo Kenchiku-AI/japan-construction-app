@@ -14,7 +14,7 @@ import {
   fontColor2,
   fontFamily,
 } from '../constants';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Platform } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import {
   Hardhat,
@@ -160,6 +160,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     fontFamily,
+    includeFontPadding: false
   },
   unfocused: {
     width: 40,

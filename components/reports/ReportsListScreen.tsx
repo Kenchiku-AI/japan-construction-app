@@ -211,9 +211,11 @@ const styles = StyleSheet.create({
   },
   reportName: {
     flexShrink: 1,
+    includeFontPadding: false
   },
   subtitle: {
     fontSize: 12,
+    includeFontPadding: false,
   },
   reportDivider: {
     backgroundColor: fontColor2,

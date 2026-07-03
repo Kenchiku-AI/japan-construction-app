@@ -104,6 +104,7 @@ const styles = StyleSheet.create({
     fontFamily,
     fontSize: 16,
     lineHeight: 22,
+    includeFontPadding: false
   },
   content: {
     paddingVertical: 16,

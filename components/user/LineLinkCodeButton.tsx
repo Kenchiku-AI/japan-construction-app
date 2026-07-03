@@ -42,7 +42,6 @@ const LineLinkCodeButton: FC<LineLinkCodeButtonProps> = ({ code }) => {
               console.log("Error copying code:", err);
             }
           }}
-          style={{ height: 40 }}
         />
       )}
     </>
