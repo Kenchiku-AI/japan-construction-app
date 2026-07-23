@@ -52,7 +52,6 @@ import { EditReportNameModal } from './EditReportNameModal';
 import { useKeyboard } from '../../services/keyboard/useKeyboard';
 import ConfirmStatusModal from './ConfirmStatusModal';
 import { useAuth } from '../../context/auth/AuthContext';
-import { Text } from 'react-native-svg';
 
 interface ReportDetailScreenProps {
   navigation: NativeStackNavigationProp<

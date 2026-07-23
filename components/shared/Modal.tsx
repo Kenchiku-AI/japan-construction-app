@@ -18,6 +18,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { bgColor1 } from '../../constants';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useKeyboard } from '../../services/keyboard/useKeyboard';
 
 interface ModalProps {
   title?: string;
@@ -41,15 +42,18 @@ export const Modal: FC<ModalProps> = ({
   tabsHidden,
 }) => {
   const opacity = useSharedValue(0);
+  const keyboardPadding = useSharedValue(0);
   const { setIsModalShown, fadeOpacity } = useModal();
   const { top, bottom } = useSafeAreaInsets();
   const { height: screenHeight } = useWindowDimensions();
   const maxHeight = screenHeight - top - bottom - (tabsHidden ? 0 : 80) - 20;
   const marginTop = tabsHidden ? 0 : top;
   const { t } = useTranslation();
+  const { isKeyboardVisible, keyboardHeight } = useKeyboard();
 
   const style = useAnimatedStyle(() => ({
     opacity: opacity.value,
+    paddingBottom: keyboardPadding.value
   }));
 
   useEffect(() => {
@@ -69,6 +73,11 @@ export const Modal: FC<ModalProps> = ({
     opacity.value = withTiming(newOpacity, { duration });
     fadeOpacity.value = withTiming(newOpacity, { duration });
   }, [isOpen]);
+
+  useEffect(() => {
+    const padding = isKeyboardVisible ? keyboardHeight / 2 : 0;
+    keyboardPadding.value = withTiming(padding, { duration: 200 });
+  }, [isKeyboardVisible, keyboardHeight]);
 
   const onPressClose = () => {
     setIsModalShown(false);
