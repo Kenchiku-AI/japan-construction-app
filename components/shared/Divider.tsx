@@ -11,8 +11,9 @@ export const Divider: FC<DividerProps> = ({ light, style }) => {
   return (
     <View
       style={{
+        backgroundColor: fontColor1,
         height: light ? 0.5 : 1,
-        backgroundColor: light ? fontColor2 : fontColor1,
+        opacity: light ? 0.2 : 1,
         ...style,
       }}
     />

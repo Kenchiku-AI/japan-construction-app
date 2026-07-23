@@ -93,10 +93,7 @@ const ProjectDetailScreen: FC<ProjectDetailScreenProps> = ({
                 <Divider light />
               </>
             )}
-            <View style={styles.lineLinkCode}>
-              <LineLinkCodeButton code={project.line_link_code} />
-            </View>
-            <Divider light />
+            {/* <Divider light /> */}
             <View style={styles.reportsHeader}>
               <Label text={t('reports')} style={styles.reportsTitle} />
               {project.status === ProjectStatus.Active && (
@@ -211,14 +208,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   descriptionContainer: {
-    minHeight: 60,
     padding: 10,
-    // paddingHorizontal: 16,
-    justifyContent: "center"
+    justifyContent: "center",
+    minHeight: 60
   },
   description: {
     lineHeight: 24,
-    color: fontColor3
+    color: fontColor3,
   },
   reportsHeader: {
     height: 50,
