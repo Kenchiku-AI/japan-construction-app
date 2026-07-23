@@ -154,7 +154,7 @@
   "share_report_template_error_description": "テンプレートの共有中にエラーが発生しました。",
   "send_email": "メールを送信",
   "settings": "設定",
-  "speech_description": "自然に話すだけで、内容に応じて項目が自動入力されます。",
+  "speech_description": "話した内容に応じて、項目が自動入力されます。",
   "start_speaking": "話し始める",
   "status": "ステータス",
   "subscription_past_due": "お支払いが期限を過ぎています",

@@ -519,7 +519,7 @@ const ReportDetailScreen: FC<ReportDetailScreenProps> = ({
       />
       {isSpeaking && (
         <View style={styles.speechDescriptionContainer}>
-          <Label text={t("speech_description")} style={styles.speechDescription} />
+          <Label text={t("speech_description")} size={15} style={styles.speechDescription} />
         </View>
       )}
       <PermissionModal
@@ -727,6 +727,8 @@ const styles = StyleSheet.create({
   },
   speechDescription: {
     color: "white",
+    textAlign: "center",
+    lineHeight: 20
   }
 });
 
