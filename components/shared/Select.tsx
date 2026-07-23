@@ -6,7 +6,7 @@ import React, {
   useState,
   useMemo,
 } from 'react';
-import { View, StyleSheet, ViewStyle, Keyboard } from 'react-native';
+import { View, StyleSheet, ViewStyle, Keyboard, Platform } from 'react-native';
 import DropdownPicker from 'react-native-dropdown-picker';
 import { bgColor2, fontColor1, fontColor2, fontFamily } from '../../constants';
 import Animated, {
@@ -61,7 +61,8 @@ export const Select: FC<SelectProps> = ({
   useEffect(() => {
     const showLabel = value && placeholder;
 
-    paddingTop.value = withTiming(showLabel ? 18 : 0, { duration: 75 });
+    const paddingTopValue = Platform.OS === "ios" ? 18 : 13;
+    paddingTop.value = withTiming(showLabel ? paddingTopValue : 0, { duration: 75 });
     opacity.value = withTiming(showLabel ? 1 : 0, { duration: 75 });
   }, [value, placeholder]);
 
@@ -157,7 +158,7 @@ const styles = StyleSheet.create({
   },
   label: {
     position: 'absolute',
-    top: 8,
+    top: Platform.OS === "ios" ? 8 : -2,
     left: 20,
   },
 });
