@@ -75,9 +75,9 @@ export const Modal: FC<ModalProps> = ({
   }, [isOpen]);
 
   useEffect(() => {
-    const padding = isKeyboardVisible ? keyboardHeight / 2 : 0;
+    const padding = isKeyboardVisible ? keyboardHeight - marginTop - bottom : 0;
     keyboardPadding.value = withTiming(padding, { duration: 200 });
-  }, [isKeyboardVisible, keyboardHeight]);
+  }, [isKeyboardVisible, keyboardHeight, bottom]);
 
   const onPressClose = () => {
     setIsModalShown(false);
