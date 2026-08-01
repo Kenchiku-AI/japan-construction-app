@@ -4,13 +4,8 @@ import { Button, Input, Modal } from '../shared';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useReportTemplates } from './useReportTemplates';
 import { Select } from '../shared/Select';
-import { CreateReportRequest, ReportParentType } from '../../types';
+import { CreateReportRequest, ProjectStatus } from '../../types';
 import { useAuth } from '../../context/auth/AuthContext';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-} from 'react-native-reanimated';
 
 interface CreateReportModalProps {
   isOpen: boolean;
@@ -31,30 +26,15 @@ export const CreateReportModal: FC<CreateReportModalProps> = ({
   const [templateId, setTemplateId] = useState('');
   const [projectId, setProjectId] = useState('');
   const [name, setName] = useState('');
-  const [requireProjectId, setRequireProjectId] = useState(false);
   const hasEditedName = useRef(false);
-  const projectHeight = useSharedValue(0);
-  const projectOpacity = useSharedValue(0);
 
   useEffect(() => {
     const template = reportTemplates?.find(t => t.id === templateId);
     if (!template) return;
 
     if (!name || !hasEditedName.current) {
-      const today = new Date();
       setName(template.name);
       hasEditedName.current = false;
-    }
-
-    if (forceProjectId) return;
-
-    const isProjectType = template.parent_type === ReportParentType.Project;
-    setRequireProjectId(isProjectType);
-    projectHeight.value = withTiming(isProjectType ? 70 : 0, { duration: 75 });
-    projectOpacity.value = withTiming(isProjectType ? 1 : 0, { duration: 75 });
-
-    if (!isProjectType) {
-      setProjectId('');
     }
   }, [templateId, reportTemplates]);
 
@@ -62,9 +42,6 @@ export const CreateReportModal: FC<CreateReportModalProps> = ({
     setName('');
     setTemplateId('');
     setProjectId('');
-    setRequireProjectId(false);
-    projectHeight.value = 0;
-    projectOpacity.value = 0;
     hasEditedName.current = false;
   };
 
@@ -73,26 +50,19 @@ export const CreateReportModal: FC<CreateReportModalProps> = ({
     return reportTemplates.map(t => ({ label: t.name, value: t.id }));
   }, [reportTemplates]);
 
-  const projectOptions = useMemo(
-    () =>
-      currentUser?.projects?.map(p => ({
+  const projectOptions = useMemo(() => {
+    const projects = currentUser?.projects
+      .filter((p) => p.status === ProjectStatus.Active)
+      .map((p) => ({
         label: p.name,
         value: p.id,
-      })) ?? [],
-    [currentUser?.projects],
-  );
+      })) ?? [];
 
-  const projectStyle = useAnimatedStyle(() => ({
-    height: projectHeight.value,
-    opacity: projectOpacity.value,
-    zIndex: 1000,
-  }));
-
-  const parentId = useMemo(() => {
-    if (forceProjectId) return forceProjectId;
-    if (requireProjectId) return projectId;
-    return currentUser?.company?.id;
-  }, [forceProjectId, requireProjectId, projectId, currentUser?.company]);
+    return [
+      { label: t("none"), value: "none" },
+      ...projects
+    ]
+  }, [currentUser?.projects]);
 
   return (
     <Modal
@@ -113,7 +83,7 @@ export const CreateReportModal: FC<CreateReportModalProps> = ({
             placeholder={t('report_template')}
             style={styles.select}
           />
-          <Animated.View style={[projectStyle]}>
+          {!forceProjectId && (
             <Select
               options={projectOptions}
               value={projectId}
@@ -122,7 +92,7 @@ export const CreateReportModal: FC<CreateReportModalProps> = ({
               style={styles.select}
               disabled={!projectOptions.length}
             />
-          </Animated.View>
+          )}
           <Input
             placeholder={t('name')}
             value={name}
@@ -135,15 +105,25 @@ export const CreateReportModal: FC<CreateReportModalProps> = ({
         <Button
           label={t('create')}
           onPress={() => {
-            onSubmit({
-              template_id: templateId,
-              parent_id: parentId!,
-              name,
-            });
+            if (currentUser?.company?.id) {
+              const request: CreateReportRequest = {
+                template_id: templateId,
+                company_id: currentUser.company.id,
+                name,
+              };
+
+              if (forceProjectId) {
+                request.project_id = forceProjectId;
+              } else if (!!projectId && projectId !== "none") {
+                request.project_id = projectId;
+              }
+
+              onSubmit(request);
+            }
 
             reset();
           }}
-          disabled={!templateId || !parentId || !name}
+          disabled={!templateId || !name}
         />
       </ScrollView>
     </Modal>

@@ -2,8 +2,6 @@ export type Report = {
   id: string;
   name: string;
   template_id: string;
-  parent_type: ReportParentType;
-  parent_id: string;
   status: ReportStatus;
   company_id?: string;
   company_name?: string;
@@ -26,7 +24,8 @@ export type ReportField = {
 
 export type CreateReportRequest = {
   template_id: string;
-  parent_id: string;
+  company_id: string;
+  project_id?: string;
   name: string;
 };
 
@@ -97,7 +96,6 @@ export type ReportTemplate = {
   id: string;
   name: string;
   description: string;
-  parent_type: ReportParentType;
   unique_by: ReportUniqueBy;
   fields: ReportTemplateField[];
   is_global: boolean;
@@ -115,7 +113,6 @@ export type ReportTemplateRequest = {
   name?: string;
   description?: string;
   fields?: ReportTemplateRequestField[];
-  parent_type?: ReportParentType;
   unique_by?: ReportUniqueBy;
 };
 
@@ -138,11 +135,6 @@ export type ReportSpeechRequest = {
 export type ReportSpeechResponse = {
   field_values: ReportFieldValues;
 };
-
-export enum ReportParentType {
-  Company = 'company',
-  Project = 'project',
-}
 
 export enum ReportStatus {
   Open = "open",
