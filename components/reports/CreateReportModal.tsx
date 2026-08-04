@@ -24,7 +24,7 @@ export const CreateReportModal: FC<CreateReportModalProps> = ({
   const { reportTemplates } = useReportTemplates();
   const { currentUser } = useAuth();
   const [templateId, setTemplateId] = useState('');
-  const [projectId, setProjectId] = useState('');
+  const [projectId, setProjectId] = useState('none');
   const [name, setName] = useState('');
   const hasEditedName = useRef(false);
 
@@ -41,7 +41,7 @@ export const CreateReportModal: FC<CreateReportModalProps> = ({
   const reset = () => {
     setName('');
     setTemplateId('');
-    setProjectId('');
+    setProjectId('none');
     hasEditedName.current = false;
   };
 
@@ -74,25 +74,18 @@ export const CreateReportModal: FC<CreateReportModalProps> = ({
         onClose();
       }}
     >
-      <ScrollView keyboardDismissMode="interactive">
+      <ScrollView
+        keyboardDismissMode="interactive"
+        style={styles.scrollView}
+      >
         <View style={styles.fields}>
           <Select
             options={templateOptions}
             value={templateId}
             setValue={setTemplateId}
             placeholder={t('report_template')}
-            style={styles.select}
+            style={{ zIndex: 2000000 }}
           />
-          {!forceProjectId && (
-            <Select
-              options={projectOptions}
-              value={projectId}
-              setValue={setProjectId}
-              placeholder={t('project')}
-              style={styles.select}
-              disabled={!projectOptions.length}
-            />
-          )}
           <Input
             placeholder={t('name')}
             value={name}
@@ -101,6 +94,15 @@ export const CreateReportModal: FC<CreateReportModalProps> = ({
               hasEditedName.current = true;
             }}
           />
+          {!forceProjectId && (
+            <Select
+              options={projectOptions}
+              value={projectId}
+              setValue={setProjectId}
+              placeholder={t('project')}
+              disabled={!projectOptions.length}
+            />
+          )}
         </View>
         <Button
           label={t('create')}
@@ -133,8 +135,9 @@ export const CreateReportModal: FC<CreateReportModalProps> = ({
 const styles = StyleSheet.create({
   fields: {
     marginVertical: 20,
+    gap: 10
   },
-  select: {
-    marginBottom: 10,
+  scrollView: {
+    overflow: 'visible',
   },
 });

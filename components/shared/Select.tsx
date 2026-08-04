@@ -134,6 +134,7 @@ export const Select: FC<SelectProps> = ({
           borderBottomWidth: 0.5,
           marginLeft: 4,
           marginRight: 10,
+          zIndex: 1000000
         }}
       />
     </View>
