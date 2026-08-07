@@ -42,7 +42,7 @@ const ProjectsListScreen: FC<ProjectsListScreenProps> = ({ navigation }) => {
   return (
     <View style={{ paddingTop: top, ...styles.container }}>
       <View style={styles.nav}>
-        <Label text={t('sites')} size={24} />
+        <Label text={t('project_list')} size={24} />
       </View>
       <Divider />
       <View style={{ flex: 1 }}>

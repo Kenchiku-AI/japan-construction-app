@@ -43,7 +43,7 @@ const UserScreen: FC<UserScreenProps> = () => {
     <>
       <View style={{ paddingTop: top, ...styles.container }}>
         <View style={styles.nav}>
-          <Label text={t('user')} size={24} numberOfLines={1} />
+          <Label text={t('user_info')} size={24} numberOfLines={1} />
           <Button
             variant="tertiary"
             label={t('logout')}
@@ -65,14 +65,14 @@ const UserScreen: FC<UserScreenProps> = () => {
         <ScrollView keyboardDismissMode="interactive">
           <View style={styles.fields}>
             <Input
-              placeholder={t('first_name')}
-              value={firstName}
-              onChange={f => setFirstName(f)}
-            />
-            <Input
               placeholder={t('last_name')}
               value={lastName}
               onChange={l => setLastName(l)}
+            />
+            <Input
+              placeholder={t('first_name')}
+              value={firstName}
+              onChange={f => setFirstName(f)}
             />
             <Input
               placeholder={t('email')}
