@@ -46,7 +46,7 @@ const ReportsListScreen: FC<ReportsListScreenProps> = ({ navigation }) => {
     <>
       <View style={{ paddingTop: top, ...styles.container }}>
         <View style={styles.nav}>
-          <Label text={t('reports')} size={24} numberOfLines={1} />
+          <Label text={t('report_list')} size={24} numberOfLines={1} />
           {enableCreate && (
             <Button
               variant="tertiary"
