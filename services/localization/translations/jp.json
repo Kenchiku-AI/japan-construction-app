@@ -116,6 +116,8 @@
   "open": "進行中",
   "open_report": "進行中にする",
   "open_report_description": "この報告書を進行中にしてもよろしいですか？",
+  "paid_features_force_disabled": "有料機能が無効になっています",
+  "paid_features_force_disabled_description": "有料機能が無効になっているため、現在ご利用いただけません。",
   "password": "パスワード",
   "payment_method_required": "お支払い方法が必要です",
   "payment_method_required_description": "続行する前に、会社に有効なお支払い方法が登録されていることを確認してください。",
