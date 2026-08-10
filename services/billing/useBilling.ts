@@ -3,7 +3,8 @@ import { useModal } from "../../context/modal/ModalContext";
 
 const reasons = [
   "payment_method_required",
-  "subscription_past_due"
+  "subscription_past_due",
+  "paid_features_force_disabled"
 ];
 
 export const useBilling = () => {
