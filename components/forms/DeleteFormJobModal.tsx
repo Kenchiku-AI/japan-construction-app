@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Modal } from "../shared";
-
+import { StyleSheet, View } from "react-native";
 
 interface DeleteFormJobModalProps {
   isOpen: boolean;
@@ -23,17 +23,25 @@ const DeleteFormJobModal: FC<DeleteFormJobModalProps> = ({
       title={t("delete_form")}
       subtitle={t("delete_form_description")}
     >
-      {/* <div className="mt-8 flex flex-col gap-3">
-        <Button label={t("delete")} onPress={onDelete} />
+      <View style={styles.buttons}>
         <Button
-          variant="secondary"
-          style={{ height: 60 }}
-          label={t("cancel")}
-          onPress={onClose}
+          label={t('delete_report')}
+          onPress={() => {
+            onDelete();
+          }}
         />
-      </div> */}
+        <Button variant="secondary" label={t('cancel')} onPress={onClose} />
+      </View>
     </Modal>
   );
 };
+
+const styles = StyleSheet.create({
+  buttons: {
+    marginTop: 20,
+    gap: 10,
+  },
+});
+
 
 export default DeleteFormJobModal;

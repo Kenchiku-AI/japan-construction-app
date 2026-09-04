@@ -10,7 +10,7 @@ import { FormJob } from '../types';
 export type FormsStackNavigationParams = {
   FormsListScreen: undefined;
   FormDetailScreen: {
-    formJob: FormJob
+    formJobId: string;
   };
 };
 

@@ -1,8 +1,7 @@
 import { FC, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FormJob } from "../../types";
+import { FormJob, FormJobStatus } from "../../types";
 import { useFormJobs } from "./useFormJobs";
-// import CreateFormJobModal from "./CreateFormJobModal";
 import { Button, Divider, Label, Modal } from "../shared";
 import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -13,6 +12,7 @@ import { ChevronRight, Form, Camera as CameraIcon } from "../shared/Icons";
 import { Camera } from 'react-native-vision-camera';
 import { useForms } from "../../context/forms/FormsContext";
 import CreateFormJobModal from "./CreateFormJobModal";
+import { doneColor1, doneColor2, errorColor1, errorColor2, inProgressColor1, inProgressColor2 } from "../../constants";
 
 interface FormsListScreenProps {
   navigation: NativeStackNavigationProp<
@@ -40,7 +40,6 @@ const FormsListScreen: FC<FormsListScreenProps> = ({ navigation }) => {
       <View style={{ paddingTop: top, ...styles.container }}>
         <View style={styles.nav}>
           <Label text={t('form_list')} size={24} numberOfLines={1} />
-
         </View>
         <Divider />
         <View style={{ flex: 1 }}>
@@ -53,7 +52,7 @@ const FormsListScreen: FC<FormsListScreenProps> = ({ navigation }) => {
                 formJob={item}
                 onPress={() => {
                   navigation.navigate('FormDetailScreen', {
-                    formJob: item
+                    formJobId: item.id
                   });
                 }}
               />
@@ -126,9 +125,36 @@ export const FormsListItem: FC<FormsListItemProps> = ({
   formJob,
   onPress,
 }) => {
+  const { t } = useTranslation();
   const subtitle = useMemo(() => (
     formJob.files[0].filename
   ), [formJob.files]);
+
+  const statusColors = useMemo(() => {
+    const status = formJob.status;
+
+    if (status === FormJobStatus.Failed) {
+      return {
+        text: errorColor1,
+        background: errorColor2
+      }
+    }
+
+    if (
+      status === FormJobStatus.Pending ||
+      status === FormJobStatus.Processing
+    ) {
+      return {
+        text: inProgressColor1,
+        background: inProgressColor2
+      }
+    }
+
+    return {
+      text: doneColor1,
+      background: doneColor2
+    }
+  }, [formJob.status]);
 
   return (
     <>
@@ -149,7 +175,21 @@ export const FormsListItem: FC<FormsListItemProps> = ({
             />
           </View>
         </View>
-        <View style={styles.chevron}>
+        <View style={styles.disclosure}>
+          <View
+            style={{
+              ...styles.status,
+              backgroundColor: statusColors.background
+            }}
+          >
+            <Label
+              text={t(formJob.status)}
+              style={{
+                ...styles.statusText,
+                color: statusColors.text
+              }}
+            />
+          </View>
           <ChevronRight size={18} />
         </View>
       </TouchableOpacity>
@@ -208,8 +248,22 @@ const styles = StyleSheet.create({
     fontSize: 12,
     includeFontPadding: false,
   },
-  chevron: {
+  disclosure: {
+    flexDirection: "row",
+    gap: 10,
     marginHorizontal: 12,
+    alignItems: "center"
+  },
+  status: {
+    height: 30,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 12,
+    borderRadius: 15,
+    opacity: 0.7
+  },
+  statusText: {
+    fontSize: 14
   },
   labels: {
     gap: 2,
