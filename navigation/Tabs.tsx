@@ -17,6 +17,8 @@ import {
 import { View, StyleSheet, Platform } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import {
+  Form,
+  FormFilled,
   Hardhat,
   HarhatFilled,
   Reports,
@@ -35,6 +37,7 @@ import { RootNavigationParams } from './navigate';
 export type TabsNavigationParams = {
   ProjectsStack: undefined;
   ReportsStack: undefined;
+  FormsStack: undefined;
   UserStack: undefined;
 };
 
@@ -102,6 +105,26 @@ const Tabs: FC<TabsProps> = ({ navigation }) => {
         component={ReportsStack}
       />
       <Tabs.Screen
+        name="FormsStack"
+        options={{
+          title: t('forms'),
+          tabBarIcon: ({ focused }) =>
+            focused ? (
+              <FormFilled
+                color={buttonColor}
+                size={30}
+              />
+            ) : (
+              <Form
+                color={fontColor2}
+                size={30}
+              />
+            ),
+          tabBarIconStyle: styles.icon,
+        }}
+        component={ReportsStack}
+      />
+      <Tabs.Screen
         name="UserStack"
         options={{
           title: t('user'),
@@ -158,7 +181,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   label: {
-    fontSize: 16,
+    fontSize: 12,
     fontFamily,
     includeFontPadding: false
   },

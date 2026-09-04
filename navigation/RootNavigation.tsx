@@ -3,8 +3,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Tabs from './Tabs';
 import CameraScreen from '../components/camera/CameraScreen';
 import { PhotoDetailScreen } from '../components/reports/photos/PhotoDetailScreen';
-import { ReportImage } from '../types';
+import { FormJob, ReportImage } from '../types';
 import AIPolicyScreen from '../components/aiPolicy/AIPolicyScreen';
+import { FormDetailScreen } from '../components/forms/FormDetailScreen';
 
 export type RootStackNavigationParams = {
   Tabs: undefined;
@@ -15,6 +16,9 @@ export type RootStackNavigationParams = {
     image: ReportImage;
     companyId: string;
     disabled?: boolean;
+  };
+  FormDetailScreen: {
+    formJob: FormJob;
   };
   AIPolicyScreen: undefined;
 };
@@ -33,6 +37,7 @@ export const RootStack: FC = () => {
       <Stack.Screen name="Tabs" component={Tabs} />
       <Stack.Screen name="CameraScreen" component={CameraScreen} />
       <Stack.Screen name="PhotoDetailScreen" component={PhotoDetailScreen} />
+      <Stack.Screen name="FormDetailScreen" component={FormDetailScreen} />
       <Stack.Screen
         name="AIPolicyScreen"
         component={AIPolicyScreen}

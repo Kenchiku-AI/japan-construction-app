@@ -1,0 +1,30 @@
+import { FC } from 'react';
+import {
+  createNativeStackNavigator,
+  NativeStackNavigationOptions,
+} from '@react-navigation/native-stack';
+import FormsListScreen from '../components/forms/FormsListScreen';
+import { FormJob } from '../types';
+
+export type FormsStackNavigationParams = {
+  FormsListScreen: undefined;
+  FormDetailScreen: {
+    formJob: FormJob
+  };
+};
+
+const FormsStack: FC = () => {
+  const Stack = createNativeStackNavigator<FormsStackNavigationParams>();
+  const screenOptions: NativeStackNavigationOptions = {
+    headerShown: false,
+  };
+
+  return (
+    <Stack.Navigator screenOptions={screenOptions}>
+      <Stack.Screen name="FormsListScreen" component={FormsListScreen} />
+      <Stack.Screen name="FormDetailScreen" component={FormsDetailScreen} />
+    </Stack.Navigator>
+  );
+};
+
+export default FormsStack;
