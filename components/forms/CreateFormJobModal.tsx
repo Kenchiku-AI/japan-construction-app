@@ -4,7 +4,10 @@ import { Select } from "../shared/Select";
 import { useAuth } from "../../context/auth/AuthContext";
 import { ProjectStatus } from "../../types";
 import { Button, Input, Modal } from "../shared";
-import { StyleSheet, View } from "react-native";
+import { Keyboard, Platform, StyleSheet, View } from "react-native";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import { useKeyboard } from "../../services/keyboard/useKeyboard";
+import { scheduleOnRN } from "react-native-worklets";
 
 interface CreateFormJobModalProps {
   isOpen: boolean;
@@ -26,6 +29,7 @@ const CreateFormJobModal: FC<CreateFormJobModalProps> = ({
   const [projectId, setProjectId] = useState("none");
   const { currentUser } = useAuth();
   const { t } = useTranslation();
+  const { isKeyboardVisible } = useKeyboard();
 
   const projectOptions = useMemo(() => {
     const projects = currentUser?.projects
@@ -54,50 +58,76 @@ const CreateFormJobModal: FC<CreateFormJobModalProps> = ({
     reset();
   };
 
+  const dismissKeyboard = () => {
+    Keyboard.dismiss();
+  };
+
+  const dismissKeyboardGesture = Gesture.Pan()
+    .activeOffsetY(10)
+    .failOffsetX([-20, 20])
+    .onEnd((event) => {
+      if (isKeyboardVisible && event.translationY > 50) {
+        scheduleOnRN(dismissKeyboard);
+      }
+    });
+
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={closeAndReset}
-      title={t("upload_form")}
-      subtitle={t("upload_form_description")}
-    >
-      <View style={styles.fields}>
-        <Input
-          value={name}
-          placeholder={t("name")}
-          onChange={setName}
-        />
-        <Input
-          value={description}
-          placeholder={t("description")}
-          onChange={setDescription}
-        />
-        {projectOptions.length > 1 && (
-          <Select
-            options={projectOptions}
-            value={projectId}
-            setValue={setProjectId}
-            placeholder={t('project')}
+    <GestureDetector gesture={dismissKeyboardGesture}>
+      <Modal
+        isOpen={isOpen}
+        onClose={closeAndReset}
+        title={t("upload_form")}
+        subtitle={t("upload_form_description")}
+      >
+
+        <View
+          style={styles.fields}
+        >
+          <Input
+            value={name}
+            placeholder={t("name")}
+            onChange={setName}
           />
-        )}
-      </View>
-      <Button
-        disabled={!name || !description}
-        label={t("upload")}
-        onPress={() => {
-          onSubmit(name, description, projectId);
-          closeAndReset();
-        }}
-      />
-    </Modal >
+          <Input
+            value={description}
+            placeholder={t("description")}
+            onChange={setDescription}
+            style={styles.description}
+            multiline
+          />
+          {projectOptions.length > 1 && (
+            <Select
+              options={projectOptions}
+              value={projectId}
+              setValue={setProjectId}
+              placeholder={t('project')}
+              openUpward
+            />
+          )}
+        </View>
+        <Button
+          disabled={!name || !description}
+          label={t("upload")}
+          onPress={() => {
+            onSubmit(name, description, projectId);
+            closeAndReset();
+          }}
+        />
+      </Modal >
+    </GestureDetector>
   );
 };
 
 const styles = StyleSheet.create({
   fields: {
     gap: 10,
-    marginBottom: 20
-  }
+    marginVertical: 20
+  },
+  description: {
+    height: 120,
+    justifyContent: 'flex-start',
+    paddingTop: Platform.OS === "android" ? 0 : 12,
+  },
 });
 
 export default CreateFormJobModal;

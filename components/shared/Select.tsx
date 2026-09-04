@@ -32,6 +32,7 @@ interface SelectProps {
   forceClose?: boolean;
   error?: boolean;
   disabled?: boolean;
+  openUpward?: boolean;
   style?: ViewStyle;
 }
 
@@ -44,6 +45,7 @@ export const Select: FC<SelectProps> = ({
   forceClose,
   placeholder,
   disabled,
+  openUpward,
   style,
 }) => {
   const [open, setOpen] = useState(false);
@@ -104,11 +106,15 @@ export const Select: FC<SelectProps> = ({
         setOpen={setOpen}
         onOpen={onOpen}
         onClose={onClose}
+        dropDownDirection={openUpward ? "TOP" : "BOTTOM"}
         style={{
           borderWidth: open ? 1 : 0,
           backgroundColor: bgColor2,
           paddingRight: 16,
           height: 60,
+        }}
+        scrollViewProps={{
+          showsVerticalScrollIndicator: false,
         }}
         labelStyle={{
           opacity: 0,
@@ -121,8 +127,8 @@ export const Select: FC<SelectProps> = ({
           backgroundColor: bgColor2,
           paddingLeft: 12,
           paddingRight: 6,
-          borderTopWidth: 0.5,
-          borderTopColor: fontColor2,
+          // borderTopWidth: 0.5,
+          // borderTopColor: fontColor2,
         }}
         textStyle={{
           fontFamily,

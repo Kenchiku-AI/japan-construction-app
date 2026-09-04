@@ -66,26 +66,26 @@ const FormsListScreen: FC<FormsListScreenProps> = ({ navigation }) => {
             }}
           />
         </View>
-        <View style={styles.buttons}>
-          <Divider light />
-          <Button
-            style={styles.button}
-            variant="secondary"
-            label={t('add_photo')}
-            iconLeft={() => (
-              <View style={{ marginRight: 8 }}>
-                <CameraIcon />
-              </View>
-            )}
-            onPress={async () => {
-              const status = await Camera.requestCameraPermission();
+      </View>
+      <View style={styles.buttons}>
+        <Divider light />
+        <Button
+          style={styles.button}
+          variant="secondary"
+          label={t('add_photo')}
+          iconLeft={() => (
+            <View style={{ marginRight: 8 }}>
+              <CameraIcon />
+            </View>
+          )}
+          onPress={async () => {
+            const status = await Camera.requestCameraPermission();
 
-              if (status === 'granted') {
-                navigation.getParent()?.navigate('CameraScreen', {});
-              }
-            }}
-          />
-        </View>
+            if (status === 'granted') {
+              navigation.getParent()?.navigate('CameraScreen', {});
+            }
+          }}
+        />
       </View>
       <CreateFormJobModal
         isOpen={!!photoUri}
