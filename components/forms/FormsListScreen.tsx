@@ -1,21 +1,27 @@
-"use client";
-
-import { FC, useState } from "react";
-import { Button } from "@/app/ui/Button/Button";
-import { Heading } from "@/app/ui/Heading/Heading";
+import { FC, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Plus } from "@/app/ui/Icons";
-import { FormJob, FormJobDownloadFile, UserRole } from "@/types";
-import { useForms } from "./useForms";
-import CreateFormJobModal from "./CreateFormJobModal";
-import FormJobModal from "./FormJobModal";
-import DeleteFormJobModal from "./DeleteFormJobModal";
-import { Divider, Label, Modal } from "../shared";
-import { FlatList, StyleSheet, View } from "react-native";
+import { FormJob } from "../../types";
+import { useFormJobs } from "./useFormJobs";
+// import CreateFormJobModal from "./CreateFormJobModal";
+import { Button, Divider, Label, Modal } from "../shared";
+import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Loader } from "../shared/Loader";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { FormsStackNavigationParams } from "../../navigation/FormsStack";
+import { ChevronRight, Form, Camera as CameraIcon } from "../shared/Icons";
+import { Camera } from 'react-native-vision-camera';
+import { useForms } from "../../context/forms/FormsContext";
+import CreateFormJobModal from "./CreateFormJobModal";
 
-const FormsListScreen: FC = () => {
+interface FormsListScreenProps {
+  navigation: NativeStackNavigationProp<
+    FormsStackNavigationParams,
+    'FormsListScreen'
+  >;
+}
+
+const FormsListScreen: FC<FormsListScreenProps> = ({ navigation }) => {
   const { t } = useTranslation();
   const { top } = useSafeAreaInsets();
   const {
@@ -23,29 +29,18 @@ const FormsListScreen: FC = () => {
     formJobs,
     getFormJobs,
     createFormJob,
-    deleteFormJob,
-    downloadFiles,
     error,
-    setError
-  } = useForms();
+    setError,
+  } = useFormJobs();
+  const { photoUri, setPhotoUri } = useForms();
   const [refreshing, setRefreshing] = useState(false);
-  const [isCreateFormModalShown, setIsCreateFormModalShown] = useState(false);
-  const [showFormJob, setShowFormJob] = useState<FormJob>();
-  const [jobToDelete, setJobToDelete] = useState<FormJob>();
 
   return (
     <>
       <View style={{ paddingTop: top, ...styles.container }}>
         <View style={styles.nav}>
-          <Label text={t('forms')} size={24} numberOfLines={1} />
-          <Button
-            variant="tertiary"
-            label={t("upload_form")}
-            onPress={() => {
-              setIsCreateFormModalShown(true);
-            }}
-            iconRight={() => <Plus size={30} />}
-          />
+          <Label text={t('form_list')} size={24} numberOfLines={1} />
+
         </View>
         <Divider />
         <View style={{ flex: 1 }}>
@@ -55,11 +50,10 @@ const FormsListScreen: FC = () => {
             renderItem={({ item }) => (
               <FormsListItem
                 key={item.id}
-                report={item}
+                formJob={item}
                 onPress={() => {
-                  navigation.navigate('ReportDetailScreen', {
-                    reportId: item.id,
-                    reportName: item.name,
+                  navigation.navigate('FormDetailScreen', {
+                    formJob: item
                   });
                 }}
               />
@@ -72,54 +66,44 @@ const FormsListScreen: FC = () => {
             }}
           />
         </View>
+        <View style={styles.buttons}>
+          <Divider light />
+          <Button
+            style={styles.button}
+            variant="secondary"
+            label={t('add_photo')}
+            iconLeft={() => (
+              <View style={{ marginRight: 8 }}>
+                <CameraIcon />
+              </View>
+            )}
+            onPress={async () => {
+              const status = await Camera.requestCameraPermission();
+
+              if (status === 'granted') {
+                navigation.getParent()?.navigate('CameraScreen', {});
+              }
+            }}
+          />
+        </View>
       </View>
       <CreateFormJobModal
-        isOpen={isCreateFormModalShown}
+        isOpen={!!photoUri}
         onClose={() => {
-          setIsCreateFormModalShown(false);
+          setPhotoUri("");
         }}
         onSubmit={(
-          file,
           name,
           description,
           projectId
         ) => {
           createFormJob(
-            file,
+            photoUri,
             name,
             description,
             projectId
           );
-          setIsCreateFormModalShown(false);
-        }}
-      />
-      <FormJobModal
-        formJob={showFormJob}
-        isOpen={!!showFormJob}
-        onClose={() => {
-          setShowFormJob(undefined);
-        }}
-        onDownload={(fileId) => {
-          if (!showFormJob) return;
-
-          downloadFiles(showFormJob, fileId);
-        }}
-        onDelete={() => {
-          if (!showFormJob) return;
-
-          setJobToDelete(showFormJob);
-          setShowFormJob(undefined);
-        }}
-      />
-      <DeleteFormJobModal
-        isOpen={!!jobToDelete}
-        onClose={() => {
-          setJobToDelete(undefined);
-        }}
-        onDelete={() => {
-          if (!jobToDelete) return;
-          deleteFormJob(jobToDelete.id);
-          setJobToDelete(undefined);
+          setPhotoUri("");
         }}
       />
       <Modal
@@ -129,6 +113,47 @@ const FormsListScreen: FC = () => {
         subtitle={error}
       />
       {loading && !refreshing && <Loader />}
+    </>
+  );
+};
+
+interface FormsListItemProps {
+  formJob: FormJob;
+  onPress: () => void;
+}
+
+export const FormsListItem: FC<FormsListItemProps> = ({
+  formJob,
+  onPress,
+}) => {
+  const subtitle = useMemo(() => (
+    formJob.files[0].filename
+  ), [formJob.files]);
+
+  return (
+    <>
+      <TouchableOpacity style={styles.form} onPress={onPress}>
+        <View style={styles.formInfo}>
+          <Form size={26} />
+          <View style={styles.labels}>
+            <Label
+              text={formJob.name}
+              style={styles.formName}
+              numberOfLines={1}
+            />
+            <Label
+              text={subtitle}
+              style={styles.subtitle}
+              numberOfLines={1}
+              light
+            />
+          </View>
+        </View>
+        <View style={styles.chevron}>
+          <ChevronRight size={18} />
+        </View>
+      </TouchableOpacity>
+      <Divider light />
     </>
   );
 };
@@ -161,6 +186,39 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: -16,
     paddingHorizontal: 16,
+  },
+  form: {
+    height: 70,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexDirection: 'row',
+    paddingLeft: 8,
+  },
+  formInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    flexShrink: 1,
+  },
+  formName: {
+    flexShrink: 1,
+    includeFontPadding: false
+  },
+  subtitle: {
+    fontSize: 12,
+    includeFontPadding: false,
+  },
+  chevron: {
+    marginHorizontal: 12,
+  },
+  labels: {
+    gap: 2,
+  },
+  buttons: {
+    marginHorizontal: 16,
+  },
+  button: {
+    marginVertical: 10,
   },
 });
 

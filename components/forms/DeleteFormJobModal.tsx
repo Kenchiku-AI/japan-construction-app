@@ -1,7 +1,7 @@
 import { FC } from "react";
-import { Button } from "@/app/ui/Button/Button";
 import { useTranslation } from "react-i18next";
-import Modal from "@/app/ui/Modal";
+import { Button, Modal } from "../shared";
+
 
 interface DeleteFormJobModalProps {
   isOpen: boolean;
@@ -23,15 +23,15 @@ const DeleteFormJobModal: FC<DeleteFormJobModalProps> = ({
       title={t("delete_form")}
       subtitle={t("delete_form_description")}
     >
-      <div className="mt-8 flex flex-col gap-3">
-        <Button label={t("delete")} onClick={onDelete} />
+      {/* <div className="mt-8 flex flex-col gap-3">
+        <Button label={t("delete")} onPress={onDelete} />
         <Button
           variant="secondary"
           style={{ height: 60 }}
           label={t("cancel")}
-          onClick={onClose}
+          onPress={onClose}
         />
-      </div>
+      </div> */}
     </Modal>
   );
 };

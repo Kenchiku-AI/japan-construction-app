@@ -4,6 +4,7 @@ import {
   NativeStackNavigationOptions,
 } from '@react-navigation/native-stack';
 import FormsListScreen from '../components/forms/FormsListScreen';
+import FormDetailScreen from '../components/forms/FormDetailScreen';
 import { FormJob } from '../types';
 
 export type FormsStackNavigationParams = {
@@ -22,7 +23,7 @@ const FormsStack: FC = () => {
   return (
     <Stack.Navigator screenOptions={screenOptions}>
       <Stack.Screen name="FormsListScreen" component={FormsListScreen} />
-      <Stack.Screen name="FormDetailScreen" component={FormsDetailScreen} />
+      <Stack.Screen name="FormDetailScreen" component={FormDetailScreen} />
     </Stack.Navigator>
   );
 };

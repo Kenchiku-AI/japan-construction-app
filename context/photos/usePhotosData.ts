@@ -15,7 +15,7 @@ export const usePhotosData = () => {
   >({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const pollingRef = useRef<Record<string, number>>({});
+  const pollingRef = useRef<Record<string, NodeJS.Timeout>>({});
   const { getBillingErrorReason } = useBilling();
   const api = useApi();
   const { t } = useTranslation();

@@ -7,83 +7,15 @@ import { CreateFormJobRequest, FormJob, FormJobStatus } from "../../types";
 import RNFS from "react-native-fs";
 import Share from "react-native-share";
 import JSZip from "jszip";
-import { useAuth } from "../../context/auth/AuthContext";
 
-export const useForms = () => {
+export const useFormJob = (formJobId: string) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [formJobs, setFormJobs] = useState<FormJob[]>();
   const api = useApi();
-  const { currentUser } = useAuth();
-  const companyId = currentUser?.company?.id;
 
   const { t } = useTranslation();
 
-  useEffect(() => {
-    getFormJobs();
-  }, [companyId]);
-
-  const getFormJobs = useCallback(async () => {
-    if (!companyId) return;
-
-    setLoading(true);
-
-    try {
-      const response = await api.getFormJobs(companyId);
-      setFormJobs(response);
-    } finally {
-      setLoading(false);
-    }
-  }, [companyId]);
-
-  const createFormJob = useCallback(
-    async (
-      file: File,
-      name: string,
-      description: string,
-      projectId?: string
-    ) => {
-      if (!companyId) return;
-
-      setLoading(true);
-
-      try {
-        const request: CreateFormJobRequest = {
-          company_id: companyId,
-          name,
-          description,
-          filename: file.name,
-          content_type: file.type
-        }
-
-        if (projectId && projectId !== "none") {
-          request.project_id = projectId;
-        }
-
-        const createResponse = await api.createFormJob(request);
-        if (!createResponse) throw new Error();
-
-        const uploadResponse = await fetch(createResponse.upload_url, {
-          method: "PUT",
-          headers: {
-            "Content-Type": file.type,
-          },
-          body: file,
-        });
-
-        if (!uploadResponse.ok) throw new Error();
-
-        pollFormJob(createResponse.id);
-      } catch (err) {
-        setError(t("error_description"));
-      }
-
-      setLoading(false);
-    },
-    [companyId],
-  );
-
-  const deleteFormJob = async (formJobId: string) => {
+  const deleteFormJob = async () => {
     setLoading(true);
 
     try {
@@ -99,7 +31,7 @@ export const useForms = () => {
     setLoading(false);
   };
 
-  const pollFormJob = async (formJobId: string) => {
+  const pollFormJob = async () => {
     let failCount = 0;
 
     for (let attempt = 0; attempt < 200; attempt++) {
@@ -274,9 +206,6 @@ export const useForms = () => {
 
   return {
     loading,
-    formJobs,
-    getFormJobs,
-    createFormJob,
     deleteFormJob,
     downloadFiles,
     error,

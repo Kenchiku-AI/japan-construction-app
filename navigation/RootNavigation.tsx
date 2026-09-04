@@ -5,12 +5,12 @@ import CameraScreen from '../components/camera/CameraScreen';
 import { PhotoDetailScreen } from '../components/reports/photos/PhotoDetailScreen';
 import { FormJob, ReportImage } from '../types';
 import AIPolicyScreen from '../components/aiPolicy/AIPolicyScreen';
-import { FormDetailScreen } from '../components/forms/FormDetailScreen';
+import FormDetailScreen from '../components/forms/FormDetailScreen';
 
 export type RootStackNavigationParams = {
   Tabs: undefined;
   CameraScreen: {
-    reportId: string;
+    reportId?: string;
   };
   PhotoDetailScreen: {
     image: ReportImage;

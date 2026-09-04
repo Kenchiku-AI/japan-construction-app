@@ -9,12 +9,14 @@ import {
   View,
 } from 'react-native';
 import {
+  ChevronLeft,
   Close,
   Trash,
 } from '../shared/Icons';
 import {
   bgColor1,
   bgColor2,
+  buttonColor,
   errorColor1,
   fontColor2,
 } from '../../constants';
@@ -23,6 +25,7 @@ import { RouteProp } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Loader } from '../shared/Loader';
 import { RootNavigationParams } from '../../navigation/navigate';
+import { useFormJob } from './useFormJob';
 
 interface FormDetailScreenProps {
   navigation: NativeStackNavigationProp<
@@ -32,10 +35,12 @@ interface FormDetailScreenProps {
   route: RouteProp<RootNavigationParams, 'FormDetailScreen'>;
 }
 
-export const FormDetailScreen: FC<FormDetailScreenProps> = ({
+const FormDetailScreen: FC<FormDetailScreenProps> = ({
   navigation,
   route,
 }) => {
+  const { formJob } = route.params;
+  const { } = useFormJob(formJob.id);
   const { t } = useTranslation();
   const { top } = useSafeAreaInsets();
   const [isConfirmDeleteShown, setIsConfirmDeleteShown] = useState(false);
@@ -45,21 +50,23 @@ export const FormDetailScreen: FC<FormDetailScreenProps> = ({
       <View style={{ paddingTop: top, ...styles.navContainer }}>
         <View style={styles.nav}>
           <View style={styles.navLeft}>
-            <View style={styles.header}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={() => {
+                navigation.goBack();
+              }}
+            >
+              <ChevronLeft color={buttonColor} size={20} />
+            </TouchableOpacity>
+            <View style={{ flexShrink: 1 }}>
               <Label
-                text={t('form_details')}
+                text={formJob.name}
                 style={styles.title}
                 numberOfLines={1}
               />
             </View>
           </View>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.goBack();
-            }}
-          >
-            <Close />
-          </TouchableOpacity>
+
         </View>
         <Divider />
       </View>
@@ -78,15 +85,15 @@ export const FormDetailScreen: FC<FormDetailScreenProps> = ({
           onPress={() => setIsConfirmDeleteShown(true)}
         />
       </ScrollView>
-      <ConfirmDeleteFormModal
+      {/* <ConfirmDeleteFormModal
         isOpen={isConfirmDeleteShown}
         onClose={() => setIsConfirmDeleteShown(false)}
         onDelete={async () => {
           setIsConfirmDeleteShown(false);
           navigation.goBack();
         }}
-      />
-      {loading && <Loader />}
+      /> */}
+      {/* {loading && <Loader />} */}
     </>
   );
 };
@@ -266,3 +273,5 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
 });
+
+export default FormDetailScreen

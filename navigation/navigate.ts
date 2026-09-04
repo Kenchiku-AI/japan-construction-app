@@ -4,11 +4,13 @@ import { RootStackNavigationParams } from './RootNavigation';
 import { TabsNavigationParams } from './Tabs';
 import { ProjectsStackNavigationParams } from './ProjectsStack';
 import { ReportsStackNavigationParams } from './ReportsStack';
+import { FormsStackNavigationParams } from './FormsStack';
 
 export type RootNavigationParams = RootStackNavigationParams &
   TabsNavigationParams &
   ProjectsStackNavigationParams &
-  ReportsStackNavigationParams;
+  ReportsStackNavigationParams &
+  FormsStackNavigationParams;
 
 export const ref = createRef<NavigationContainerRef<RootNavigationParams>>();
 

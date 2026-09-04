@@ -33,6 +33,7 @@ import { useModal } from '../context/modal/ModalContext';
 import AudioVisualizer from '../components/shared/AudioVisualizer';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootNavigationParams } from './navigate';
+import FormsStack from './FormsStack';
 
 export type TabsNavigationParams = {
   ProjectsStack: undefined;
@@ -67,7 +68,7 @@ const Tabs: FC<TabsProps> = ({ navigation }) => {
     <Tabs.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarStyle: { ...styles.tabBar, height: bottom + 80 },
+        tabBarStyle: { ...styles.tabBar, height: bottom + 70 },
         tabBarActiveTintColor: buttonColor,
         tabBarInactiveTintColor: fontColor2,
         tabBarLabelStyle: styles.label,
@@ -122,7 +123,7 @@ const Tabs: FC<TabsProps> = ({ navigation }) => {
             ),
           tabBarIconStyle: styles.icon,
         }}
-        component={ReportsStack}
+        component={FormsStack}
       />
       <Tabs.Screen
         name="UserStack"
@@ -173,7 +174,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0,
     borderTopColor: 'transparent',
     backgroundColor: '#F8F9F9',
-    marginBottom: 6,
+    paddingHorizontal: 16,
   },
   icon: {
     height: 45,

@@ -4,11 +4,13 @@ import { SpeechProvider } from './speech/SpeechContext';
 import { SettingsProvider } from './settings/SettingsContext';
 import { ModalProvider } from './modal/ModalContext';
 import { PhotosProvider } from './photos/PhotosContext';
+import { FormsProvider } from './forms/FormsContext';
 
 const providers = [
   AuthProvider,
   ModalProvider,
   PhotosProvider,
+  FormsProvider,
   SettingsProvider,
   SpeechProvider,
 ];
