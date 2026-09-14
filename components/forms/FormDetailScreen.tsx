@@ -147,7 +147,7 @@ const FormDetailScreen: FC<FormDetailScreenProps> = ({
       >
         <View style={styles.files}>
           {files.map((file, i) => (
-            <>
+            <View key={file.id}>
               {i > 0 && <Divider light />}
               <TouchableOpacity
                 style={styles.file}
@@ -164,7 +164,7 @@ const FormDetailScreen: FC<FormDetailScreenProps> = ({
                   <Download />
                 )}
               </TouchableOpacity>
-            </>
+            </View>
           ))}
         </View>
         <Row label={t("description")} value={description} hideDivider />

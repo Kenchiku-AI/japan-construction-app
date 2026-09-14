@@ -1,35 +1,43 @@
-import { FC, useMemo, useRef, useState } from "react";
+import { FC, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Select } from "../shared/Select";
 import { useAuth } from "../../context/auth/AuthContext";
 import { ProjectStatus } from "../../types";
-import { Button, Input, Modal } from "../shared";
-import { Keyboard, Platform, StyleSheet, View } from "react-native";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import { useKeyboard } from "../../services/keyboard/useKeyboard";
-import { scheduleOnRN } from "react-native-worklets";
+import { Button, Input, Label, Modal } from "../shared";
+import { Image, Platform, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import { bgColor2, buttonColor } from "../../constants";
 
 interface CreateFormJobModalProps {
   isOpen: boolean;
+  photoUri?: string;
   onClose: () => void;
   onSubmit: (
     name: string,
     description: string,
     projectId?: string
   ) => void;
+  onChangeImage: () => void;
 }
 
 const CreateFormJobModal: FC<CreateFormJobModalProps> = ({
   isOpen,
   onClose,
+  photoUri,
   onSubmit,
+  onChangeImage,
 }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [uri, setUri] = useState("");
   const [projectId, setProjectId] = useState("none");
   const { currentUser } = useAuth();
   const { t } = useTranslation();
-  const { isKeyboardVisible } = useKeyboard();
+
+  useEffect(() => {
+    if (!photoUri) return;
+
+    setUri(photoUri);
+  }, [photoUri]);
 
   const projectOptions = useMemo(() => {
     const projects = currentUser?.projects
@@ -50,6 +58,7 @@ const CreateFormJobModal: FC<CreateFormJobModalProps> = ({
       setName("");
       setDescription("");
       setProjectId("");
+      setUri("");
     }, 500);
   };
 
@@ -58,31 +67,34 @@ const CreateFormJobModal: FC<CreateFormJobModalProps> = ({
     reset();
   };
 
-  const dismissKeyboard = () => {
-    Keyboard.dismiss();
-  };
-
-  const dismissKeyboardGesture = Gesture.Pan()
-    .activeOffsetY(10)
-    .failOffsetX([-20, 20])
-    .onEnd((event) => {
-      if (isKeyboardVisible && event.translationY > 50) {
-        scheduleOnRN(dismissKeyboard);
-      }
-    });
-
   return (
-    <GestureDetector gesture={dismissKeyboardGesture}>
-      <Modal
-        isOpen={isOpen}
-        onClose={closeAndReset}
-        title={t("upload_form")}
-        subtitle={t("upload_form_description")}
+    <Modal
+      isOpen={isOpen}
+      onClose={closeAndReset}
+      title={t("upload_form")}
+    >
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="interactive"
       >
-
         <View
           style={styles.fields}
         >
+          <TouchableOpacity
+            style={styles.photoContainer}
+            onPress={onChangeImage}
+          >
+            <View style={styles.photoInfo}>
+              <View style={styles.photo}>
+                <Image
+                  style={{ flex: 1 }}
+                  resizeMode="contain"
+                  source={{ uri }}
+                />
+              </View>
+              <Label text={t("change_image")} style={{ color: buttonColor }} />
+            </View>
+          </TouchableOpacity>
           <Input
             value={name}
             placeholder={t("name")}
@@ -90,7 +102,7 @@ const CreateFormJobModal: FC<CreateFormJobModalProps> = ({
           />
           <Input
             value={description}
-            placeholder={t("description")}
+            placeholder={t("description_instructions")}
             onChange={setDescription}
             style={styles.description}
             multiline
@@ -113,8 +125,9 @@ const CreateFormJobModal: FC<CreateFormJobModalProps> = ({
             closeAndReset();
           }}
         />
-      </Modal >
-    </GestureDetector>
+      </ScrollView>
+    </Modal >
+
   );
 };
 
@@ -128,6 +141,23 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     paddingTop: Platform.OS === "android" ? 0 : 12,
   },
+  photoContainer: {
+    height: 60,
+    paddingHorizontal: 10,
+    justifyContent: "center",
+    borderWidth: 1,
+    borderRadius: 10,
+    borderColor: bgColor2
+  },
+  photoInfo: {
+    flexDirection: "row",
+    gap: 10,
+    alignItems: "center"
+  },
+  photo: {
+    height: 48,
+    width: 48
+  }
 });
 
 export default CreateFormJobModal;

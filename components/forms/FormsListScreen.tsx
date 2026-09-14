@@ -88,6 +88,7 @@ const FormsListScreen: FC<FormsListScreenProps> = ({ navigation }) => {
       </View>
       <CreateFormJobModal
         isOpen={!!photoUri}
+        photoUri={photoUri}
         onClose={() => {
           setPhotoUri("");
         }}
@@ -103,6 +104,9 @@ const FormsListScreen: FC<FormsListScreenProps> = ({ navigation }) => {
             projectId
           );
           setPhotoUri("");
+        }}
+        onChangeImage={() => {
+          navigation.getParent()?.navigate('CameraScreen', {});
         }}
       />
       <Modal
