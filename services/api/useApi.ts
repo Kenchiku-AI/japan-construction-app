@@ -27,6 +27,10 @@ import {
   UpdateProjectRequest,
   UpdateUserRequest,
   UserRole,
+  FormJob,
+  CreateFormJobRequest,
+  CreateFormJobResponse,
+  FormJobDownloadResponse,
 } from '../../types';
 import { baseUrl } from '../../constants';
 import { useAuth } from '../../context/auth/AuthContext';
@@ -207,6 +211,26 @@ export const useApi = () => {
     async removeTag(reportId: string, imageId: string, linkId: string) {
       const url = `/reports/${reportId}/images/${imageId}/tags/${linkId}`;
       return call(() => axios.delete(url));
+    },
+    async getFormJobs(companyId: string) {
+      const url = `/form-jobs?company_id=${companyId}`;
+      return call(() => axios.get<FormJob[]>(url));
+    },
+    async createFormJob(request: CreateFormJobRequest) {
+      const url = "/form-jobs";
+      return call(() => axios.post<CreateFormJobResponse>(url, request));
+    },
+    async getFormJob(formJobId: string) {
+      const url = `/form-jobs/${formJobId}`;
+      return call(() => axios.get<FormJob>(url));
+    },
+    async deleteFormJob(formJobId: string) {
+      const url = `/form-jobs/${formJobId}`;
+      return call(() => axios.delete(url));
+    },
+    async downloadFormJobFiles(formJobId: string) {
+      const url = `/form-jobs/${formJobId}/download`;
+      return call(() => axios.get<FormJobDownloadResponse>(url));
     },
   };
 };

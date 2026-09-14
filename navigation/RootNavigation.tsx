@@ -5,16 +5,20 @@ import CameraScreen from '../components/camera/CameraScreen';
 import { PhotoDetailScreen } from '../components/reports/photos/PhotoDetailScreen';
 import { ReportImage } from '../types';
 import AIPolicyScreen from '../components/aiPolicy/AIPolicyScreen';
+import FormDetailScreen from '../components/forms/FormDetailScreen';
 
 export type RootStackNavigationParams = {
   Tabs: undefined;
   CameraScreen: {
-    reportId: string;
+    reportId?: string;
   };
   PhotoDetailScreen: {
     image: ReportImage;
     companyId: string;
     disabled?: boolean;
+  };
+  FormDetailScreen: {
+    formJobId: string;
   };
   AIPolicyScreen: undefined;
 };
@@ -33,6 +37,7 @@ export const RootStack: FC = () => {
       <Stack.Screen name="Tabs" component={Tabs} />
       <Stack.Screen name="CameraScreen" component={CameraScreen} />
       <Stack.Screen name="PhotoDetailScreen" component={PhotoDetailScreen} />
+      <Stack.Screen name="FormDetailScreen" component={FormDetailScreen} />
       <Stack.Screen
         name="AIPolicyScreen"
         component={AIPolicyScreen}

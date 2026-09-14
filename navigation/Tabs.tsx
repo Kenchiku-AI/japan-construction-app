@@ -17,6 +17,8 @@ import {
 import { View, StyleSheet, Platform } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import {
+  Form,
+  FormFilled,
   Hardhat,
   HarhatFilled,
   Reports,
@@ -31,10 +33,12 @@ import { useModal } from '../context/modal/ModalContext';
 import AudioVisualizer from '../components/shared/AudioVisualizer';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootNavigationParams } from './navigate';
+import FormsStack from './FormsStack';
 
 export type TabsNavigationParams = {
   ProjectsStack: undefined;
   ReportsStack: undefined;
+  FormsStack: undefined;
   UserStack: undefined;
 };
 
@@ -64,7 +68,7 @@ const Tabs: FC<TabsProps> = ({ navigation }) => {
     <Tabs.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarStyle: { ...styles.tabBar, height: bottom + 80 },
+        tabBarStyle: { ...styles.tabBar, height: bottom + 70 },
         tabBarActiveTintColor: buttonColor,
         tabBarInactiveTintColor: fontColor2,
         tabBarLabelStyle: styles.label,
@@ -100,6 +104,26 @@ const Tabs: FC<TabsProps> = ({ navigation }) => {
           tabBarIconStyle: styles.icon,
         }}
         component={ReportsStack}
+      />
+      <Tabs.Screen
+        name="FormsStack"
+        options={{
+          title: t('forms'),
+          tabBarIcon: ({ focused }) =>
+            focused ? (
+              <FormFilled
+                color={buttonColor}
+                size={30}
+              />
+            ) : (
+              <Form
+                color={fontColor2}
+                size={30}
+              />
+            ),
+          tabBarIconStyle: styles.icon,
+        }}
+        component={FormsStack}
       />
       <Tabs.Screen
         name="UserStack"
@@ -150,7 +174,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0,
     borderTopColor: 'transparent',
     backgroundColor: '#F8F9F9',
-    marginBottom: 6,
+    paddingHorizontal: 16,
   },
   icon: {
     height: 45,
@@ -158,7 +182,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   label: {
-    fontSize: 16,
+    fontSize: 12,
     fontFamily,
     includeFontPadding: false
   },

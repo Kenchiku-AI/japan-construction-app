@@ -2942,6 +2942,34 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
+  - RNShare (12.3.1):
+    - boost
+    - DoubleConversion
+    - fast_float
+    - fmt
+    - glog
+    - hermes-engine
+    - RCT-Folly
+    - RCT-Folly/Fabric
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - SocketRocket
+    - Yoga
   - RNSVG (15.15.5):
     - boost
     - DoubleConversion
@@ -3220,6 +3248,7 @@ DEPENDENCIES:
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - RNShare (from `../node_modules/react-native-share`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - RNWorklets (from `../node_modules/react-native-worklets`)
   - SocketRocket (~> 0.7.1)
@@ -3416,6 +3445,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNShare:
+    :path: "../node_modules/react-native-share"
   RNSVG:
     :path: "../node_modules/react-native-svg"
   RNWorklets:
@@ -3520,6 +3551,7 @@ SPEC CHECKSUMS:
   RNPermissions: 050b059246f6ef1c0fec6d367c76c51b718956d7
   RNReanimated: ce6c58c02bd76d8d1017bf07d04ed4a7c387801e
   RNScreens: 9269ab4971b2bd24917be84295d2c2ae7d06e9be
+  RNShare: bf3fa119b277d4a1729553e870039427bcb80c93
   RNSVG: 6470d6f2636d71bd4bbc44a4f27fb7444e437b2f
   RNWorklets: 534af667da0c0049e0060ae43f03c7df8cc9a6e0
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
@@ -3529,4 +3561,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: b08eaa9c5c45d696fd10a68682a3dc894f5f6607
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2
