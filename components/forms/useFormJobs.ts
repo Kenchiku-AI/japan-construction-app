@@ -44,15 +44,17 @@ export const useFormJobs = () => {
   }, [companyId]);
 
   const toSnakeCase = (str: string): string => {
-    const matches = str.match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g);
-
-    if (!matches) {
-      return '';
-    }
-
-    return matches
-      .map((word: string) => word.toLowerCase())
-      .join('_');
+    return str
+      // 1. Insert an underscore before any uppercase letter followed by lowercase letters
+      .replace(/(?<=\p{L})(?=\p{Lu}\p{Ll})/gu, '_')
+      // 2. Insert an underscore between a lowercase letter and an uppercase letter
+      .replace(/(?<=\p{Ll})(?=\p{Lu})/gu, '_')
+      // 3. Insert an underscore between letters and numbers
+      .replace(/(?<=\p{L})(?=\d)|(?<=\d)(?=\p{L})/gu, '_')
+      // 4. Replace spaces, hyphens, and punctuation with a single underscore
+      .replace(/[\s\-_]+/g, '_')
+      // 5. Convert everything to lowercase
+      .toLowerCase();
   };
 
   const createFormJob = useCallback(
